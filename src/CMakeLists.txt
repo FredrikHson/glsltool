@@ -10,6 +10,7 @@ pkg_search_module(GLFW REQUIRED glfw3)
 
 set(COMMON_SRC
     "main.c"
+    "options.c"
     )
 
 include_directories(

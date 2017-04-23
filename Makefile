@@ -62,3 +62,6 @@ clean:
 
 distclean:
 	@rm -rf build
+
+cppcheck: build/Makefile
+	cppcheck --enable=all --platform=unix64 --inconclusive --project=${BASE_DIR}/build/compile_commands.json
