@@ -1,0 +1,3 @@
+[submodule "external/v7"]
+	path = external/v7
+	url = https://github.com/cesanta/v7.git
