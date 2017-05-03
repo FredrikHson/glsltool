@@ -1,6 +1,7 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include "options.h"
+#include "script.h"
 
 void error_callback(int error, const char* description)
 {
@@ -13,6 +14,9 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    initScript(options.inputfile);
+
+    /*
     if(!glfwInit())
     {
         fprintf(stderr, "Error: initing glfw\n");
@@ -34,16 +38,25 @@ int main(int argc, char* argv[])
 
     glfwSwapInterval(1);
 
-    while(!glfwWindowShouldClose(window))
+    if(initScript(options.inputfile))
     {
-        glClearColor(1, 0, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        while(!glfwWindowShouldClose(window))
+        {
+            glClearColor(1, 0, 0, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
-
     glfwDestroyWindow(window);
     glfwTerminate();
+    */
+    for(int i = 0; i < 20; i++)
+    {
+        run_loop();
+    }
+
+    shutdownScript();
     return 0;
 }

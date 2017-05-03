@@ -11,12 +11,16 @@ pkg_search_module(GLFW REQUIRED glfw3)
 set(COMMON_SRC
     "main.c"
     "options.c"
+    "renderfunc.c"
+    "script.c"
+    ../external/v7/v7.c
     )
 
 include_directories(
     "."
     "${OPENGL_INCLUDE_DIR}"
     ${GLFW_INCLUDE_DIRS}
+    ../external/v7
     )
 
 set(CMAKE_CXX_STANDARD 11)
@@ -29,6 +33,7 @@ add_executable(${CMAKE_PROJECT_NAME} ${COMMON_SRC})
 target_link_libraries(${CMAKE_PROJECT_NAME}
     ${GLFW_LIBRARIES}
     ${OPENGL_LIBRARIES}
+    m
     )
 install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin)
 
