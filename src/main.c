@@ -1,3 +1,4 @@
+#define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include "options.h"
@@ -13,8 +14,6 @@ int main(int argc, char* argv[])
     {
         return 0;
     }
-
-    initScript(options.inputfile);
 
     if(!glfwInit())
     {

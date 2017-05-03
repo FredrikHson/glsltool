@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <GLFW/glfw3.h>
 #include "v7.h"
+#include "renderfunc.h"
 
 unsigned char validscript = 0;
 struct v7* v7g = 0;
@@ -10,15 +11,12 @@ static enum v7_err js_create_rendertarget(struct v7* v7, v7_val_t* res)
 {
     int width  = v7_get_int(v7, v7_arg(v7, 0));
     int height = v7_get_int(v7, v7_arg(v7, 1));
-    int colors = v7_get_int(v7, v7_arg(v7, 2));
-    int type   = v7_get_int(v7, v7_arg(v7, 3));
+    int layers = v7_get_int(v7, v7_arg(v7, 2));
+    int colors = v7_get_int(v7, v7_arg(v7, 3));
+    int type   = v7_get_int(v7, v7_arg(v7, 4));
 
-    printf("creating a buffer:\n");
-    printf("    width:  %i\n", width);
-    printf("    height: %i\n", height);
-    printf("    colors: %i\n", colors);
-    printf("    type:   %i\n", type);
-    *res = v7_mk_number(v7, 0);
+    unsigned int target = CreateRenderTarget(width, height, layers, colors, type);
+    *res = v7_mk_number(v7, target);
     return V7_OK;
 }
 

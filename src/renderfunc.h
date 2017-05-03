@@ -3,9 +3,18 @@
 
 struct rendertarget
 {
-    unsigned short width;
-    unsigned short height;
+    unsigned int width;
+    unsigned int height;
+    unsigned int layers;
+    unsigned int format;
+    unsigned int type;
     unsigned int buffer;
-}
+    unsigned int *textures;
+};
 
+unsigned int CreateRenderTarget(unsigned int width,
+                                unsigned int height,
+                                unsigned int layers,
+                                unsigned int format,
+                                unsigned int type);
 #endif //__RENDERFUNC_H__
