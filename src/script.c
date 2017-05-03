@@ -1,5 +1,6 @@
 #include "script.h"
 #include <stdio.h>
+#include <GLFW/glfw3.h>
 #include "v7.h"
 
 unsigned char validscript = 0;
@@ -30,9 +31,25 @@ void create_js_functions()
 void create_js_defines()
 {
     v7_set(v7g, v7_get_global(v7g), "RGB", 3, v7_mk_number(v7g, 3));
-    v7_set(v7g, v7_get_global(v7g), "TYPE_U8", 7, v7_mk_number(v7g, 0));
-    v7_set(v7g, v7_get_global(v7g), "TYPE_S8", 7, v7_mk_number(v7g, 1));
-    v7_set(v7g, v7_get_global(v7g), "TYPE_FLOAT", 10, v7_mk_number(v7g, 3));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE",16 , v7_mk_number(v7g, GL_UNSIGNED_BYTE));
+    v7_set(v7g, v7_get_global(v7g), "GL_BYTE",7 , v7_mk_number(v7g, GL_BYTE));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT",17 , v7_mk_number(v7g, GL_UNSIGNED_SHORT));
+    v7_set(v7g, v7_get_global(v7g), "GL_SHORT",8 , v7_mk_number(v7g, GL_SHORT));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT",15 , v7_mk_number(v7g, GL_UNSIGNED_INT));
+    v7_set(v7g, v7_get_global(v7g), "GL_INT",6 , v7_mk_number(v7g, GL_INT));
+    v7_set(v7g, v7_get_global(v7g), "GL_FLOAT",8 , v7_mk_number(v7g, GL_FLOAT));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE_3_3_2",22 , v7_mk_number(v7g, GL_UNSIGNED_BYTE_3_3_2));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE_2_3_3_REV",26 , v7_mk_number(v7g, GL_UNSIGNED_BYTE_2_3_3_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_6_5",23 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_6_5));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_6_5_REV",27 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_6_5_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_4_4_4_4",25 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_4_4_4_4));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_4_4_4_4_REV",29 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_4_4_4_4_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_5_5_1",25 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_5_5_1));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_1_5_5_5_REV",29 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_1_5_5_5_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_8_8_8_8",23 , v7_mk_number(v7g, GL_UNSIGNED_INT_8_8_8_8));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_8_8_8_8_REV",27 , v7_mk_number(v7g, GL_UNSIGNED_INT_8_8_8_8_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_10_10_10_2",26 , v7_mk_number(v7g, GL_UNSIGNED_INT_10_10_10_2));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_2_10_10_10_REV",30 , v7_mk_number(v7g, GL_UNSIGNED_INT_2_10_10_10_REV));
 }
 
 int initScript(const char* filename)

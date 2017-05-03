@@ -1,5 +1,5 @@
-blurbuffer1 = create_rendertarget(1024, 768, RGB, TYPE_U8);
-blurbuffer2 = create_rendertarget(1024, 768, RGB, TYPE_FLOAT);
+blurbuffer1 = create_rendertarget(1024, 768, RGB, GL_BYTE);
+blurbuffer2 = create_rendertarget(1024, 768, RGB, GL_FLOAT);
 //screenplane = create_screenplane();
 //monkey      = load_model("suzanne.obj");
 //diffusetex  = load_image("diffuse.tga");
