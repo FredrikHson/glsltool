@@ -30,26 +30,38 @@ void create_js_functions()
 
 void create_js_defines()
 {
-    v7_set(v7g, v7_get_global(v7g), "RGB", 3, v7_mk_number(v7g, 3));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE",16 , v7_mk_number(v7g, GL_UNSIGNED_BYTE));
-    v7_set(v7g, v7_get_global(v7g), "GL_BYTE",7 , v7_mk_number(v7g, GL_BYTE));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT",17 , v7_mk_number(v7g, GL_UNSIGNED_SHORT));
-    v7_set(v7g, v7_get_global(v7g), "GL_SHORT",8 , v7_mk_number(v7g, GL_SHORT));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT",15 , v7_mk_number(v7g, GL_UNSIGNED_INT));
-    v7_set(v7g, v7_get_global(v7g), "GL_INT",6 , v7_mk_number(v7g, GL_INT));
-    v7_set(v7g, v7_get_global(v7g), "GL_FLOAT",8 , v7_mk_number(v7g, GL_FLOAT));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE_3_3_2",22 , v7_mk_number(v7g, GL_UNSIGNED_BYTE_3_3_2));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE_2_3_3_REV",26 , v7_mk_number(v7g, GL_UNSIGNED_BYTE_2_3_3_REV));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_6_5",23 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_6_5));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_6_5_REV",27 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_6_5_REV));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_4_4_4_4",25 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_4_4_4_4));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_4_4_4_4_REV",29 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_4_4_4_4_REV));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_5_5_1",25 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_5_5_1));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_1_5_5_5_REV",29 , v7_mk_number(v7g, GL_UNSIGNED_SHORT_1_5_5_5_REV));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_8_8_8_8",23 , v7_mk_number(v7g, GL_UNSIGNED_INT_8_8_8_8));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_8_8_8_8_REV",27 , v7_mk_number(v7g, GL_UNSIGNED_INT_8_8_8_8_REV));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_10_10_10_2",26 , v7_mk_number(v7g, GL_UNSIGNED_INT_10_10_10_2));
-    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_2_10_10_10_REV",30 , v7_mk_number(v7g, GL_UNSIGNED_INT_2_10_10_10_REV));
+    /* gl data types */
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE", 16, v7_mk_number(v7g, GL_UNSIGNED_BYTE));
+    v7_set(v7g, v7_get_global(v7g), "GL_BYTE", 7, v7_mk_number(v7g, GL_BYTE));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT", 17, v7_mk_number(v7g, GL_UNSIGNED_SHORT));
+    v7_set(v7g, v7_get_global(v7g), "GL_SHORT", 8, v7_mk_number(v7g, GL_SHORT));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT", 15, v7_mk_number(v7g, GL_UNSIGNED_INT));
+    v7_set(v7g, v7_get_global(v7g), "GL_INT", 6, v7_mk_number(v7g, GL_INT));
+    v7_set(v7g, v7_get_global(v7g), "GL_FLOAT", 8, v7_mk_number(v7g, GL_FLOAT));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE_3_3_2", 22, v7_mk_number(v7g, GL_UNSIGNED_BYTE_3_3_2));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE_2_3_3_REV", 26, v7_mk_number(v7g, GL_UNSIGNED_BYTE_2_3_3_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_6_5", 23, v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_6_5));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_6_5_REV", 27, v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_6_5_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_4_4_4_4", 25, v7_mk_number(v7g, GL_UNSIGNED_SHORT_4_4_4_4));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_4_4_4_4_REV", 29, v7_mk_number(v7g, GL_UNSIGNED_SHORT_4_4_4_4_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_5_5_5_1", 25, v7_mk_number(v7g, GL_UNSIGNED_SHORT_5_5_5_1));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_SHORT_1_5_5_5_REV", 29, v7_mk_number(v7g, GL_UNSIGNED_SHORT_1_5_5_5_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_8_8_8_8", 23, v7_mk_number(v7g, GL_UNSIGNED_INT_8_8_8_8));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_8_8_8_8_REV", 27, v7_mk_number(v7g, GL_UNSIGNED_INT_8_8_8_8_REV));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_10_10_10_2", 26, v7_mk_number(v7g, GL_UNSIGNED_INT_10_10_10_2));
+    v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_2_10_10_10_REV", 30, v7_mk_number(v7g, GL_UNSIGNED_INT_2_10_10_10_REV));
+    /* gl formats */
+    v7_set(v7g, v7_get_global(v7g), "GL_COLOR_INDEX", 14, v7_mk_number(v7g, GL_COLOR_INDEX));
+    v7_set(v7g, v7_get_global(v7g), "GL_RED", 6, v7_mk_number(v7g, GL_RED));
+    v7_set(v7g, v7_get_global(v7g), "GL_GREEN", 8, v7_mk_number(v7g, GL_GREEN));
+    v7_set(v7g, v7_get_global(v7g), "GL_BLUE", 7, v7_mk_number(v7g, GL_BLUE));
+    v7_set(v7g, v7_get_global(v7g), "GL_ALPHA", 8, v7_mk_number(v7g, GL_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_RGB", 6, v7_mk_number(v7g, GL_RGB));
+    v7_set(v7g, v7_get_global(v7g), "GL_BGR", 6, v7_mk_number(v7g, GL_BGR));
+    v7_set(v7g, v7_get_global(v7g), "GL_RGBA", 7, v7_mk_number(v7g, GL_RGBA));
+    v7_set(v7g, v7_get_global(v7g), "GL_BGRA", 7, v7_mk_number(v7g, GL_BGRA));
+    v7_set(v7g, v7_get_global(v7g), "GL_LUMINANCE", 12, v7_mk_number(v7g, GL_LUMINANCE));
+    v7_set(v7g, v7_get_global(v7g), "GL_LUMINANCE_ALPHA", 18, v7_mk_number(v7g, GL_LUMINANCE_ALPHA));
 }
 
 int initScript(const char* filename)

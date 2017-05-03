@@ -16,7 +16,6 @@ int main(int argc, char* argv[])
 
     initScript(options.inputfile);
 
-    /*
     if(!glfwInit())
     {
         fprintf(stderr, "Error: initing glfw\n");
@@ -42,6 +41,7 @@ int main(int argc, char* argv[])
     {
         while(!glfwWindowShouldClose(window))
         {
+            run_loop();
             glClearColor(1, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
@@ -49,13 +49,10 @@ int main(int argc, char* argv[])
             glfwPollEvents();
         }
     }
+
     glfwDestroyWindow(window);
     glfwTerminate();
-    */
-    for(int i = 0; i < 20; i++)
-    {
-        run_loop();
-    }
+
 
     shutdownScript();
     return 0;
