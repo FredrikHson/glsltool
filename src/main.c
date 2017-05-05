@@ -4,6 +4,8 @@
 #include "options.h"
 #include "script.h"
 
+GLFWwindow* window = 0;
+
 void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -22,7 +24,7 @@ int main(int argc, char* argv[])
     }
 
     glfwSetErrorCallback(error_callback);
-    GLFWwindow* window = glfwCreateWindow(options.width, options.height, "glsltool", NULL, NULL);
+    window = glfwCreateWindow(options.width, options.height, "glsltool", NULL, NULL);
 
     printf("using inputfile:%s\n", options.inputfile);
 
@@ -41,8 +43,6 @@ int main(int argc, char* argv[])
         while(!glfwWindowShouldClose(window))
         {
             run_loop();
-
-            glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }

@@ -3,9 +3,11 @@
 #include "renderfunc.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "options.h"
 
 struct rendertarget* rendertargets = 0;
 unsigned int numrendertargets = 0;
+
 unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,
                                 unsigned int layers,
@@ -157,4 +159,31 @@ void cleanupRender()
     rendertargets = 0;
     numrendertargets = 0;
 
+}
+int currentPassTarget = 0;
+void beginPass(int target)
+{
+    currentPassTarget = target;
+
+    if(currentPassTarget == -1)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, options.width, options.height);
+    }
+    else
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, rendertargets[target].buffer);
+        glViewport(0, 0, rendertargets[target].width, rendertargets[target].height);
+    }
+}
+void endPass()
+{
+    if(currentPassTarget == -1)
+    {
+        glfwSwapBuffers(window);
+    }
+    else
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 }

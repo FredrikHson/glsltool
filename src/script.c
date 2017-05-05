@@ -83,11 +83,31 @@ static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_beginPass(struct v7* v7, v7_val_t* res)
+{
+    if(v7_argc(v7) == 0)
+    {
+        beginPass(-1);
+    }
+    else
+    {
+        beginPass(v7_get_int(v7, v7_arg(v7, 0)));
+    }
+    return V7_OK;
+
+}
+static enum v7_err js_endPass(struct v7* v7, v7_val_t* res)
+{
+    endPass();
+    return V7_OK;
+}
 
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "create_rendertarget", &js_create_rendertarget);
     v7_set_method(v7g, v7_get_global(v7g), "clear", &js_clear);
+    v7_set_method(v7g, v7_get_global(v7g), "beginPass", &js_beginPass);
+    v7_set_method(v7g, v7_get_global(v7g), "endPass", &js_endPass);
 }
 
 void create_js_defines()
