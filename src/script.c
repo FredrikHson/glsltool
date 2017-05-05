@@ -33,16 +33,12 @@ static enum v7_err js_create_rendertarget(struct v7* v7, v7_val_t* res)
         minfilter = v7_get_int(v7, v7_arg(v7, 7));
     }
 
-
-
     unsigned int target = CreateRenderTarget(width, height, layers, colors, type, minfilter, magfilter);
-
     *res = v7_mk_number(v7, target);
     return V7_OK;
 }
 static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
 {
-
     float red   = 0;
     float green = 0;
     float blue  = 0;
@@ -68,10 +64,7 @@ static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
         green = red;
         blue  = red;
     }
-    else if(argc == 0)
-    {
-
-    }
+    else if(argc == 0) {}
     else
     {
         fprintf(stderr, "invalid number of arguments to clear\n");
@@ -79,7 +72,6 @@ static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
     }
 
     clear(red, green, blue, alpha);
-
     return V7_OK;
 }
 
@@ -93,8 +85,8 @@ static enum v7_err js_beginPass(struct v7* v7, v7_val_t* res)
     {
         beginPass(v7_get_int(v7, v7_arg(v7, 0)));
     }
-    return V7_OK;
 
+    return V7_OK;
 }
 static enum v7_err js_endPass(struct v7* v7, v7_val_t* res)
 {
@@ -162,14 +154,12 @@ int initScript(const char* filename)
     v7g = v7_create();
     create_js_functions();
     create_js_defines();
-
     v7_val_t result;
     enum v7_err rcode = v7_exec_file(v7g, filename, &result);
 
     if(rcode != V7_OK)
     {
         v7_print_error(stderr, v7g, "Error", result);
-
     }
 
     run_loop();
@@ -186,7 +176,6 @@ void run_loop()
     if(rcode != V7_OK)
     {
         v7_print_error(stderr, v7g, "Error", result);
-
     }
 }
 
@@ -194,6 +183,5 @@ int shutdownScript()
 {
     v7_destroy(v7g);
     cleanupRender();
-
     return 1;
 }

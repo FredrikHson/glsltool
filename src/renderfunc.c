@@ -16,7 +16,6 @@ unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int magfilter,
                                 unsigned int minfilter)
 {
-
     if(numrendertargets == 0)
     {
         rendertargets = malloc(sizeof(struct rendertarget));
@@ -24,13 +23,11 @@ unsigned int CreateRenderTarget(unsigned int width,
     else
     {
         rendertargets = realloc(rendertargets, sizeof(struct rendertarget) * (numrendertargets + 1));
-
     }
 
     unsigned int out = numrendertargets;
     numrendertargets += 1;
     struct rendertarget* target = &rendertargets[out];
-
     printf("creating a buffer:\n");
     printf("    width:  %i\n", width);
     printf("    height: %i\n", height);
@@ -47,19 +44,16 @@ unsigned int CreateRenderTarget(unsigned int width,
 
     printf("    format: %i\n", format);
     printf("    type:   %i\n", type);
-
     target->textures = malloc(sizeof(unsigned int) * layers);
     target->height   = height;
     target->width    = width;
     target->format   = format;
     target->type     = type;
     target->layers   = layers;
-
     GLint oldFramebuffer = 0;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
     glGenFramebuffers(1, &target->buffer);
     glBindFramebuffer(GL_FRAMEBUFFER, target->buffer);
-
     glGenTextures(layers, target->textures);
     int components = 0;
 
@@ -112,7 +106,6 @@ unsigned int CreateRenderTarget(unsigned int width,
     {
         glBindTexture(GL_TEXTURE_2D, target->textures[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0, format, type, 0);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, target->textures[i], 0);
@@ -124,9 +117,7 @@ unsigned int CreateRenderTarget(unsigned int width,
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, target->depth);
     glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer);
     glBindTexture(GL_TEXTURE_2D, oldTextureBinding);
-
     printf("numrendertargets:%i\n", numrendertargets);
-
     return out;
 }
 
@@ -158,7 +149,6 @@ void cleanupRender()
 
     rendertargets = 0;
     numrendertargets = 0;
-
 }
 int currentPassTarget = 0;
 void beginPass(int target)

@@ -10,6 +10,13 @@ void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+    options.width = width;
+    options.height = height;
+}
+
 int main(int argc, char* argv[])
 {
     if(!handle_options(argc, argv))
@@ -25,7 +32,6 @@ int main(int argc, char* argv[])
 
     glfwSetErrorCallback(error_callback);
     window = glfwCreateWindow(options.width, options.height, "glsltool", NULL, NULL);
-
     printf("using inputfile:%s\n", options.inputfile);
 
     if(!window)
@@ -35,7 +41,7 @@ int main(int argc, char* argv[])
     }
 
     glfwMakeContextCurrent(window);
-
+    glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSwapInterval(1);
 
     if(initScript(options.inputfile))
@@ -50,7 +56,5 @@ int main(int argc, char* argv[])
     shutdownScript();
     glfwDestroyWindow(window);
     glfwTerminate();
-
-
     return 0;
 }
