@@ -49,10 +49,10 @@ int main(int argc, char* argv[])
         }
     }
 
+    shutdownScript();
     glfwDestroyWindow(window);
     glfwTerminate();
 
 
-    shutdownScript();
     return 0;
 }

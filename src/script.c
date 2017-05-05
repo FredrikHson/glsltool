@@ -9,13 +9,33 @@ struct v7* v7g = 0;
 
 static enum v7_err js_create_rendertarget(struct v7* v7, v7_val_t* res)
 {
+    if(v7_argc(v7) < 5)
+    {
+        printf("invalid number of arguments to create_rendertarget\n");
+    }
+
     int width  = v7_get_int(v7, v7_arg(v7, 0));
     int height = v7_get_int(v7, v7_arg(v7, 1));
     int layers = v7_get_int(v7, v7_arg(v7, 2));
     int colors = v7_get_int(v7, v7_arg(v7, 3));
     int type   = v7_get_int(v7, v7_arg(v7, 4));
+    int magfilter = GL_NEAREST;
+    int minfilter = GL_NEAREST;
 
-    unsigned int target = CreateRenderTarget(width, height, layers, colors, type);
+    if(v7_argc(v7) > 5)
+    {
+        magfilter = v7_get_int(v7, v7_arg(v7, 6));
+    }
+
+    if(v7_argc(v7) > 6)
+    {
+        minfilter = v7_get_int(v7, v7_arg(v7, 7));
+    }
+
+
+
+    unsigned int target = CreateRenderTarget(width, height, layers, colors, type, minfilter, magfilter);
+
     *res = v7_mk_number(v7, target);
     return V7_OK;
 }
@@ -49,17 +69,21 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_10_10_10_2", 26, v7_mk_number(v7g, GL_UNSIGNED_INT_10_10_10_2));
     v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_INT_2_10_10_10_REV", 30, v7_mk_number(v7g, GL_UNSIGNED_INT_2_10_10_10_REV));
     /* gl formats */
-    v7_set(v7g, v7_get_global(v7g), "GL_COLOR_INDEX", 14, v7_mk_number(v7g, GL_COLOR_INDEX));
     v7_set(v7g, v7_get_global(v7g), "GL_RED", 6, v7_mk_number(v7g, GL_RED));
-    v7_set(v7g, v7_get_global(v7g), "GL_GREEN", 8, v7_mk_number(v7g, GL_GREEN));
-    v7_set(v7g, v7_get_global(v7g), "GL_BLUE", 7, v7_mk_number(v7g, GL_BLUE));
-    v7_set(v7g, v7_get_global(v7g), "GL_ALPHA", 8, v7_mk_number(v7g, GL_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_RG", 5, v7_mk_number(v7g, GL_RG));
     v7_set(v7g, v7_get_global(v7g), "GL_RGB", 6, v7_mk_number(v7g, GL_RGB));
     v7_set(v7g, v7_get_global(v7g), "GL_BGR", 6, v7_mk_number(v7g, GL_BGR));
     v7_set(v7g, v7_get_global(v7g), "GL_RGBA", 7, v7_mk_number(v7g, GL_RGBA));
     v7_set(v7g, v7_get_global(v7g), "GL_BGRA", 7, v7_mk_number(v7g, GL_BGRA));
-    v7_set(v7g, v7_get_global(v7g), "GL_LUMINANCE", 12, v7_mk_number(v7g, GL_LUMINANCE));
-    v7_set(v7g, v7_get_global(v7g), "GL_LUMINANCE_ALPHA", 18, v7_mk_number(v7g, GL_LUMINANCE_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_RED_INTEGER", 14, v7_mk_number(v7g, GL_RED_INTEGER));
+    v7_set(v7g, v7_get_global(v7g), "GL_RG_INTEGER", 13, v7_mk_number(v7g, GL_RG_INTEGER));
+    v7_set(v7g, v7_get_global(v7g), "GL_RGB_INTEGER", 14, v7_mk_number(v7g, GL_RGB_INTEGER));
+    v7_set(v7g, v7_get_global(v7g), "GL_BGR_INTEGER", 14, v7_mk_number(v7g, GL_BGR_INTEGER));
+    v7_set(v7g, v7_get_global(v7g), "GL_RGBA_INTEGER", 15, v7_mk_number(v7g, GL_RGBA_INTEGER));
+    v7_set(v7g, v7_get_global(v7g), "GL_BGRA_INTEGER", 15, v7_mk_number(v7g, GL_BGRA_INTEGER));
+    v7_set(v7g, v7_get_global(v7g), "GL_STENCIL_INDEX", 16, v7_mk_number(v7g, GL_STENCIL_INDEX));
+    v7_set(v7g, v7_get_global(v7g), "GL_DEPTH_COMPONENT", 18, v7_mk_number(v7g, GL_DEPTH_COMPONENT));
+    v7_set(v7g, v7_get_global(v7g), "GL_DEPTH_STENCIL", 16, v7_mk_number(v7g, GL_DEPTH_STENCIL));
 }
 
 int initScript(const char* filename)
@@ -98,6 +122,7 @@ void run_loop()
 int shutdownScript()
 {
     v7_destroy(v7g);
+    cleanupRender();
 
     return 1;
 }
