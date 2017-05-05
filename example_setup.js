@@ -6,12 +6,18 @@ blurbuffer2 = create_rendertarget(1024, 768, 1, GL_RGB, GL_FLOAT);
 //diffusetex  = load_image("diffuse.tga");
 //blurShader  = load_shader("blur.vert", "blur.frag", 0, 0);
 
-var i = 0;
-print("blurbuffer1", blurbuffer1);
-print("blurbuffer2", blurbuffer2);
+var red=0.0;
+var green=0.0;
 function loop()
 {
-    i++;
+    red+=0.01;
+    if(red>1)
+        red=0;
+    green+=0.05;
+    if(green>1)
+        green=0;
+    clear(red,green,0);
+
     //print("hello ", i++);
     //begin_pass(blurbuffer1);
     //{

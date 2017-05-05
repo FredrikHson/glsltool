@@ -20,6 +20,8 @@ unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int type,
                                 unsigned int magfilter,
                                 unsigned int minfilter);
-void cleanRender();
+
+void clear(float red, float green, float blue, float alpha);
+void cleanupRender();
 
 #endif //__RENDERFUNC_H__

@@ -11,7 +11,8 @@ static enum v7_err js_create_rendertarget(struct v7* v7, v7_val_t* res)
 {
     if(v7_argc(v7) < 5)
     {
-        printf("invalid number of arguments to create_rendertarget\n");
+        fprintf(stderr, "invalid number of arguments to create_rendertarget\n");
+        return V7_SYNTAX_ERROR;
     }
 
     int width  = v7_get_int(v7, v7_arg(v7, 0));
@@ -39,11 +40,54 @@ static enum v7_err js_create_rendertarget(struct v7* v7, v7_val_t* res)
     *res = v7_mk_number(v7, target);
     return V7_OK;
 }
+static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
+{
+
+    float red   = 0;
+    float green = 0;
+    float blue  = 0;
+    float alpha = 0;
+    int argc = v7_argc(v7);
+
+    if(argc == 3)
+    {
+        red   = v7_get_double(v7, v7_arg(v7, 0));
+        green = v7_get_double(v7, v7_arg(v7, 1));
+        blue  = v7_get_double(v7, v7_arg(v7, 2));
+    }
+    else if(argc == 4)
+    {
+        red   = v7_get_double(v7, v7_arg(v7, 0));
+        green = v7_get_double(v7, v7_arg(v7, 1));
+        blue  = v7_get_double(v7, v7_arg(v7, 2));
+        alpha = v7_get_double(v7, v7_arg(v7, 3));
+    }
+    else if(argc == 1)
+    {
+        red   = v7_get_double(v7, v7_arg(v7, 0));
+        green = red;
+        blue  = red;
+    }
+    else if(argc == 0)
+    {
+
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to clear\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    clear(red, green, blue, alpha);
+
+    return V7_OK;
+}
 
 
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "create_rendertarget", &js_create_rendertarget);
+    v7_set_method(v7g, v7_get_global(v7g), "clear", &js_clear);
 }
 
 void create_js_defines()
