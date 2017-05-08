@@ -27,7 +27,7 @@ void key_handler_callback(GLFWwindow* window, int key, int scancode, int action,
         printf("abort abort!\n");
     }
 }
-float updateTime() // call once per frame
+void updateTime() // call once per frame
 {
     double now = glfwGetTime();
     static double lastdelta = 0;
