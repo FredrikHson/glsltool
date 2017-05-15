@@ -10,7 +10,6 @@ struct glsltool_options options =
 
 void print_help(const struct option* opts)
 {
-
     int i = 0;
     printf("glsltool\n");
 
@@ -48,7 +47,6 @@ int handle_options(int argc, char* argv[])
         { "help", no_argument, 0, 'h' },
         { 0, 0, 0, 0}
     };
-
     int c;
     int longIndex = 0;
 

@@ -1,8 +1,11 @@
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
+#include "opengl.h"
+#include <IL/il.h>
+#include <IL/ilu.h>
 #include <stdio.h>
 #include "options.h"
 #include "script.h"
+#include "resources.h"
+#include <unistd.h>
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -71,6 +74,9 @@ int main(int argc, char* argv[])
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetKeyCallback(window, key_handler_callback);
     glfwSwapInterval(1);
+    glfwSwapBuffers(window);
+    ilInit();
+    iluInit();
 
     if(initScript(options.inputfile))
     {
@@ -79,6 +85,7 @@ int main(int argc, char* argv[])
             run_loop();
             glfwPollEvents();
             updateTime();
+            usleep(16666);
         }
     }
 

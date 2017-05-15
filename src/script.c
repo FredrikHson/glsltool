@@ -1,66 +1,67 @@
 #include "script.h"
 #include <stdio.h>
-#include <GLFW/glfw3.h>
+#include "opengl.h"
 #include "v7.h"
 #include "renderfunc.h"
+struct v7;
 
 unsigned char validscript = 0;
 struct v7* v7g = 0;
 
-static enum v7_err js_create_rendertarget(struct v7* v7, v7_val_t* res)
+static enum v7_err js_create_rendertarget(struct v7* v7e, v7_val_t* res)
 {
-    if(v7_argc(v7) < 5)
+    if(v7_argc(v7e) < 5)
     {
         fprintf(stderr, "invalid number of arguments to create_rendertarget\n");
         return V7_SYNTAX_ERROR;
     }
 
-    int width  = v7_get_int(v7, v7_arg(v7, 0));
-    int height = v7_get_int(v7, v7_arg(v7, 1));
-    int layers = v7_get_int(v7, v7_arg(v7, 2));
-    int colors = v7_get_int(v7, v7_arg(v7, 3));
-    int type   = v7_get_int(v7, v7_arg(v7, 4));
+    int width  = v7_get_int(v7e, v7_arg(v7e, 0));
+    int height = v7_get_int(v7e, v7_arg(v7e, 1));
+    int layers = v7_get_int(v7e, v7_arg(v7e, 2));
+    int colors = v7_get_int(v7e, v7_arg(v7e, 3));
+    int type   = v7_get_int(v7e, v7_arg(v7e, 4));
     int magfilter = GL_NEAREST;
     int minfilter = GL_NEAREST;
 
-    if(v7_argc(v7) > 5)
+    if(v7_argc(v7e) > 5)
     {
-        magfilter = v7_get_int(v7, v7_arg(v7, 6));
+        magfilter = v7_get_int(v7e, v7_arg(v7e, 6));
     }
 
-    if(v7_argc(v7) > 6)
+    if(v7_argc(v7e) > 6)
     {
-        minfilter = v7_get_int(v7, v7_arg(v7, 7));
+        minfilter = v7_get_int(v7e, v7_arg(v7e, 7));
     }
 
     unsigned int target = CreateRenderTarget(width, height, layers, colors, type, minfilter, magfilter);
-    *res = v7_mk_number(v7, target);
+    *res = v7_mk_number(v7e, target);
     return V7_OK;
 }
-static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
+static enum v7_err js_clear(struct v7* v7e, v7_val_t* res)
 {
     float red   = 0;
     float green = 0;
     float blue  = 0;
     float alpha = 0;
-    int argc = v7_argc(v7);
+    int argc = v7_argc(v7e);
 
     if(argc == 3)
     {
-        red   = v7_get_double(v7, v7_arg(v7, 0));
-        green = v7_get_double(v7, v7_arg(v7, 1));
-        blue  = v7_get_double(v7, v7_arg(v7, 2));
+        red   = v7_get_double(v7e, v7_arg(v7e, 0));
+        green = v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
     }
     else if(argc == 4)
     {
-        red   = v7_get_double(v7, v7_arg(v7, 0));
-        green = v7_get_double(v7, v7_arg(v7, 1));
-        blue  = v7_get_double(v7, v7_arg(v7, 2));
-        alpha = v7_get_double(v7, v7_arg(v7, 3));
+        red   = v7_get_double(v7e, v7_arg(v7e, 0));
+        green = v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
     }
     else if(argc == 1)
     {
-        red   = v7_get_double(v7, v7_arg(v7, 0));
+        red   = v7_get_double(v7e, v7_arg(v7e, 0));
         green = red;
         blue  = red;
     }
@@ -75,20 +76,20 @@ static enum v7_err js_clear(struct v7* v7, v7_val_t* res)
     return V7_OK;
 }
 
-static enum v7_err js_beginPass(struct v7* v7, v7_val_t* res)
+static enum v7_err js_beginPass(struct v7* v7e, v7_val_t* res)
 {
-    if(v7_argc(v7) == 0)
+    if(v7_argc(v7e) == 0)
     {
         beginPass(-1);
     }
     else
     {
-        beginPass(v7_get_int(v7, v7_arg(v7, 0)));
+        beginPass(v7_get_int(v7e, v7_arg(v7e, 0)));
     }
 
     return V7_OK;
 }
-static enum v7_err js_endPass(struct v7* v7, v7_val_t* res)
+static enum v7_err js_endPass(struct v7* v7e, v7_val_t* res)
 {
     endPass();
     return V7_OK;

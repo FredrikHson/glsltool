@@ -1,7 +1,7 @@
 #ifndef __RENDERFUNC_H__
 #define __RENDERFUNC_H__
 
-extern GLFWwindow* window;
+extern struct GLFWwindow* window;
 
 struct rendertarget
 {
