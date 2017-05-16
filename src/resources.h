@@ -4,7 +4,7 @@
 struct image
 {
     char* name;
-    int glImage;
+    unsigned int glImage;
     int width;
     int height;
     int channels; /*1-4*/
@@ -12,5 +12,6 @@ struct image
 
 int loadImage(const char* filename);
 int loadMesh(const char* filename);
+void cleanupImages();
 
 #endif //__RESOURCES_H__

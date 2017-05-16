@@ -1,9 +1,11 @@
 #include "resources.h"
 #include <IL/il.h>
-#include <IL/ilu.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include "opengl.h"
+struct image* textures = 0;
+int numtextures = 0;
 
 int loadImage(const char* filename)
 {
@@ -13,11 +15,12 @@ int loadImage(const char* filename)
     ilGenImages(1, &id);
     ilBindImage(id);
     ilLoadImage(filename);
-    int width  = ilGetInteger(IL_IMAGE_WIDTH);
-    int height = ilGetInteger(IL_IMAGE_HEIGHT);
-    int bpp    = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-    int type   = ilGetInteger(IL_IMAGE_TYPE);
-    int format = ilGetInteger(IL_IMAGE_FORMAT);
+    int width    = ilGetInteger(IL_IMAGE_WIDTH);
+    int height   = ilGetInteger(IL_IMAGE_HEIGHT);
+    int bpp      = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
+    int type     = ilGetInteger(IL_IMAGE_TYPE);
+    int format   = ilGetInteger(IL_IMAGE_FORMAT);
+    int channels = 0;
     printf("%s h:%i w:%i c:%i type:", filename, height, width, bpp);
     int glType = GL_UNSIGNED_BYTE;
 
@@ -92,6 +95,7 @@ int loadImage(const char* filename)
         {
             printf("IL_RGB");
             glInternalFormat = GL_RGB;
+            channels = 3;
             break;
         }
 
@@ -99,6 +103,7 @@ int loadImage(const char* filename)
         {
             printf("IL_RGBA");
             glInternalFormat = GL_RGBA;
+            channels = 4;
             break;
         }
 
@@ -107,6 +112,7 @@ int loadImage(const char* filename)
             printf("IL_BGR");
             format = IL_RGB;
             glInternalFormat = GL_RGB;
+            channels = 3;
             break;
         }
 
@@ -115,6 +121,7 @@ int loadImage(const char* filename)
             printf("IL_BGRA");
             format = IL_RGBA;
             glInternalFormat = GL_RGBA;
+            channels = 4;
             break;
         }
 
@@ -122,6 +129,7 @@ int loadImage(const char* filename)
         {
             printf("IL_LUMINANCE");
             glInternalFormat = GL_RED;
+            channels = 1;
             break;
         }
 
@@ -141,5 +149,48 @@ int loadImage(const char* filename)
     free(data);
     ilBindImage(0);
     ilDeleteImage(id);
-    return 0;
+
+    if(numtextures == 0)
+    {
+        textures = malloc(sizeof(struct image));
+    }
+    else
+    {
+        textures = realloc(textures, sizeof(struct image) * (numtextures + 1));
+    }
+
+    unsigned int out  = numtextures;
+    numtextures += 1;
+    struct image* img = &textures[out];
+    img->glImage      = texture;
+    img->name         = malloc(strlen(filename) + 1);
+    img->channels     = channels;
+    img->width        = width;
+    img->height       = height;
+    sprintf(img->name, "%s", filename);
+    return out;
+}
+
+
+void cleanupImages()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    for(int i = 0; i < numtextures; i++)
+    {
+        if(textures[i].name)
+        {
+            free(textures[i].name);
+        }
+
+        glDeleteTextures(1, &textures[i].glImage);
+    }
+
+    if(textures)
+    {
+        free(textures);
+    }
+
+    numtextures = 0;
+    textures = 0;
 }

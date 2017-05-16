@@ -90,6 +90,7 @@ int main(int argc, char* argv[])
     }
 
     shutdownScript();
+    cleanupImages();
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
