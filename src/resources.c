@@ -9,6 +9,15 @@ int numtextures = 0;
 
 int loadImage(const char* filename)
 {
+    for(int i = 0; i < numtextures; i++)
+    {
+        if(strcmp(filename, textures[i].name) == 0)
+        {
+            printf("already loaded image %s id:%i\n", filename, i);
+            return i;
+        }
+    }
+
     unsigned int id = 0;
     ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
     ilEnable(IL_ORIGIN_SET);
@@ -21,7 +30,7 @@ int loadImage(const char* filename)
     int type     = ilGetInteger(IL_IMAGE_TYPE);
     int format   = ilGetInteger(IL_IMAGE_FORMAT);
     int channels = 0;
-    printf("%s h:%i w:%i c:%i type:", filename, height, width, bpp);
+    printf("loading image %s h:%i w:%i c:%i type:", filename, height, width, bpp);
     int glType = GL_UNSIGNED_BYTE;
 
     switch(type)
@@ -137,7 +146,6 @@ int loadImage(const char* filename)
             break;
     }
 
-    printf("\n");
     fflush(stdout);
     void* data = malloc(width * height * bpp);
     ilCopyPixels(0, 0, 0, width, height, 1, format, type, data);
@@ -168,6 +176,7 @@ int loadImage(const char* filename)
     img->width        = width;
     img->height       = height;
     sprintf(img->name, "%s", filename);
+    printf(" id:%i\n", out);
     return out;
 }
 
