@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "options.h"
 
-struct rendertarget* rendertargets = 0;
+rendertarget* rendertargets = 0;
 unsigned int numrendertargets = 0;
 
 unsigned int CreateRenderTarget(unsigned int width,
@@ -17,16 +17,16 @@ unsigned int CreateRenderTarget(unsigned int width,
 {
     if(numrendertargets == 0)
     {
-        rendertargets = malloc(sizeof(struct rendertarget));
+        rendertargets = malloc(sizeof(rendertarget));
     }
     else
     {
-        rendertargets = realloc(rendertargets, sizeof(struct rendertarget) * (numrendertargets + 1));
+        rendertargets = realloc(rendertargets, sizeof(rendertarget) * (numrendertargets + 1));
     }
 
     unsigned int out = numrendertargets;
     numrendertargets += 1;
-    struct rendertarget* target = &rendertargets[out];
+    rendertarget* target = &rendertargets[out];
     printf("creating a buffer:\n");
     printf("    width:  %i\n", width);
     printf("    height: %i\n", height);
@@ -130,7 +130,7 @@ void cleanupRender()
 {
     for(int i = 0; i < numrendertargets; i++)
     {
-        struct rendertarget* target = &rendertargets[i];
+        rendertarget* target = &rendertargets[i];
         glDeleteTextures(target->layers, target->textures);
 
         if(target->textures)

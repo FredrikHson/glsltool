@@ -10,6 +10,8 @@ struct image
     int channels; /*1-4*/
 };
 
+typedef struct image image;
+
 int loadImage(const char* filename);
 int loadMesh(const char* filename);
 void cleanupImages();

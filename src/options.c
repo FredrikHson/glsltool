@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct glsltool_options options =
+glsltool_options options =
 {
     0, 0, 512, 512, "renderpath.txt"
 };

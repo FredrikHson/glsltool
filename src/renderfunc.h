@@ -15,6 +15,8 @@ struct rendertarget
     unsigned int depth;
 };
 
+typedef struct rendertarget rendertarget;
+
 unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,
                                 unsigned int layers,

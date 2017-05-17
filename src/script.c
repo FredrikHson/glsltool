@@ -3,12 +3,12 @@
 #include "opengl.h"
 #include "v7.h"
 #include "renderfunc.h"
-struct v7;
+typedef struct v7 v7;
 
 unsigned char validscript = 0;
-struct v7* v7g = 0;
+v7* v7g = 0;
 
-static enum v7_err js_create_rendertarget(struct v7* v7e, v7_val_t* res)
+static enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res)
 {
     if(v7_argc(v7e) < 5)
     {
@@ -38,7 +38,7 @@ static enum v7_err js_create_rendertarget(struct v7* v7e, v7_val_t* res)
     *res = v7_mk_number(v7e, target);
     return V7_OK;
 }
-static enum v7_err js_clear(struct v7* v7e, v7_val_t* res)
+static enum v7_err js_clear(v7* v7e, v7_val_t* res)
 {
     float red   = 0;
     float green = 0;
@@ -76,7 +76,7 @@ static enum v7_err js_clear(struct v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
-static enum v7_err js_beginPass(struct v7* v7e, v7_val_t* res)
+static enum v7_err js_beginPass(v7* v7e, v7_val_t* res)
 {
     if(v7_argc(v7e) == 0)
     {
@@ -89,7 +89,7 @@ static enum v7_err js_beginPass(struct v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
-static enum v7_err js_endPass(struct v7* v7e, v7_val_t* res)
+static enum v7_err js_endPass(v7* v7e, v7_val_t* res)
 {
     endPass();
     return V7_OK;

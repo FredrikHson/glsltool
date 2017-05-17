@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "opengl.h"
-struct image* textures = 0;
+image* textures = 0;
 int numtextures = 0;
 
 int loadImage(const char* filename)
@@ -160,16 +160,16 @@ int loadImage(const char* filename)
 
     if(numtextures == 0)
     {
-        textures = malloc(sizeof(struct image));
+        textures = malloc(sizeof(image));
     }
     else
     {
-        textures = realloc(textures, sizeof(struct image) * (numtextures + 1));
+        textures = realloc(textures, sizeof(image) * (numtextures + 1));
     }
 
     unsigned int out  = numtextures;
     numtextures += 1;
-    struct image* img = &textures[out];
+    image* img = &textures[out];
     img->glImage      = texture;
     img->name         = malloc(strlen(filename) + 1);
     img->channels     = channels;
