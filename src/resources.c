@@ -1,5 +1,6 @@
 #include "resources.h"
 #include <IL/il.h>
+#include <IL/ilu.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -9,6 +10,8 @@ int numtextures = 0;
 
 int loadImage(const char* filename)
 {
+    unsigned int out  = 0;
+
     for(int i = 0; i < numtextures; i++)
     {
         if(strcmp(filename, textures[i].name) == 0)
@@ -18,12 +21,26 @@ int loadImage(const char* filename)
         }
     }
 
+    FILE* f = fopen(filename, "rb");
     unsigned int id = 0;
     ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
     ilEnable(IL_ORIGIN_SET);
     ilGenImages(1, &id);
     ilBindImage(id);
     ilLoadImage(filename);
+    ILenum Error;
+
+    while((Error = ilGetError()) != IL_NO_ERROR)
+    {
+        fprintf(stderr, "%s: %s\n", filename, iluErrorString(Error));
+        out = -1;
+    }
+
+    if(out == -1)
+    {
+        return out;
+    }
+
     int width    = ilGetInteger(IL_IMAGE_WIDTH);
     int height   = ilGetInteger(IL_IMAGE_HEIGHT);
     int bpp      = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
@@ -167,7 +184,7 @@ int loadImage(const char* filename)
         textures = realloc(textures, sizeof(image) * (numtextures + 1));
     }
 
-    unsigned int out  = numtextures;
+    out  = numtextures;
     numtextures += 1;
     image* img = &textures[out];
     img->glImage      = texture;

@@ -16,6 +16,7 @@ set(COMMON_SRC
     "script.c"
     "resources.c"
     ../external/v7/v7.c
+    "notify.c"
     )
 
 include_directories(

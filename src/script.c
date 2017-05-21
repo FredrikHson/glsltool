@@ -3,6 +3,8 @@
 #include "opengl.h"
 #include "v7.h"
 #include "renderfunc.h"
+#include "resources.h"
+
 typedef struct v7 v7;
 
 unsigned char validscript = 0;
@@ -95,12 +97,50 @@ static enum v7_err js_endPass(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_load_image(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        size_t len = 0;
+        v7_val_t val = v7_arg(v7e, 0);
+        const char* filename = v7_get_string(v7e, &val, &len);
+
+        if(filename)
+        {
+            int image = loadImage(filename);
+
+            if(image == -1)
+            {
+                fprintf(stderr, "failed to load image %s\n", filename);
+                return V7_INTERNAL_ERROR;
+            }
+
+            printf("imageid %i\n", image);
+            *res = v7_mk_number(v7e, image);
+            return V7_OK;
+        }
+        else
+        {
+            fprintf(stderr, "first argument to loadImage should be a string\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to loadImage\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
 void create_js_functions()
 {
-    v7_set_method(v7g, v7_get_global(v7g), "create_rendertarget", &js_create_rendertarget);
+    v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
     v7_set_method(v7g, v7_get_global(v7g), "clear", &js_clear);
-    v7_set_method(v7g, v7_get_global(v7g), "beginPass", &js_beginPass);
-    v7_set_method(v7g, v7_get_global(v7g), "endPass", &js_endPass);
+    v7_set_method(v7g, v7_get_global(v7g), "beginpass", &js_beginPass);
+    v7_set_method(v7g, v7_get_global(v7g), "endpass", &js_endPass);
+    v7_set_method(v7g, v7_get_global(v7g), "loadimage", &js_load_image);
 }
 
 void create_js_defines()

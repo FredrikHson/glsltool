@@ -1,9 +1,9 @@
 print("initing");
-blurbuffer1 = create_rendertarget(1024, 768, 1, GL_RGB, GL_BYTE);
-blurbuffer2 = create_rendertarget(1024, 768, 1, GL_RGB, GL_FLOAT);
+blurbuffer1 = createrendertarget(1024, 768, 1, GL_RGB, GL_BYTE);
+blurbuffer2 = createrendertarget(1024, 768, 1, GL_RGB, GL_FLOAT);
 //screenplane = create_screenplane();
 //monkey      = load_model("suzanne.obj");
-//diffusetex  = load_image("diffuse.tga");
+diffusetex  = loadimage("diffuse.png");
 //blurShader  = load_shader("blur.vert", "blur.frag", 0, 0);
 
 var red = 0.0;
@@ -25,16 +25,16 @@ function loop()
     }
 
     //print("hello ", i++);
-    beginPass(blurbuffer1);
+    beginpass(blurbuffer1);
     {
         clear(red, 0, 0);
     }
-    endPass();
-    beginPass(blurbuffer2);
+    endpass();
+    beginpass(blurbuffer2);
     {
         clear(red, 0, green);
     }
-    endPass();
+    endpass();
     //beginPass(blurbuffer2);
     //{
     //set_shader(blurShader);
@@ -48,11 +48,11 @@ function loop()
     //set_parameter("blur_offset", 0, 0.5);
     //set_texture("tex1", blurbuffer1);
     //}
-    //endPass();
-    beginPass();
+    //endpass();
+    beginpass();
     {
         clear(red, green, 0);
-        //blit_Texture(blurbuffer1);
+        //blit_texture(blurbuffer1);
     }
-    endPass();
+    endpass();
 }
