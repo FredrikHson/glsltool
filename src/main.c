@@ -6,6 +6,7 @@
 #include "script.h"
 #include "resources.h"
 #include <unistd.h>
+#include "notify.h"
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -60,6 +61,12 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    if(!initFileWatcher())
+    {
+        fprintf(stderr, "Error: initing filewatcher\n");
+        return 1;
+    }
+
     glfwSetErrorCallback(error_callback);
     window = glfwCreateWindow(options.width, options.height, "glsltool", NULL, NULL);
     printf("using inputfile:%s\n", options.inputfile);
@@ -84,6 +91,7 @@ int main(int argc, char* argv[])
         {
             run_loop();
             glfwPollEvents();
+            watchChanges();
             updateTime();
             usleep(16666);
         }

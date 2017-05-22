@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "opengl.h"
+#include "notify.h"
 image* textures = 0;
 int numtextures = 0;
 
@@ -21,7 +22,6 @@ int loadImage(const char* filename)
         }
     }
 
-    FILE* f = fopen(filename, "rb");
     unsigned int id = 0;
     ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
     ilEnable(IL_ORIGIN_SET);
@@ -194,6 +194,7 @@ int loadImage(const char* filename)
     img->height       = height;
     sprintf(img->name, "%s", filename);
     printf(" id:%i\n", out);
+    watchFile(filename);
     return out;
 }
 
