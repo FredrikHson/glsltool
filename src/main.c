@@ -99,6 +99,7 @@ int main(int argc, char* argv[])
 
     shutdownScript();
     cleanupImages();
+    destroyFileWatcher();
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
