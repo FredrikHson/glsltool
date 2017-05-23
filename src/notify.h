@@ -3,7 +3,7 @@
 
 int initFileWatcher();
 void destroyFileWatcher();
-void watchFile(const char* filename); // TODO:add callback?
+void watchFile(const char* filename, void (*callback)(const char*));
 void unwatchFile(const char* filename);
 void watchChanges();
 

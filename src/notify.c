@@ -15,6 +15,7 @@ struct notify_file
 {
     int descriptor;
     char filename[4096];
+    void (*callback)(const char*);
 };
 
 typedef struct notify_file notify_file;
@@ -51,7 +52,7 @@ void destroyFileWatcher()
     numWatchedFiles = 0;
 }
 
-void watchFile(const char* filename)
+void watchFile(const char* filename, void (*callback)(const char*))
 {
     int watch = inotify_add_watch(inotify, filename, IN_CLOSE_WRITE | IN_MOVED_TO);
     printf("watching %s for changes descriptor:%i\n", filename, watch);
@@ -67,6 +68,7 @@ void watchFile(const char* filename)
 
     strncpy(watchlist[numWatchedFiles].filename, filename, 4096);
     watchlist[numWatchedFiles].descriptor = watch;
+    watchlist[numWatchedFiles].callback = callback;
     numWatchedFiles += 1;
 }
 void unwatchFile(const char* filename)
@@ -107,7 +109,13 @@ void watchChanges()
             {
                 if(watchlist[i].descriptor == event->wd)
                 {
-                    printf("watch changed descriptor:%i %s\n", event->wd, watchlist[i].filename);
+                    printf("watch changed descriptor:%i %s %p\n", event->wd, watchlist[i].filename, watchlist[i].callback);
+
+                    if(watchlist[i].callback != 0)
+                    {
+                        (*watchlist[i].callback)(watchlist[i].filename);
+                    }
+
                     break;
                 }
             }

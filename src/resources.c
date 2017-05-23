@@ -9,17 +9,11 @@
 image* textures = 0;
 int numtextures = 0;
 
-int loadImage(const char* filename)
+int loadImageOntoTexture(const char* filename, unsigned int texture)
 {
-    unsigned int out  = 0;
-
-    for(int i = 0; i < numtextures; i++)
+    if(texture >= numtextures)
     {
-        if(strcmp(filename, textures[i].name) == 0)
-        {
-            printf("already loaded image %s id:%i\n", filename, i);
-            return i;
-        }
+        return -1;
     }
 
     unsigned int id = 0;
@@ -29,6 +23,7 @@ int loadImage(const char* filename)
     ilBindImage(id);
     ilLoadImage(filename);
     ILenum Error;
+    int out = 0;
 
     while((Error = ilGetError()) != IL_NO_ERROR)
     {
@@ -164,16 +159,33 @@ int loadImage(const char* filename)
     }
 
     fflush(stdout);
+    image* tex = &textures[texture];
     void* data = malloc(width * height * bpp);
     ilCopyPixels(0, 0, 0, width, height, 1, format, type, data);
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, tex->glImage);
     glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glInternalFormat, glType, data);
     glBindTexture(GL_TEXTURE_2D, 0);
     free(data);
     ilBindImage(0);
     ilDeleteImage(id);
+    tex->channels = channels;
+    tex->width    = width;
+    tex->height   = height;
+    return texture;
+}
+
+int loadImage(const char* filename)
+{
+    unsigned int out  = 0;
+
+    for(int i = 0; i < numtextures; i++)
+    {
+        if(strcmp(filename, textures[i].name) == 0)
+        {
+            printf("already loaded image %s id:%i\n", filename, i);
+            return i;
+        }
+    }
 
     if(numtextures == 0)
     {
@@ -187,17 +199,27 @@ int loadImage(const char* filename)
     out  = numtextures;
     numtextures += 1;
     image* img = &textures[out];
-    img->glImage      = texture;
-    img->name         = malloc(strlen(filename) + 1);
-    img->channels     = channels;
-    img->width        = width;
-    img->height       = height;
+    img->name = malloc(strlen(filename) + 1);
+    glGenTextures(1, &img->glImage);
+    out = loadImageOntoTexture(filename, out);
     sprintf(img->name, "%s", filename);
     printf(" id:%i\n", out);
-    watchFile(filename);
+    watchFile(filename, &reloadImage);
     return out;
 }
 
+void reloadImage(const char* filename)
+{
+    for(int i = 0; i < numtextures; i++)
+    {
+        if(strcmp(filename, textures[i].name) == 0)
+        {
+            printf("wants to reload:%i %s\n", i, filename);
+            loadImageOntoTexture(filename, i);
+            break;
+        }
+    }
+}
 
 void cleanupImages()
 {
