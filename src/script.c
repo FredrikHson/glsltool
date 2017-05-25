@@ -4,7 +4,6 @@
 #include "v7.h"
 #include "renderfunc.h"
 #include "resources.h"
-#include "notify.h"
 
 typedef struct v7 v7;
 

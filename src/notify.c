@@ -1,7 +1,6 @@
 #include "notify.h"
 #include <sys/inotify.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,7 +57,7 @@ void destroyFileWatcher()
 void watchFile(const char* filename, void (*callback)(const char*))
 {
     int watch = inotify_add_watch(inotify, filename, IN_CLOSE_WRITE | IN_MOVE);
-    printf("watching %s for changes\n", filename, watch);
+    printf("watching %s for changes\n", filename);
 
     if(numWatchedFiles == 0)
     {
@@ -142,7 +141,6 @@ void watchChanges()
 
         if(filestat.st_ino != watchlist[i].inode) /* the inode has changed so the file must have changed */
         {
-            printf("inode:%i %i filename:%s\n", filestat.st_ino, watchlist[i].inode, watchlist[i].filename);
             inotify_rm_watch(inotify, watchlist[i].descriptor);
             watchlist[i].inode = filestat.st_ino;
             watchlist[i].descriptor = inotify_add_watch(inotify, watchlist[i].filename, IN_CLOSE_WRITE | IN_MOVE);
