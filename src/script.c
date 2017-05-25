@@ -4,6 +4,7 @@
 #include "v7.h"
 #include "renderfunc.h"
 #include "resources.h"
+#include "notify.h"
 
 typedef struct v7 v7;
 
@@ -201,8 +202,10 @@ int initScript(const char* filename)
     if(rcode != V7_OK)
     {
         v7_print_error(stderr, v7g, "Error", result);
+        validscript = 0;
     }
 
+    validscript = 1;
     run_loop();
     return 1;
 }
@@ -217,6 +220,7 @@ void run_loop()
     if(rcode != V7_OK)
     {
         v7_print_error(stderr, v7g, "Error", result);
+        validscript = 0;
     }
 }
 
@@ -225,4 +229,12 @@ int shutdownScript()
     v7_destroy(v7g);
     cleanupRender();
     return 1;
+}
+
+void reloadScript(const char* filename)
+{
+    printf("reloading script: %s\n", filename);
+    v7_destroy(v7g);
+    cleanupRender();
+    initScript(filename);
 }

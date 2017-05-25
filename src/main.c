@@ -85,11 +85,22 @@ int main(int argc, char* argv[])
     ilInit();
     iluInit();
 
+    watchFile(options.inputfile, reloadScript);
     if(initScript(options.inputfile))
     {
         while(!glfwWindowShouldClose(window) && !should_quit)
         {
-            run_loop();
+            if(validscript)
+            {
+                run_loop();
+            }
+            else
+            {
+                glClearColor(1, 0, 0, 1);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glfwSwapBuffers(window);
+            }
+
             glfwPollEvents();
             watchChanges();
             updateTime();

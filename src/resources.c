@@ -158,6 +158,7 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
             break;
     }
 
+    printf("\n");
     fflush(stdout);
     image* tex = &textures[texture];
     void* data = malloc(width * height * bpp);
@@ -203,7 +204,6 @@ int loadImage(const char* filename)
     glGenTextures(1, &img->glImage);
     out = loadImageOntoTexture(filename, out);
     sprintf(img->name, "%s", filename);
-    printf(" id:%i\n", out);
     watchFile(filename, &reloadImage);
     return out;
 }

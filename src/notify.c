@@ -1,5 +1,7 @@
 #include "notify.h"
 #include <sys/inotify.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +16,7 @@ typedef struct inotify_event inotify_event;
 struct notify_file
 {
     int descriptor;
+    int inode;
     char filename[4096];
     void (*callback)(const char*);
 };
@@ -54,8 +57,8 @@ void destroyFileWatcher()
 
 void watchFile(const char* filename, void (*callback)(const char*))
 {
-    int watch = inotify_add_watch(inotify, filename, IN_CLOSE_WRITE | IN_MOVED_TO);
-    printf("watching %s for changes descriptor:%i\n", filename, watch);
+    int watch = inotify_add_watch(inotify, filename, IN_CLOSE_WRITE | IN_MOVE);
+    printf("watching %s for changes\n", filename, watch);
 
     if(numWatchedFiles == 0)
     {
@@ -69,6 +72,9 @@ void watchFile(const char* filename, void (*callback)(const char*))
     strncpy(watchlist[numWatchedFiles].filename, filename, 4096);
     watchlist[numWatchedFiles].descriptor = watch;
     watchlist[numWatchedFiles].callback = callback;
+    struct stat filestat;
+    stat(filename, &filestat);
+    watchlist[numWatchedFiles].inode = filestat.st_ino;
     numWatchedFiles += 1;
 }
 void unwatchFile(const char* filename)
@@ -113,6 +119,7 @@ void watchChanges()
 
                     if(watchlist[i].callback != 0)
                     {
+                        usleep(50000); /* add a small delay to make sure the file is done writing */
                         (*watchlist[i].callback)(watchlist[i].filename);
                     }
 
@@ -125,4 +132,22 @@ void watchChanges()
         while(i < length);
     }
     while(1);
+
+    /* maybe not recommended with large amounts of files but probably better than just relying on inotify
+     * since inotify does not detect when you write to temporary file then move to the original location  */
+    for(int i = 0; i < numWatchedFiles; i++)
+    {
+        struct stat filestat;
+        stat(watchlist[i].filename, &filestat);
+
+        if(filestat.st_ino != watchlist[i].inode) /* the inode has changed so the file must have changed */
+        {
+            printf("inode:%i %i filename:%s\n", filestat.st_ino, watchlist[i].inode, watchlist[i].filename);
+            inotify_rm_watch(inotify, watchlist[i].descriptor);
+            watchlist[i].inode = filestat.st_ino;
+            watchlist[i].descriptor = inotify_add_watch(inotify, watchlist[i].filename, IN_CLOSE_WRITE | IN_MOVE);
+            usleep(50000);
+            (*watchlist[i].callback)(watchlist[i].filename);
+        }
+    }
 }
