@@ -12,15 +12,13 @@ typedef struct inotify_event inotify_event;
 #define EVENT_SIZE (sizeof(inotify_event))
 #define BUF_LEN (1024 * (EVENT_SIZE + 16))
 
-struct notify_file
+typedef struct notify_file
 {
     int descriptor;
     int inode;
     char filename[4096];
     void (*callback)(const char*);
-};
-
-typedef struct notify_file notify_file;
+} notify_file;
 
 notify_file* watchlist = 0;
 size_t numWatchedFiles = 0;

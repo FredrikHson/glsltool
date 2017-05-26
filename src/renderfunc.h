@@ -3,7 +3,7 @@
 
 extern struct GLFWwindow* window;
 
-struct rendertarget
+typedef struct rendertarget
 {
     unsigned int width;
     unsigned int height;
@@ -13,9 +13,8 @@ struct rendertarget
     unsigned int buffer;
     unsigned int* textures;
     unsigned int depth;
-};
+} rendertarget;
 
-typedef struct rendertarget rendertarget;
 
 unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,

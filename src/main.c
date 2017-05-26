@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
     glfwSwapBuffers(window);
     ilInit();
     iluInit();
-
     watchFile(options.inputfile, reloadScript);
+
     if(initScript(options.inputfile))
     {
         while(!glfwWindowShouldClose(window) && !should_quit)
