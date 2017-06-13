@@ -5,6 +5,7 @@ blurbuffer2 = createrendertarget(1024, 768, 1, GL_RGB, GL_FLOAT);
 //monkey      = load_model("suzanne.obj");
 diffusetex = loadimage("diffuse.png");
 normalmap = loadimage("normal.png");
+mesh = loadmesh("suzanne.obj");
 //blurShader  = load_shader("blur.vert", "blur.frag", 0, 0);
 
 var red = 0.0;

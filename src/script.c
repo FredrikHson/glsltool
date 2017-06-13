@@ -123,13 +123,50 @@ static enum v7_err js_load_image(v7* v7e, v7_val_t* res)
         }
         else
         {
-            fprintf(stderr, "first argument to loadImage should be a string\n");
+            fprintf(stderr, "first argument to loadmesh should be a string\n");
             return V7_SYNTAX_ERROR;
         }
     }
     else
     {
-        fprintf(stderr, "invalid number of arguments to loadImage\n");
+        fprintf(stderr, "invalid number of arguments to loadimage\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
+static enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        size_t len = 0;
+        v7_val_t val = v7_arg(v7e, 0);
+        const char* filename = v7_get_string(v7e, &val, &len);
+
+        if(filename)
+        {
+            int mesh = loadMesh(filename);
+
+            if(mesh == -1)
+            {
+                fprintf(stderr, "failed to load mesh %s\n", filename);
+                return V7_INTERNAL_ERROR;
+            }
+
+            printf("meshid %i\n", mesh);
+            *res = v7_mk_number(v7e, mesh);
+            return V7_OK;
+        }
+        else
+        {
+            fprintf(stderr, "first argument to loadmesh should be a string\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to loadmesh\n");
         return V7_SYNTAX_ERROR;
     }
 }
@@ -141,6 +178,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "beginpass", &js_beginPass);
     v7_set_method(v7g, v7_get_global(v7g), "endpass", &js_endPass);
     v7_set_method(v7g, v7_get_global(v7g), "loadimage", &js_load_image);
+    v7_set_method(v7g, v7_get_global(v7g), "loadmesh", &js_load_mesh);
 }
 
 void create_js_defines()

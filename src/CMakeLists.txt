@@ -7,6 +7,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
+pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
 
 set(COMMON_SRC
@@ -15,14 +16,15 @@ set(COMMON_SRC
     "renderfunc.c"
     "script.c"
     "resources.c"
-    ../external/v7/v7.c
+    "../external/v7/v7.c"
     "notify.c"
     )
 
 include_directories(
-    "."
-    "${OPENGL_INCLUDE_DIR}"
+    .
+    ${OPENGL_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIRS}
+    ${ASSIMP_INCLUDE_DIRS}
     ${IL_INCLUDE_DIR}
     ../external/v7
     )
@@ -39,6 +41,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     ${OPENGL_LIBRARIES}
     ${IL_LIBRARIES}
     ${ILU_LIBRARIES}
+    ${ASSIMP_LIBRARIES}
     m
     )
 install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin)

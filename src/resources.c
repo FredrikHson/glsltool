@@ -1,11 +1,15 @@
-#include "resources.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "opengl.h"
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include "notify.h"
+#include "resources.h"
+
 image* textures = 0;
 int numtextures = 0;
 
@@ -242,4 +246,39 @@ void cleanupImages()
 
     numtextures = 0;
     textures = 0;
+}
+
+int loadMesh(const char* filename)
+{
+    const struct aiScene* scene = aiImportFile(filename,
+                                  aiProcess_CalcTangentSpace      |
+                                  aiProcess_Triangulate           |
+                                  aiProcess_JoinIdenticalVertices |
+                                  aiProcess_SortByPType);
+
+    if(!scene)
+    {
+        fprintf(stderr, "Error Loading %s\n%s\n", filename, aiGetErrorString());
+        return -1;
+    }
+
+    printf("nummeshes:%i\n", scene->mNumMeshes);
+
+    for(int i = 0; i < scene->mNumMeshes; i++)
+    {
+        struct aiMesh* mesh = scene->mMeshes[i];
+        printf("    mesh_name:%s\n", mesh->mName.data);
+        printf("    numBones:%i\n",mesh->mNumBones);
+        printf("    numFaces:%i\n",mesh->mNumFaces);
+        printf("    numVertices:%i\n",mesh->mNumVertices);
+    }
+/*
+ * howto?
+ * add all verts normals and tangents to a buffer
+ * anims to texture?
+ * or something
+ */
+
+    aiReleaseImport(scene);
+    return 0;
 }
