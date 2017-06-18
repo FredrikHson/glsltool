@@ -202,7 +202,17 @@ int loadImage(const char* filename)
     }
     else
     {
-        textures = realloc(textures, sizeof(image) * (numtextures + 1));
+        void* newtextures = realloc(textures, sizeof(image) * (numtextures + 1));
+
+        if(newtextures == 0)
+        {
+            fprintf(stderr, "out of memory while creating texture %s\n", filename);
+            exit(1);
+        }
+        else
+        {
+            textures = newtextures;
+        }
     }
 
     out  = numtextures;
@@ -273,6 +283,47 @@ void cleanupImages()
 #define MESH_FLAG_COLOR6    (1<<18)
 #define MESH_FLAG_COLOR7    (1<<19)
 
+void printmeshflags(unsigned int flag)
+{
+    if(flag & MESH_FLAG_POSITION)
+    {
+        printf("MESH_FLAG_POSITION");
+    }
+
+    if(flag & MESH_FLAG_NORMAL)
+    {
+        printf(" NORMAL");
+    }
+
+    if(flag & MESH_FLAG_TANGENT)
+    {
+        printf(" TANGENT");
+    }
+
+    if(flag & MESH_FLAG_BINORMAL)
+    {
+        printf(" BINORMAL");
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        if(flag & MESH_FLAG_TEXCOORD0 << i)
+        {
+            printf(" TEXCOORD%i", i);
+        }
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        if(flag & MESH_FLAG_COLOR0 << i)
+        {
+            printf(" COLOR%i", i);
+        }
+    }
+
+    printf("\n");
+}
+
 int loadMesh(const char* filename)
 {
     const struct aiScene* scene = aiImportFile(filename,
@@ -321,7 +372,17 @@ int loadMesh(const char* filename)
     }
     else
     {
-        meshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
+        void* newmeshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
+
+        if(newmeshes == 0)
+        {
+            fprintf(stderr, "out of memory while creating mesh %s\n", filename);
+            exit(1);
+        }
+        else
+        {
+            meshes = newmeshes;
+        }
     }
 
     out  = nummeshes;
@@ -334,7 +395,7 @@ int loadMesh(const char* filename)
     for(int i = 0; i < scene->mNumMeshes; i++)
     {
         struct aiMesh* assmesh = scene->mMeshes[i];
-        m->flags[i] |= MESH_FLAG_POSITION;
+        m->flags[i] = MESH_FLAG_POSITION;
         size_t size = sizeof(float) * 3;
 
         if(assmesh->mNormals != 0)
@@ -359,7 +420,7 @@ int loadMesh(const char* filename)
         {
             if(assmesh->mTextureCoords[j] != 0)
             {
-                m->flags[i] |= MESH_FLAG_TEXCOORD0 << i;
+                m->flags[i] |= MESH_FLAG_TEXCOORD0 << j;
                 size += sizeof(float) * 2;
             }
         }
@@ -368,12 +429,13 @@ int loadMesh(const char* filename)
         {
             if(assmesh->mColors[j] != 0)
             {
-                m->flags[i] |= MESH_FLAG_COLOR0 << i;
+                m->flags[i] |= MESH_FLAG_COLOR0 << j;
                 size += sizeof(float) * 4;
             }
         }
 
         printf("m->flags[%i]=0x%X size=%zu numverts=%i\n", i, m->flags[i], size, assmesh->mNumVertices);
+        printmeshflags(m->flags[i]);
         float* data = malloc(size * assmesh->mNumVertices);
         size_t offset = 0;
 

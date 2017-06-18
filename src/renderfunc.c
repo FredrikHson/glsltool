@@ -21,7 +21,17 @@ unsigned int CreateRenderTarget(unsigned int width,
     }
     else
     {
-        rendertargets = realloc(rendertargets, sizeof(rendertarget) * (numrendertargets + 1));
+        void *newrendertargets = realloc(rendertargets, sizeof(rendertarget) * (numrendertargets + 1));
+
+        if(newrendertargets == 0)
+        {
+            fprintf(stderr, "out of memory creating rendertarget\n");
+            exit(1);
+        }
+        else
+        {
+            rendertargets= newrendertargets;
+        }
     }
 
     unsigned int out = numrendertargets;

@@ -63,7 +63,17 @@ void watchFile(const char* filename, void (*callback)(const char*))
     }
     else
     {
-        watchlist = realloc(watchlist, sizeof(notify_file) * (numWatchedFiles + 1));
+        void* newlist = realloc(watchlist, sizeof(notify_file) * (numWatchedFiles + 1));
+
+        if(newlist == 0)
+        {
+            fprintf(stderr, "out of memory allocating the watch for %s\n", filename);
+            exit(1);
+        }
+        else
+        {
+            watchlist = newlist;
+        }
     }
 
     strncpy(watchlist[numWatchedFiles].filename, filename, 4096);
@@ -84,7 +94,17 @@ void unwatchFile(const char* filename)
             numWatchedFiles -= 1;
             watchlist[i].descriptor = watchlist[numWatchedFiles].descriptor;
             strncpy(watchlist[i].filename, watchlist[numWatchedFiles].filename, 4096);
-            watchlist = realloc(watchlist, sizeof(notify_file) * numWatchedFiles);
+            void* newlist   = realloc(watchlist, sizeof(notify_file) * numWatchedFiles);
+
+            if(newlist == 0)
+            {
+                fprintf(stderr, "out of memory allocating the watch for %s\n", filename);
+                exit(1);
+            }
+            else
+            {
+                watchlist = newlist;
+            }
         }
     }
 }
