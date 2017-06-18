@@ -7,11 +7,15 @@
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/types.h>
+#include <assimp/mesh.h>
 #include "notify.h"
 #include "resources.h"
 
 image* textures = 0;
 int numtextures = 0;
+mesh* meshes = 0;
+int nummeshes = 0;
 
 int loadImageOntoTexture(const char* filename, unsigned int texture)
 {
@@ -248,6 +252,27 @@ void cleanupImages()
     textures = 0;
 }
 
+#define MESH_FLAG_POSITION  (1<<0)
+#define MESH_FLAG_NORMAL    (1<<1)
+#define MESH_FLAG_TANGENT   (1<<2)
+#define MESH_FLAG_BINORMAL  (1<<3)
+#define MESH_FLAG_TEXCOORD0 (1<<4)
+#define MESH_FLAG_TEXCOORD1 (1<<5)
+#define MESH_FLAG_TEXCOORD2 (1<<6)
+#define MESH_FLAG_TEXCOORD3 (1<<7)
+#define MESH_FLAG_TEXCOORD4 (1<<8)
+#define MESH_FLAG_TEXCOORD5 (1<<9)
+#define MESH_FLAG_TEXCOORD6 (1<<10)
+#define MESH_FLAG_TEXCOORD7 (1<<11)
+#define MESH_FLAG_COLOR0    (1<<12)
+#define MESH_FLAG_COLOR1    (1<<13)
+#define MESH_FLAG_COLOR2    (1<<14)
+#define MESH_FLAG_COLOR3    (1<<15)
+#define MESH_FLAG_COLOR4    (1<<16)
+#define MESH_FLAG_COLOR5    (1<<17)
+#define MESH_FLAG_COLOR6    (1<<18)
+#define MESH_FLAG_COLOR7    (1<<19)
+
 int loadMesh(const char* filename)
 {
     const struct aiScene* scene = aiImportFile(filename,
@@ -266,19 +291,110 @@ int loadMesh(const char* filename)
 
     for(int i = 0; i < scene->mNumMeshes; i++)
     {
-        struct aiMesh* mesh = scene->mMeshes[i];
-        printf("    mesh_name:%s\n", mesh->mName.data);
-        printf("    numBones:%i\n",mesh->mNumBones);
-        printf("    numFaces:%i\n",mesh->mNumFaces);
-        printf("    numVertices:%i\n",mesh->mNumVertices);
+        struct aiMesh* assmesh = scene->mMeshes[i];
+        printf("    mesh_name:%s\n", assmesh->mName.data);
+        printf("    numBones:%i\n", assmesh->mNumBones);
+        printf("    numFaces:%i\n", assmesh->mNumFaces);
+        printf("    numVertices:%i\n", assmesh->mNumVertices);
     }
-/*
- * howto?
- * add all verts normals and tangents to a buffer
- * anims to texture?
- * or something
- */
 
+    /*
+     * howto?
+     * add all verts normals and tangents to a buffer
+     * anims to texture?
+     * or something
+     */
+    unsigned int out  = 0;
+
+    for(int i = 0; i < nummeshes; i++)
+    {
+        if(strcmp(filename, meshes[i].name) == 0)
+        {
+            printf("already loaded mesh %s id:%i\n", filename, i);
+            return i;
+        }
+    }
+
+    if(nummeshes == 0)
+    {
+        meshes = malloc(sizeof(mesh));
+    }
+    else
+    {
+        meshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
+    }
+
+    out  = nummeshes;
+    nummeshes += 1;
+    mesh* m = &meshes[out];
+    m->name = malloc(strlen(filename) + 1);
+    sprintf(m->name, "%s", filename);
+    m->flags = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+
+    for(int i = 0; i < scene->mNumMeshes; i++)
+    {
+        struct aiMesh* assmesh = scene->mMeshes[i];
+        m->flags[i] |= MESH_FLAG_POSITION;
+
+        if(assmesh->mNormals != 0)
+        {
+            m->flags[i] |= MESH_FLAG_NORMAL;
+        }
+
+        if(assmesh->mTangents != 0)
+        {
+            m->flags[i] |= MESH_FLAG_TANGENT;
+        }
+
+        if(assmesh->mBitangents != 0)
+        {
+            m->flags[i] |= MESH_FLAG_BINORMAL;
+        }
+
+        for(int j = 0; j < AI_MAX_NUMBER_OF_TEXTURECOORDS; j++)
+        {
+            if(assmesh->mTextureCoords[j] != 0)
+            {
+                m->flags[i] |= MESH_FLAG_TEXCOORD0 << i;
+            }
+        }
+
+        for(int j = 0; j < AI_MAX_NUMBER_OF_COLOR_SETS; j++)
+        {
+            if(assmesh->mColors[j] != 0)
+            {
+                m->flags[i] |= MESH_FLAG_COLOR0 << i;
+            }
+        }
+
+        printf("m->flags[%i]=0x%X\n", i, m->flags[i]);
+    }
+
+    /*watchFile(filename, &reloadImage);*/
     aiReleaseImport(scene);
-    return 0;
+    return out;
+}
+
+void cleanupMeshes()
+{
+    for(int i = 0; i < nummeshes; i++)
+    {
+        if(meshes[i].name)
+        {
+            free(meshes[i].name);
+        }
+
+        if(meshes[i].flags)
+        {
+            free(meshes[i].flags);
+        }
+    }
+
+    if(meshes)
+    {
+        free(meshes);
+    }
+
+    nummeshes = 0;
+    meshes = 0;
 }
