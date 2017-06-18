@@ -335,20 +335,24 @@ int loadMesh(const char* filename)
     {
         struct aiMesh* assmesh = scene->mMeshes[i];
         m->flags[i] |= MESH_FLAG_POSITION;
+        size_t size = sizeof(float) * 3;
 
         if(assmesh->mNormals != 0)
         {
             m->flags[i] |= MESH_FLAG_NORMAL;
+            size += sizeof(float) * 3;
         }
 
         if(assmesh->mTangents != 0)
         {
             m->flags[i] |= MESH_FLAG_TANGENT;
+            size += sizeof(float) * 3;
         }
 
         if(assmesh->mBitangents != 0)
         {
             m->flags[i] |= MESH_FLAG_BINORMAL;
+            size += sizeof(float) * 3;
         }
 
         for(int j = 0; j < AI_MAX_NUMBER_OF_TEXTURECOORDS; j++)
@@ -356,6 +360,7 @@ int loadMesh(const char* filename)
             if(assmesh->mTextureCoords[j] != 0)
             {
                 m->flags[i] |= MESH_FLAG_TEXCOORD0 << i;
+                size += sizeof(float) * 2;
             }
         }
 
@@ -364,10 +369,84 @@ int loadMesh(const char* filename)
             if(assmesh->mColors[j] != 0)
             {
                 m->flags[i] |= MESH_FLAG_COLOR0 << i;
+                size += sizeof(float) * 4;
             }
         }
 
-        printf("m->flags[%i]=0x%X\n", i, m->flags[i]);
+        printf("m->flags[%i]=0x%X size=%zu numverts=%i\n", i, m->flags[i], size, assmesh->mNumVertices);
+        float* data = malloc(size * assmesh->mNumVertices);
+        size_t offset = 0;
+
+        for(int i = 0; i < assmesh->mNumVertices; i++)
+        {
+            data[offset] = assmesh->mVertices[i].x;
+            data[offset + 1] = assmesh->mVertices[i].y;
+            data[offset + 2] = assmesh->mVertices[i].z;
+            offset += 3;
+        }
+
+        if(assmesh->mNormals)
+        {
+            for(int i = 0; i < assmesh->mNumVertices; i++)
+            {
+                data[offset] = assmesh->mNormals[i].x;
+                data[offset + 1] = assmesh->mNormals[i].y;
+                data[offset + 2] = assmesh->mNormals[i].z;
+                offset += 3;
+            }
+        }
+
+        if(assmesh->mTangents)
+        {
+            for(int i = 0; i < assmesh->mNumVertices; i++)
+            {
+                data[offset] = assmesh->mTangents[i].x;
+                data[offset + 1] = assmesh->mTangents[i].y;
+                data[offset + 2] = assmesh->mTangents[i].z;
+                offset += 3;
+            }
+        }
+
+        if(assmesh->mBitangents)
+        {
+            for(int i = 0; i < assmesh->mNumVertices; i++)
+            {
+                data[offset] = assmesh->mBitangents[i].x;
+                data[offset + 1] = assmesh->mBitangents[i].y;
+                data[offset + 2] = assmesh->mBitangents[i].z;
+                offset += 3;
+            }
+        }
+
+        for(int j = 0; j < AI_MAX_NUMBER_OF_TEXTURECOORDS; j++)
+        {
+            if(assmesh->mTextureCoords[j])
+            {
+                for(int i = 0; i < assmesh->mNumVertices; i++)
+                {
+                    data[offset] = assmesh->mTextureCoords[j][i].x;
+                    data[offset + 1] = assmesh->mTextureCoords[j][i].y;
+                    offset += 2;
+                }
+            }
+        }
+
+        for(int j = 0; j < AI_MAX_NUMBER_OF_COLOR_SETS; j++)
+        {
+            if(assmesh->mColors[j])
+            {
+                for(int i = 0; i < assmesh->mNumVertices; i++)
+                {
+                    data[offset] = assmesh->mColors[j][i].r;
+                    data[offset + 1] = assmesh->mColors[j][i].g;
+                    data[offset + 2] = assmesh->mColors[j][i].b;
+                    data[offset + 3] = assmesh->mColors[j][i].a;
+                    offset += 4;
+                }
+            }
+        }
+
+        free(data);
     }
 
     /*watchFile(filename, &reloadImage);*/
