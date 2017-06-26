@@ -349,12 +349,6 @@ int loadMesh(const char* filename)
         printf("    numVertices:%i\n", assmesh->mNumVertices);
     }
 
-    /*
-     * howto?
-     * add all verts normals and tangents to a buffer
-     * anims to texture?
-     * or something
-     */
     unsigned int out  = 0;
 
     for(int i = 0; i < nummeshes; i++)
@@ -390,7 +384,11 @@ int loadMesh(const char* filename)
     mesh* m = &meshes[out];
     m->name = malloc(strlen(filename) + 1);
     sprintf(m->name, "%s", filename);
-    m->flags = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->flags   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->vbo     = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->indices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    glGenBuffers(scene->mNumMeshes, m->vbo);
+    glGenBuffers(scene->mNumMeshes, m->indices);
 
     for(int i = 0; i < scene->mNumMeshes; i++)
     {
@@ -508,9 +506,35 @@ int loadMesh(const char* filename)
             }
         }
 
-        free(data);
+        glBindBuffer(GL_ARRAY_BUFFER, m->vbo[i]);
+        glBufferData(GL_ARRAY_BUFFER, size * assmesh->mNumVertices, data, GL_STATIC_DRAW);
+        // assume triangles
+        unsigned int* indexdata = malloc(sizeof(unsigned int) * assmesh->mNumFaces * 3);
+
+        for(int j = 0; j < assmesh->mNumFaces; j++)
+        {
+            size_t o = j * 3;
+            indexdata[o] = assmesh->mFaces[j].mIndices[0];
+            indexdata[o + 1] = assmesh->mFaces[j].mIndices[1];
+            indexdata[o + 2] = assmesh->mFaces[j].mIndices[2];
+        }
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices[i]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*assmesh->mNumFaces * 3, indexdata, GL_STATIC_DRAW);
+
+        if(data)
+        {
+            free(data);
+        }
+
+        if(indexdata)
+        {
+            free(indexdata);
+        }
     }
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     /*watchFile(filename, &reloadImage);*/
     aiReleaseImport(scene);
     return out;
@@ -528,6 +552,16 @@ void cleanupMeshes()
         if(meshes[i].flags)
         {
             free(meshes[i].flags);
+        }
+
+        if(meshes[i].indices)
+        {
+            free(meshes[i].indices);
+        }
+
+        if(meshes[i].vbo)
+        {
+            free(meshes[i].vbo);
         }
     }
 
