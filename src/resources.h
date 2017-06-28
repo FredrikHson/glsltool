@@ -19,8 +19,23 @@ typedef struct mesh
     unsigned int* flags;
 } mesh;
 
+typedef struct shader
+{
+    char* controlname;
+    char* evalname;
+    char* fragname;
+    char* geomname;
+    char* vertname;
+    unsigned int control;
+    unsigned int eval;
+    unsigned int frag;
+    unsigned int geom;
+    unsigned int vert;
+} shader;
+
 int loadImage(const char* filename);
 int loadMesh(const char* filename);
+int loadShader(const char* vertex, const char* pixel, const char* geometry, const char* tesscontrol, const char* tesseval);
 void reloadImage(const char* filename);
 void cleanupImages();
 void cleanupMeshes();
