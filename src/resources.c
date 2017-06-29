@@ -326,8 +326,13 @@ void printmeshflags(unsigned int flag)
     printf("\n");
 }
 
-int loadMesh(const char* filename)
+int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
 {
+    if(meshid >= nummeshes)
+    {
+        return -1;
+    }
+
     const struct aiScene* scene = aiImportFile(filename,
                                   aiProcess_CalcTangentSpace      |
                                   aiProcess_Triangulate           |
@@ -351,41 +356,28 @@ int loadMesh(const char* filename)
         printf("    numVertices:%i\n", assmesh->mNumVertices);
     }
 
-    unsigned int out  = 0;
+    mesh* m = &meshes[meshid];
 
-    for(int i = 0; i < nummeshes; i++)
+    if(m->flags)
     {
-        if(strcmp(filename, meshes[i].name) == 0)
-        {
-            printf("already loaded mesh %s id:%i\n", filename, i);
-            return i;
-        }
+        free(m->flags);
+        m->flags = 0;
     }
 
-    if(nummeshes == 0)
+    if(m->vbo)
     {
-        meshes = malloc(sizeof(mesh));
-    }
-    else
-    {
-        void* newmeshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
-
-        if(newmeshes == 0)
-        {
-            fprintf(stderr, "out of memory while creating mesh %s\n", filename);
-            exit(1);
-        }
-        else
-        {
-            meshes = newmeshes;
-        }
+        glDeleteBuffers(m->numsubmeshes, m->vbo);
+        free(m->vbo);
+        m->vbo = 0;
     }
 
-    out  = nummeshes;
-    nummeshes += 1;
-    mesh* m = &meshes[out];
-    m->name = malloc(strlen(filename) + 1);
-    sprintf(m->name, "%s", filename);
+    if(m->indices)
+    {
+        glDeleteBuffers(m->numsubmeshes, m->indices);
+        free(m->indices);
+        m->indices = 0;
+    }
+
     m->flags   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->vbo     = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->indices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
@@ -537,11 +529,63 @@ int loadMesh(const char* filename)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    /*watchFile(filename, &reloadImage);*/
+    watchFile(filename, &reloadMesh);
     aiReleaseImport(scene);
+    return meshid;
+}
+int loadMesh(const char* filename)
+{
+    unsigned int out  = 0;
+
+    for(int i = 0; i < nummeshes; i++)
+    {
+        if(strcmp(filename, meshes[i].name) == 0)
+        {
+            printf("already loaded mesh %s id:%i\n", filename, i);
+            return i;
+        }
+    }
+
+    if(nummeshes == 0)
+    {
+        meshes = malloc(sizeof(mesh));
+    }
+    else
+    {
+        void* newmeshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
+
+        if(newmeshes == 0)
+        {
+            fprintf(stderr, "out of memory while creating mesh %s\n", filename);
+            exit(1);
+        }
+        else
+        {
+            meshes = newmeshes;
+        }
+    }
+
+    out = nummeshes;
+    nummeshes += 1;
+    mesh* m = &meshes[out];
+    memset(m, 0, sizeof(mesh));
+    m->name = malloc(strlen(filename) + 1);
+    sprintf(m->name, "%s", filename);
+    out = loadMeshfileOntoMesh(filename, out);
     return out;
 }
-
+void reloadMesh(const char* filename)
+{
+    for(int i = 0; i < nummeshes; i++)
+    {
+        if(strcmp(filename, meshes[i].name) == 0)
+        {
+            printf("wants to reload:%i %s\n", i, filename);
+            loadMeshfileOntoMesh(filename, i);
+            break;
+        }
+    }
+}
 void cleanupMeshes()
 {
     for(int i = 0; i < nummeshes; i++)
@@ -558,11 +602,13 @@ void cleanupMeshes()
 
         if(meshes[i].indices)
         {
+            glDeleteBuffers(meshes[i].numsubmeshes, meshes[i].indices);
             free(meshes[i].indices);
         }
 
         if(meshes[i].vbo)
         {
+            glDeleteBuffers(meshes[i].numsubmeshes, meshes[i].vbo);
             free(meshes[i].vbo);
         }
     }
