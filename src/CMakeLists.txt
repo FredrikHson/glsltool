@@ -15,9 +15,11 @@ set(COMMON_SRC
     "options.c"
     "renderfunc.c"
     "script.c"
-    "resources.c"
     "../external/v7/v7.c"
     "notify.c"
+    "resources/image.c"
+    "resources/shader.c"
+    "resources/mesh.c"
     )
 
 include_directories(
