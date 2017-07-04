@@ -171,6 +171,56 @@ static enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
     }
 }
 
+static enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 5)
+    {
+        size_t len = 0;
+        v7_val_t val = v7_arg(v7e, 0);
+        const char* vertfilename = v7_get_string(v7e, &val, &len);
+        val = v7_arg(v7e, 1);
+        const char* pixelfilename = v7_get_string(v7e, &val, &len);
+        val = v7_arg(v7e, 2);
+        const char* geomfilename = v7_get_string(v7e, &val, &len);
+        val = v7_arg(v7e, 3);
+        const char* controlfilename = v7_get_string(v7e, &val, &len);
+        val = v7_arg(v7e, 4);
+        const char* evalfilename = v7_get_string(v7e, &val, &len);
+        int shader = loadShader(vertfilename,
+                                pixelfilename,
+                                geomfilename,
+                                controlfilename,
+                                evalfilename);
+
+        if(shader == -1)
+        {
+            fprintf(stderr, "Failed to load shader\n"
+                    "    vertex:%s\n"
+                    "    fragment:%s\n"
+                    "    geometry:%s\n"
+                    "    control:%s\n"
+                    "    evaluation:%s\n",
+                    vertfilename,
+                    pixelfilename,
+                    geomfilename,
+                    controlfilename,
+                    evalfilename);
+            return V7_INTERNAL_ERROR;
+        }
+
+        printf("shaderid %i\n", shader);
+        *res = v7_mk_number(v7e, shader);
+        return V7_OK;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to loadmesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -179,6 +229,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "endpass", &js_endPass);
     v7_set_method(v7g, v7_get_global(v7g), "loadimage", &js_load_image);
     v7_set_method(v7g, v7_get_global(v7g), "loadmesh", &js_load_mesh);
+    v7_set_method(v7g, v7_get_global(v7g), "loadshader", &js_load_shader);
 }
 
 void create_js_defines()

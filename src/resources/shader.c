@@ -80,6 +80,56 @@ int loadShader(const char* vertex,
     if(vertex)
     {
         s.vert = loadShaderfile(vertex, GL_VERTEX_SHADER, s.vert);
+
+        if(s.vert == 0)
+        {
+            fprintf(stderr, "file not found:%s\n", vertex);
+            return -1;
+        }
+    }
+
+    if(pixel)
+    {
+        s.frag = loadShaderfile(pixel, GL_FRAGMENT_SHADER, s.frag);
+
+        if(s.frag == 0)
+        {
+            fprintf(stderr, "file not found:%s\n", pixel);
+            return -1;
+        }
+    }
+
+    if(geometry)
+    {
+        s.geom = loadShaderfile(geometry, GL_GEOMETRY_SHADER, s.geom);
+
+        if(s.geom == 0)
+        {
+            fprintf(stderr, "file not found:%s\n", geometry);
+            return -1;
+        }
+    }
+
+    if(tesscontrol)
+    {
+        s.control = loadShaderfile(tesscontrol, GL_TESS_CONTROL_SHADER, s.control);
+
+        if(s.control == 0)
+        {
+            fprintf(stderr, "file not found:%s\n", tesscontrol);
+            return -1;
+        }
+    }
+
+    if(tesseval)
+    {
+        s.eval = loadShaderfile(tesseval, GL_TESS_EVALUATION_SHADER, s.eval);
+
+        if(s.eval == 0)
+        {
+            fprintf(stderr, "file not found:%s\n", tesseval);
+            return -1;
+        }
     }
 
     return 0;
