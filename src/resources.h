@@ -31,6 +31,7 @@ typedef struct shader
     unsigned int frag;
     unsigned int geom;
     unsigned int vert;
+    char working;
 } shader;
 
 int loadImage(const char* filename);

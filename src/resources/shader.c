@@ -19,7 +19,7 @@ size_t getFilesize(FILE* f)
     return len;
 }
 
-unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int shaderobject)
+unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int shaderobject, char* error)
 {
     printf("loading shader file:%s\n", filename);
     FILE* f = fopen(filename, "rb");
@@ -61,6 +61,7 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
         char shaderlog[4096] = {0};
         glGetShaderInfoLog(out, 4096, &shaderloglen, shaderlog);
         fprintf(stderr, "Error %s:\n%s\n", filename, shaderlog);
+        *error = 1;
     }
 
     if(data)
@@ -78,60 +79,92 @@ int loadShader(const char* vertex,
                const char* tesseval)
 {
     shader s = {0};
+    s.working = 1;
+    char error = 0;
 
     if(vertex)
     {
-        s.vert = loadShaderfile(vertex, GL_VERTEX_SHADER, s.vert);
+        s.vert = loadShaderfile(vertex, GL_VERTEX_SHADER, s.vert, &error);
 
         if(s.vert == 0)
         {
             fprintf(stderr, "file not found:%s\n", vertex);
             return -1;
         }
+
+        if(error != 0)
+        {
+            s.working = 0;
+        }
     }
 
     if(pixel)
     {
-        s.frag = loadShaderfile(pixel, GL_FRAGMENT_SHADER, s.frag);
+        s.frag = loadShaderfile(pixel, GL_FRAGMENT_SHADER, s.frag, &error);
 
         if(s.frag == 0)
         {
             fprintf(stderr, "file not found:%s\n", pixel);
             return -1;
         }
+
+        if(error != 0)
+        {
+            s.working = 0;
+        }
     }
 
     if(geometry)
     {
-        s.geom = loadShaderfile(geometry, GL_GEOMETRY_SHADER, s.geom);
+        s.geom = loadShaderfile(geometry, GL_GEOMETRY_SHADER, s.geom, &error);
 
         if(s.geom == 0)
         {
             fprintf(stderr, "file not found:%s\n", geometry);
             return -1;
         }
+
+        if(error != 0)
+        {
+            s.working = 0;
+        }
     }
 
     if(tesscontrol)
     {
-        s.control = loadShaderfile(tesscontrol, GL_TESS_CONTROL_SHADER, s.control);
+        s.control = loadShaderfile(tesscontrol, GL_TESS_CONTROL_SHADER, s.control, &error);
 
         if(s.control == 0)
         {
             fprintf(stderr, "file not found:%s\n", tesscontrol);
             return -1;
         }
+
+        if(error != 0)
+        {
+            s.working = 0;
+        }
     }
 
     if(tesseval)
     {
-        s.eval = loadShaderfile(tesseval, GL_TESS_EVALUATION_SHADER, s.eval);
+        s.eval = loadShaderfile(tesseval, GL_TESS_EVALUATION_SHADER, s.eval, &error);
 
         if(s.eval == 0)
         {
             fprintf(stderr, "file not found:%s\n", tesseval);
             return -1;
         }
+
+        if(error != 0)
+        {
+            s.working = 0;
+        }
+    }
+
+    if(s.working == 0)
+    {
+        fprintf(stderr, "shader error going to use default until fixed\n");
     }
 
     return 0;
