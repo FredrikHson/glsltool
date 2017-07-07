@@ -20,7 +20,7 @@ endif
 .PHONY: all build distclean clean release release_dbg_info debug install verifybuildtype
 .SILENT:
 
-all: release
+all: release_dbg_info
 
 build: build/Makefile
 	$(MAKE) -C build/
