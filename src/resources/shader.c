@@ -21,6 +21,7 @@ size_t getFilesize(FILE* f)
 
 unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int shaderobject)
 {
+    printf("loading shader file:%s\n", filename);
     FILE* f = fopen(filename, "rb");
 
     if(!f)
@@ -29,14 +30,15 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
     }
 
     int len = getFilesize(f);
-    char* data = malloc(len);
+    char* data = malloc(len + 1);
+    data[len] = 0;
 
     if(!data)
     {
         fprintf(stderr, "out of memory loading %s\n", filename);
     }
 
-    fread(&data, len, 1, f);
+    fread(data, len, 1, f);
     unsigned int out = 0;
 
     if(shaderobject == 0)

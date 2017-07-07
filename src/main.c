@@ -47,12 +47,30 @@ void updateTime() // call once per frame
         lasttime = now;
     }
 }
+int doesfileexist(const char* file)
+{
+    FILE* inputfile = fopen(file, "rb");
+
+    if(!inputfile)
+    {
+        fprintf(stderr, "could not find: %s\n", file);
+        return 0;
+    }
+
+    fclose(inputfile);
+    return 1;
+}
 
 int main(int argc, char* argv[])
 {
     if(!handle_options(argc, argv))
     {
         return 0;
+    }
+
+    if(!doesfileexist(options.inputfile))
+    {
+        return 1;
     }
 
     if(!glfwInit())

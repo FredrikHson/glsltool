@@ -5,7 +5,7 @@
 
 glsltool_options options =
 {
-    0, 0, 512, 512, "renderpath.txt"
+    0, 0, 512, 512, "renderpath.js"
 };
 
 void print_help(const struct option* opts)
