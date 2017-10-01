@@ -128,9 +128,24 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         m->indices = 0;
     }
 
-    m->flags   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
-    m->vbo     = malloc(sizeof(unsigned int) * scene->mNumMeshes);
-    m->indices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    if(m->numindices)
+    {
+        free(m->numindices);
+        m->numindices = 0;
+    }
+
+    if(m->numverts)
+    {
+        free(m->numverts);
+        m->numverts = 0;
+    }
+
+    m->numsubmeshes = scene->mNumMeshes;
+    m->flags      = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->vbo        = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->indices    = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->numindices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->numverts   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     glGenBuffers(scene->mNumMeshes, m->vbo);
     glGenBuffers(scene->mNumMeshes, m->indices);
 
@@ -176,6 +191,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
             }
         }
 
+        m->numverts[i] = assmesh->mNumVertices;
         printf("m->flags[%i]=0x%X size=%zu numverts=%i\n", i, m->flags[i], size, assmesh->mNumVertices);
         printmeshflags(m->flags[i]);
         float* data = malloc(size * assmesh->mNumVertices);
@@ -253,6 +269,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         glBindBuffer(GL_ARRAY_BUFFER, m->vbo[i]);
         glBufferData(GL_ARRAY_BUFFER, size * assmesh->mNumVertices, data, GL_STATIC_DRAW);
         // assume triangles
+        m->numindices[i] = assmesh->mNumFaces * 3;
         unsigned int* indexdata = malloc(sizeof(unsigned int) * assmesh->mNumFaces * 3);
 
         for(int j = 0; j < assmesh->mNumFaces; j++)
@@ -361,6 +378,18 @@ void cleanupMeshes()
             glDeleteBuffers(meshes[i].numsubmeshes, meshes[i].vbo);
             free(meshes[i].vbo);
         }
+
+        if(meshes[i].numindices)
+        {
+            free(meshes[i].numindices);
+            meshes[i].numindices = 0;
+        }
+
+        if(meshes[i].numverts)
+        {
+            free(meshes[i].numverts);
+            meshes[i].numverts = 0;
+        }
     }
 
     if(meshes)
@@ -370,4 +399,82 @@ void cleanupMeshes()
 
     nummeshes = 0;
     meshes = 0;
+}
+
+void drawSubmesh(int id, int submesh)
+{
+    mesh* m = &meshes[id];
+    fprintf(stdout, "drawing:%i %i\n", id, submesh);
+    // vertex index format pos.xyz[numverts],next.xyz[numverts]
+    unsigned int flags = m->flags[submesh];
+    unsigned int numverts = m->numverts[submesh];
+    size_t offset = 0;
+    printmeshflags(flags);
+    size_t stride = sizeof(float) * numverts;
+    fprintf(stdout, "verts:%i indices:%i\n", numverts, m->numindices[submesh]);
+    fprintf(stdout, "stride:%zu\n", stride);
+
+    if(flags & MESH_FLAG_POSITION)
+    {
+        fprintf(stdout, "has pos    offset:%zu\n", offset);
+        offset += stride * 3;
+    }
+
+    if(flags & MESH_FLAG_NORMAL)
+    {
+        fprintf(stdout, "has normal    offset:%zu\n", offset);
+        offset += stride * 3;
+    }
+
+    if(flags & MESH_FLAG_TANGENT)
+    {
+        fprintf(stdout, "has tangent    offset:%zu\n", offset);
+        offset += stride * 3;
+    }
+
+    if(flags & MESH_FLAG_BINORMAL)
+    {
+        fprintf(stdout, "has binormal    offset:%zu\n", offset);
+        offset += stride * 3;
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        if(flags & (MESH_FLAG_TEXCOORD0 << i))
+        {
+            fprintf(stdout, "has texcoord:%i    offset:%zu\n", i, offset);
+            offset += stride * 2;
+        }
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        if(flags & (MESH_FLAG_COLOR0 << i))
+        {
+            fprintf(stdout, "has vertex color:%i    offset:%zu\n", i, offset);
+            offset += stride * 3;
+        }
+    }
+}
+
+void drawMesh(int id, int submesh)
+{
+    if(id >= nummeshes)
+    {
+        return;
+    }
+
+    if(submesh == -1)
+    {
+        for(int i = 0; i < meshes[id].numsubmeshes; i++)
+        {
+            drawSubmesh(id, i);
+        }
+
+        exit(0);
+    }
+    else if(submesh < meshes[id].numsubmeshes)
+    {
+        drawSubmesh(id, submesh);
+    }
 }

@@ -29,4 +29,6 @@ void cleanupRender();
 void beginPass(int target);
 void endPass();
 
+void drawMesh(int id, int submesh);
+
 #endif //__RENDERFUNC_H__

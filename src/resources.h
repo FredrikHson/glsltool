@@ -17,6 +17,8 @@ typedef struct mesh
     unsigned int* indices;
     unsigned int* vbo;
     unsigned int* flags;
+    unsigned int* numindices;
+    unsigned int* numverts;
 } mesh;
 
 typedef struct shader

@@ -171,6 +171,32 @@ static enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
     }
 }
 
+static enum v7_err js_draw_mesh(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+    int meshid = 0;
+    int submesh = 0;
+
+    if(argc == 1)
+    {
+        const int meshid = v7_get_int(v7e, v7_arg(v7e, 0));
+        drawMesh(meshid, -1);
+    }
+    else if(argc == 2)
+    {
+        const int meshid = v7_get_int(v7e, v7_arg(v7e, 0));
+        const int submesh = v7_get_int(v7e, v7_arg(v7e, 1));
+        drawMesh(meshid, submesh);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to loadmesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 static enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -230,6 +256,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "loadimage", &js_load_image);
     v7_set_method(v7g, v7_get_global(v7g), "loadmesh", &js_load_mesh);
     v7_set_method(v7g, v7_get_global(v7g), "loadshader", &js_load_shader);
+    v7_set_method(v7g, v7_get_global(v7g), "drawmesh", &js_draw_mesh);
 }
 
 void create_js_defines()
