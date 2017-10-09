@@ -8,32 +8,21 @@
 #include <assimp/mesh.h>
 #include "notify.h"
 #include "resources.h"
+#include "defines.h"
+
 struct aiColor4D;
 struct aiVector3D;
 
+typedef struct vertattribute
+{
+    int flag;  // MESH_FLAGS
+    char name[256];
+} vertattribute;
+
 mesh* meshes = 0;
 int nummeshes = 0;
-
-#define MESH_FLAG_POSITION  (1<<0)
-#define MESH_FLAG_NORMAL    (1<<1)
-#define MESH_FLAG_TANGENT   (1<<2)
-#define MESH_FLAG_BINORMAL  (1<<3)
-#define MESH_FLAG_TEXCOORD0 (1<<4)
-#define MESH_FLAG_TEXCOORD1 (1<<5)
-#define MESH_FLAG_TEXCOORD2 (1<<6)
-#define MESH_FLAG_TEXCOORD3 (1<<7)
-#define MESH_FLAG_TEXCOORD4 (1<<8)
-#define MESH_FLAG_TEXCOORD5 (1<<9)
-#define MESH_FLAG_TEXCOORD6 (1<<10)
-#define MESH_FLAG_TEXCOORD7 (1<<11)
-#define MESH_FLAG_COLOR0    (1<<12)
-#define MESH_FLAG_COLOR1    (1<<13)
-#define MESH_FLAG_COLOR2    (1<<14)
-#define MESH_FLAG_COLOR3    (1<<15)
-#define MESH_FLAG_COLOR4    (1<<16)
-#define MESH_FLAG_COLOR5    (1<<17)
-#define MESH_FLAG_COLOR6    (1<<18)
-#define MESH_FLAG_COLOR7    (1<<19)
+vertattribute attribs[16] = {0};
+unsigned int numActiveAttribs = 0;
 
 void printmeshflags(unsigned int flag)
 {
@@ -413,6 +402,9 @@ void drawSubmesh(int id, int submesh)
     size_t stride = sizeof(float) * numverts;
     fprintf(stdout, "verts:%i indices:%i\n", numverts, m->numindices[submesh]);
     fprintf(stdout, "stride:%zu\n", stride);
+    int maxattribs = 0;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxattribs);
+    fprintf(stdout, "GL_MAX_VERTEX_ATTRIBS:%i\n", maxattribs);
 
     if(flags & MESH_FLAG_POSITION)
     {
@@ -477,4 +469,31 @@ void drawMesh(int id, int submesh)
     {
         drawSubmesh(id, submesh);
     }
+}
+void resetAttribs()
+{
+    numActiveAttribs = 0;
+}
+
+int bindAttrib(const char* name, int flag)
+{
+    if(numActiveAttribs >= 16)
+    {
+        fprintf(stderr, "Already assigned 16 attributes can't do any more\n");
+        return 0;
+    }
+
+    if(flag && !(flag & (flag - 1)))
+    {
+        attribs[numActiveAttribs].flag = flag;
+        snprintf(attribs[numActiveAttribs].name, 256, "%s", name);
+        numActiveAttribs++;
+    }
+    else
+    {
+        fprintf(stderr, "More than one mesh attribute specified\n");
+        return 0;
+    }
+
+    return 1;
 }

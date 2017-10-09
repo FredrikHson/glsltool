@@ -4,6 +4,7 @@
 #include "v7.h"
 #include "renderfunc.h"
 #include "resources.h"
+#include "defines.h"
 
 typedef struct v7 v7;
 
@@ -246,6 +247,37 @@ static enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 }
+static enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        size_t len = 0;
+        v7_val_t val = v7_arg(v7e, 0);
+        const char* name = v7_get_string(v7e, &val, &len);
+        val = v7_arg(v7e, 1);
+        const int flag = v7_get_int(v7e, val);
+
+        if(!bindAttrib(name, flag))
+        {
+            fprintf(stderr, "failed to assign attribute %s flag:%i\n", name, flag);
+            return V7_INTERNAL_ERROR;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindattribute\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+static enum v7_err js_reset_attribs(v7* v7e, v7_val_t* res)
+{
+    resetAttribs();
+    return V7_OK;
+}
 
 void create_js_functions()
 {
@@ -257,6 +289,8 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "loadmesh", &js_load_mesh);
     v7_set_method(v7g, v7_get_global(v7g), "loadshader", &js_load_shader);
     v7_set_method(v7g, v7_get_global(v7g), "drawmesh", &js_draw_mesh);
+    v7_set_method(v7g, v7_get_global(v7g), "bindattribute", &js_bind_attrib);
+    v7_set_method(v7g, v7_get_global(v7g), "resetattributes", &js_reset_attribs);
 }
 
 void create_js_defines()
@@ -304,6 +338,27 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "GL_LINEAR_MIPMAP_NEAREST", 24, v7_mk_number(v7g, GL_LINEAR_MIPMAP_NEAREST));
     v7_set(v7g, v7_get_global(v7g), "GL_NEAREST_MIPMAP_LINEAR", 24, v7_mk_number(v7g, GL_NEAREST_MIPMAP_LINEAR));
     v7_set(v7g, v7_get_global(v7g), "GL_LINEAR_MIPMAP_LINEAR", 23, v7_mk_number(v7g, GL_LINEAR_MIPMAP_LINEAR));
+    /* mesh flags */
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_POSITION", 18, v7_mk_number(v7g, MESH_FLAG_POSITION));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_NORMAL", 16, v7_mk_number(v7g, MESH_FLAG_NORMAL));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TANGENT", 17, v7_mk_number(v7g, MESH_FLAG_TANGENT));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_BINORMAL", 18, v7_mk_number(v7g, MESH_FLAG_BINORMAL));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD0", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD0));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD1", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD1));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD2", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD2));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD3", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD3));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD4", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD4));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD5", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD5));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD6", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD6));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_TEXCOORD7", 19, v7_mk_number(v7g, MESH_FLAG_TEXCOORD7));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR0", 16, v7_mk_number(v7g, MESH_FLAG_COLOR0));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR1", 16, v7_mk_number(v7g, MESH_FLAG_COLOR1));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR2", 16, v7_mk_number(v7g, MESH_FLAG_COLOR2));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR3", 16, v7_mk_number(v7g, MESH_FLAG_COLOR3));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR4", 16, v7_mk_number(v7g, MESH_FLAG_COLOR4));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR5", 16, v7_mk_number(v7g, MESH_FLAG_COLOR5));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR6", 16, v7_mk_number(v7g, MESH_FLAG_COLOR6));
+    v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR7", 16, v7_mk_number(v7g, MESH_FLAG_COLOR7));
 }
 
 int initScript(const char* filename)
