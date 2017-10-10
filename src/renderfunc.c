@@ -38,21 +38,21 @@ unsigned int CreateRenderTarget(unsigned int width,
     numrendertargets += 1;
     rendertarget* target = &rendertargets[out];
     printf("creating a buffer:\n");
-    printf("    width:  %i\n", width);
-    printf("    height: %i\n", height);
+    printf("    width:  %u\n", width);
+    printf("    height: %u\n", height);
 
     if(layers <= 32)
     {
-        printf("    layers: %i\n", layers);
+        printf("    layers: %u\n", layers);
     }
     else
     {
-        printf("    layers: %i error capping layers to 32\n", layers);
+        printf("    layers: %u error capping layers to 32\n", layers);
         layers = 32;
     }
 
-    printf("    format: %i\n", format);
-    printf("    type:   %i\n", type);
+    printf("    format: %u\n", format);
+    printf("    type:   %u\n", type);
     target->textures = malloc(sizeof(unsigned int) * layers);
     target->height   = height;
     target->width    = width;
@@ -104,7 +104,7 @@ unsigned int CreateRenderTarget(unsigned int width,
         }
 
         default:
-            printf("unknown format %i\n", format);
+            printf("unknown format %u\n", format);
             break;
     }
 
@@ -126,7 +126,7 @@ unsigned int CreateRenderTarget(unsigned int width,
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, target->depth);
     glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer);
     glBindTexture(GL_TEXTURE_2D, oldTextureBinding);
-    printf("numrendertargets:%i\n", numrendertargets);
+    printf("numrendertargets:%u\n", numrendertargets);
     return out;
 }
 

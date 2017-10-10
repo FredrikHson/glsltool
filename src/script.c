@@ -175,8 +175,6 @@ static enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
 static enum v7_err js_draw_mesh(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
-    int meshid = 0;
-    int submesh = 0;
 
     if(argc == 1)
     {

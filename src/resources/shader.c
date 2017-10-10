@@ -31,12 +31,13 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
 
     int len = getFilesize(f);
     char* data = malloc(len + 1);
-    data[len] = 0;
-
-    if(!data)
+    if(data == 0)
     {
         fprintf(stderr, "out of memory loading %s\n", filename);
+        exit(1);
     }
+    data[len] = 0;
+
 
     fread(data, len, 1, f);
     unsigned int out = 0;
@@ -69,6 +70,7 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
         free(data);
     }
 
+    fclose(f);
     return out;
 }
 

@@ -28,7 +28,7 @@ void printmeshflags(unsigned int flag)
 {
     if(flag & MESH_FLAG_POSITION)
     {
-        printf("MESH_FLAG_POSITION");
+        printf("POSITION");
     }
 
     if(flag & MESH_FLAG_NORMAL)
@@ -390,6 +390,22 @@ void cleanupMeshes()
     meshes = 0;
 }
 
+void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset)
+{
+    for(int i = 0; i < 16; i++)
+    {
+        if(attribs[i].flag & flag)
+        {
+            fprintf(stdout, "attrib:%u ", *attrib);
+            printmeshflags(flag);
+            /*glBindAttribLocation(currently bound shader program,currattrib,attribs[i].flag);*/
+            glVertexAttribPointer(*attrib, components, GL_FLOAT, GL_FALSE, 0, (void*)offset);
+            *attrib += 1;
+            return;
+        }
+    }
+}
+
 void drawSubmesh(int id, int submesh)
 {
     mesh* m = &meshes[id];
@@ -400,33 +416,35 @@ void drawSubmesh(int id, int submesh)
     size_t offset = 0;
     printmeshflags(flags);
     size_t stride = sizeof(float) * numverts;
-    fprintf(stdout, "verts:%i indices:%i\n", numverts, m->numindices[submesh]);
+    fprintf(stdout, "verts:%u indices:%u\n", numverts, m->numindices[submesh]);
     fprintf(stdout, "stride:%zu\n", stride);
     int maxattribs = 0;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxattribs);
     fprintf(stdout, "GL_MAX_VERTEX_ATTRIBS:%i\n", maxattribs);
+    glBindBuffer(GL_ARRAY_BUFFER, m->vbo[submesh]);
+    unsigned int currattrib = 0;
 
     if(flags & MESH_FLAG_POSITION)
     {
-        fprintf(stdout, "has pos    offset:%zu\n", offset);
+        bindAttribute(MESH_FLAG_POSITION, &currattrib, 3, offset);
         offset += stride * 3;
     }
 
     if(flags & MESH_FLAG_NORMAL)
     {
-        fprintf(stdout, "has normal    offset:%zu\n", offset);
+        bindAttribute(MESH_FLAG_NORMAL, &currattrib, 3, offset);
         offset += stride * 3;
     }
 
     if(flags & MESH_FLAG_TANGENT)
     {
-        fprintf(stdout, "has tangent    offset:%zu\n", offset);
+        bindAttribute(MESH_FLAG_TANGENT, &currattrib, 3, offset);
         offset += stride * 3;
     }
 
     if(flags & MESH_FLAG_BINORMAL)
     {
-        fprintf(stdout, "has binormal    offset:%zu\n", offset);
+        bindAttribute(MESH_FLAG_BINORMAL, &currattrib, 3, offset);
         offset += stride * 3;
     }
 
@@ -434,7 +452,7 @@ void drawSubmesh(int id, int submesh)
     {
         if(flags & (MESH_FLAG_TEXCOORD0 << i))
         {
-            fprintf(stdout, "has texcoord:%i    offset:%zu\n", i, offset);
+            bindAttribute((MESH_FLAG_TEXCOORD0 << i), &currattrib, 2, offset);
             offset += stride * 2;
         }
     }
@@ -443,9 +461,17 @@ void drawSubmesh(int id, int submesh)
     {
         if(flags & (MESH_FLAG_COLOR0 << i))
         {
-            fprintf(stdout, "has vertex color:%i    offset:%zu\n", i, offset);
+            bindAttribute((MESH_FLAG_COLOR0 << i), &currattrib, 3, offset);
             offset += stride * 3;
         }
+    }
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    for(int i = 0; i < maxattribs; i++)
+    {
+        glDisableVertexAttribArray(i);
     }
 }
 
@@ -462,8 +488,6 @@ void drawMesh(int id, int submesh)
         {
             drawSubmesh(id, i);
         }
-
-        exit(0);
     }
     else if(submesh < meshes[id].numsubmeshes)
     {

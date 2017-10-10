@@ -128,6 +128,7 @@ int main(int argc, char* argv[])
 
     shutdownScript();
     cleanupImages();
+    cleanupMeshes();
     destroyFileWatcher();
     glfwDestroyWindow(window);
     glfwTerminate();
