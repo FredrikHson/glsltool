@@ -21,7 +21,8 @@ typedef struct vertattribute
 
 mesh* meshes = 0;
 int nummeshes = 0;
-vertattribute attribs[16] = {0};
+vertattribute* attribs = 0;
+unsigned int maxattribs = 0;
 unsigned int numActiveAttribs = 0;
 
 void printmeshflags(unsigned int flag)
@@ -392,7 +393,7 @@ void cleanupMeshes()
 
 void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset)
 {
-    for(int i = 0; i < 16; i++)
+    for(int i = 0; i < maxattribs; i++)
     {
         if(attribs[i].flag & flag)
         {
@@ -418,9 +419,6 @@ void drawSubmesh(int id, int submesh)
     size_t stride = sizeof(float) * numverts;
     fprintf(stdout, "verts:%u indices:%u\n", numverts, m->numindices[submesh]);
     fprintf(stdout, "stride:%zu\n", stride);
-    int maxattribs = 0;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxattribs);
-    fprintf(stdout, "GL_MAX_VERTEX_ATTRIBS:%i\n", maxattribs);
     glBindBuffer(GL_ARRAY_BUFFER, m->vbo[submesh]);
     unsigned int currattrib = 0;
 
@@ -501,9 +499,18 @@ void resetAttribs()
 
 int bindAttrib(const char* name, int flag)
 {
-    if(numActiveAttribs >= 16)
+    if(0 == attribs)
     {
-        fprintf(stderr, "Already assigned 16 attributes can't do any more\n");
+        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxattribs);
+        fprintf(stdout, "GL_MAX_VERTEX_ATTRIBS:%i\n", maxattribs);
+        attribs = malloc(sizeof(vertattribute) * maxattribs);
+        memset(attribs, 0, sizeof(vertattribute) * maxattribs);
+        numActiveAttribs = 0;
+    }
+
+    if(numActiveAttribs >= maxattribs)
+    {
+        fprintf(stderr, "Already assigned %i attributes can't do any more\n", maxattribs);
         return 0;
     }
 
