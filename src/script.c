@@ -253,9 +253,9 @@ static enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res)
     {
         size_t len = 0;
         v7_val_t val = v7_arg(v7e, 0);
-        const char* name = v7_get_string(v7e, &val, &len);
-        val = v7_arg(v7e, 1);
-        const int flag = v7_get_int(v7e, val);
+        v7_val_t val2 = v7_arg(v7e, 1);
+        const char* name = v7_get_string(v7e, &val,&len);
+        const int flag = v7_get_int(v7e, val2);
 
         if(!bindAttrib(name, flag))
         {

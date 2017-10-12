@@ -397,7 +397,7 @@ void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset
     {
         if(attribs[i].flag & flag)
         {
-            fprintf(stdout, "attrib:%u ", *attrib);
+            fprintf(stdout, "attrib:%u %s ", *attrib, attribs[i].name);
             printmeshflags(flag);
             /*glBindAttribLocation(currently bound shader program,currattrib,attribs[i].flag);*/
             glVertexAttribPointer(*attrib, components, GL_FLOAT, GL_FALSE, 0, (void*)offset);
@@ -518,6 +518,7 @@ int bindAttrib(const char* name, int flag)
     {
         attribs[numActiveAttribs].flag = flag;
         snprintf(attribs[numActiveAttribs].name, 256, "%s", name);
+        fprintf(stdout,"bindAttrib:%s\n",name);
         numActiveAttribs++;
     }
     else
