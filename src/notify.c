@@ -54,6 +54,14 @@ void destroyFileWatcher()
 
 void watchFile(const char* filename, void (*callback)(const char*))
 {
+    for(int i = 0; i < numWatchedFiles; i++)
+    {
+        if(strcmp(watchlist[i].filename, filename) == 0 && watchlist[i].callback == callback)
+        {
+            return;
+        }
+    }
+
     int watch = inotify_add_watch(inotify, filename, IN_CLOSE_WRITE | IN_MOVE);
     printf("watching %s for changes\n", filename);
 
