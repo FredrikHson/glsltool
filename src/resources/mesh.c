@@ -22,7 +22,7 @@ typedef struct vertattribute
 mesh* meshes = 0;
 int nummeshes = 0;
 vertattribute* attribs = 0;
-unsigned int maxattribs = 0;
+int maxattribs = 0;
 unsigned int numActiveAttribs = 0;
 
 void printmeshflags(unsigned int flag)

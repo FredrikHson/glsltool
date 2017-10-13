@@ -37,5 +37,6 @@ void endPass();
 void drawMesh(int id, int submesh);
 int bindAttrib(const char *name,int flag);
 void resetAttribs();
+void bindShader(int shader);
 
 #endif //__RENDERFUNC_H__

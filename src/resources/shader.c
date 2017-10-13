@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "opengl.h"
 #include "notify.h"
 #include "resources.h"
+#include "renderfunc.h"
 
+shader* shaders;
+unsigned int numshaders = 0;
 
 size_t getFilesize(FILE* f)
 {
@@ -31,14 +35,14 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
 
     int len = getFilesize(f);
     char* data = malloc(len + 1);
+
     if(data == 0)
     {
         fprintf(stderr, "out of memory loading %s\n", filename);
         exit(1);
     }
+
     data[len] = 0;
-
-
     fread(data, len, 1, f);
     unsigned int out = 0;
 
@@ -72,6 +76,82 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
 
     fclose(f);
     return out;
+}
+
+unsigned char samestring(const char* p1, const char* p2)
+{
+    if(p1 == p2)
+    {
+        return 1;
+    }
+
+    if(p1 != 0 && p2 != 0)
+    {
+        return strcmp(p1, p2) == 0;
+    }
+
+    return 0;
+}
+
+char* strdupnull(const char* str)
+{
+    if(str)
+    {
+        return strdup(str);
+    }
+
+    return 0;
+}
+
+int allocateNewShader(const char* vertex,
+                      const char* pixel,
+                      const char* geometry,
+                      const char* tesscontrol,
+                      const char* tesseval)
+{
+    for(int i = 0; i < numshaders; i++)
+    {
+        shader* s = &shaders[i];
+
+        if(
+            samestring(s->vertname, vertex) &&
+            samestring(s->fragname, pixel) &&
+            samestring(s->geomname, geometry) &&
+            samestring(s->controlname, tesscontrol) &&
+            samestring(s->evalname, tesseval)
+        )
+        {
+            return i;
+        }
+    }
+
+    if(numshaders == 0)
+    {
+        shaders = malloc(sizeof(shader));
+    }
+    else
+    {
+        void* newshaders = realloc(shaders, sizeof(shader) * (numshaders + 1));
+
+        if(newshaders == 0)
+        {
+            fprintf(stderr, "out of memory while creating new shaders\n");
+            exit(1);
+        }
+        else
+        {
+            shaders = newshaders;
+        }
+    }
+
+    shader* s = &shaders[numshaders];
+    s->vertname = strdupnull(vertex);
+    s->fragname = strdupnull(pixel);
+    s->geomname = strdupnull(geometry);
+    s->controlname = strdupnull(tesscontrol);
+    s->evalname = strdupnull(tesseval);
+    numshaders++;
+    return numshaders - 1;
 }
 
 int loadShader(const char* vertex,
@@ -170,4 +250,45 @@ int loadShader(const char* vertex,
     }
 
     return 0;
+}
+
+void cleanupShaders(int shader)
+{
+    if(shaders)
+    {
+        for(int i = 0; i < numshaders; i++)
+        {
+            if(shaders[i].vertname)
+            {
+                free(shaders[i].vertname);
+            }
+
+            if(shaders[i].fragname)
+            {
+                free(shaders[i].fragname);
+            }
+
+            if(shaders[i].evalname)
+            {
+                free(shaders[i].evalname);
+            }
+
+            if(shaders[i].controlname)
+            {
+                free(shaders[i].controlname);
+            }
+
+            if(shaders[i].geomname)
+            {
+                free(shaders[i].geomname);
+            }
+        }
+
+        free(shaders);
+        numshaders = 0;
+    }
+}
+
+void bindShader(int shader)
+{
 }
