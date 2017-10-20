@@ -286,26 +286,31 @@ void reloadShader(const char* filename)
         if(samestring(filename, s->vertname))
         {
             loadShader(s->vertname, s->fragname, s->geomname, s->controlname, s->evalname);
+            continue;
         }
 
         if(samestring(filename, s->fragname))
         {
             loadShader(s->vertname, s->fragname, s->geomname, s->controlname, s->evalname);
+            continue;
         }
 
         if(samestring(filename, s->geomname))
         {
             loadShader(s->vertname, s->fragname, s->geomname, s->controlname, s->evalname);
+            continue;
         }
 
         if(samestring(filename, s->controlname))
         {
             loadShader(s->vertname, s->fragname, s->geomname, s->controlname, s->evalname);
+            continue;
         }
 
         if(samestring(filename, s->evalname))
         {
             loadShader(s->vertname, s->fragname, s->geomname, s->controlname, s->evalname);
+            continue;
         }
     }
 }
