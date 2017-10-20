@@ -35,6 +35,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
 
 add_definitions("-DGL_GLEXT_PROTOTYPES")
+add_definitions("-Werror -Wall -pedantic")
 
 add_executable(${CMAKE_PROJECT_NAME} ${COMMON_SRC})
 

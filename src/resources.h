@@ -44,5 +44,6 @@ void reloadMesh(const char* filename);
 void reloadShader(const char* filename);
 void cleanupImages();
 void cleanupMeshes();
+void cleanupShaders();
 
 #endif //__RESOURCES_H__

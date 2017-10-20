@@ -139,7 +139,7 @@ void watchChanges()
             {
                 if(watchlist[i].descriptor == event->wd)
                 {
-                    printf("watch changed descriptor:%i %s %p\n", event->wd, watchlist[i].filename, watchlist[i].callback);
+                    printf("watch changed descriptor:%i %s %p\n", event->wd, watchlist[i].filename, (void*)watchlist[i].callback);
 
                     if(watchlist[i].callback != 0)
                     {
