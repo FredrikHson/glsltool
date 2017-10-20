@@ -254,7 +254,7 @@ static enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res)
         size_t len = 0;
         v7_val_t val = v7_arg(v7e, 0);
         v7_val_t val2 = v7_arg(v7e, 1);
-        const char* name = v7_get_string(v7e, &val,&len);
+        const char* name = v7_get_string(v7e, &val, &len);
         const int flag = v7_get_int(v7e, val2);
 
         if(!bindAttrib(name, flag))
@@ -277,6 +277,25 @@ static enum v7_err js_reset_attribs(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_bind_shader(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int shaderid = v7_get_int(v7e, v7_arg(v7e, 0));
+        bindShader(shaderid);
+        printf("shaderid from script %i\n",shaderid);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -289,6 +308,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "drawmesh", &js_draw_mesh);
     v7_set_method(v7g, v7_get_global(v7g), "bindattribute", &js_bind_attrib);
     v7_set_method(v7g, v7_get_global(v7g), "resetattributes", &js_reset_attribs);
+    v7_set_method(v7g, v7_get_global(v7g), "bindshader", &js_bind_shader);
 }
 
 void create_js_defines()

@@ -13,6 +13,8 @@
 struct aiColor4D;
 struct aiVector3D;
 
+extern unsigned int currentprogram;
+
 typedef struct vertattribute
 {
     int flag;  // MESH_FLAGS
@@ -399,7 +401,7 @@ void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset
         {
             fprintf(stdout, "attrib:%u %s ", *attrib, attribs[i].name);
             printmeshflags(flag);
-            /*glBindAttribLocation(currently bound shader program,currattrib,attribs[i].flag);*/
+            glBindAttribLocation(currentprogram, *attrib, attribs[i].name);
             glVertexAttribPointer(*attrib, components, GL_FLOAT, GL_FALSE, 0, (void*)offset);
             *attrib += 1;
             return;
@@ -518,7 +520,7 @@ int bindAttrib(const char* name, int flag)
     {
         attribs[numActiveAttribs].flag = flag;
         snprintf(attribs[numActiveAttribs].name, 256, "%s", name);
-        fprintf(stdout,"bindAttrib:%s\n",name);
+        fprintf(stdout, "bindAttrib:%s\n", name);
         numActiveAttribs++;
     }
     else

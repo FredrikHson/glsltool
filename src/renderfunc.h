@@ -35,7 +35,7 @@ void beginPass(int target);
 void endPass();
 
 void drawMesh(int id, int submesh);
-int bindAttrib(const char *name,int flag);
+int bindAttrib(const char* name, int flag);
 void resetAttribs();
 void bindShader(int shader);
 

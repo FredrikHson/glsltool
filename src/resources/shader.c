@@ -9,6 +9,8 @@
 shader* shaders;
 unsigned int numshaders = 0;
 
+unsigned int currentprogram = 0;
+
 size_t getFilesize(FILE* f)
 {
     if(!f)
@@ -108,7 +110,8 @@ shader* allocateNewShader(const char* vertex,
                           const char* pixel,
                           const char* geometry,
                           const char* tesscontrol,
-                          const char* tesseval)
+                          const char* tesseval,
+                          size_t* id)
 {
     for(int i = 0; i < numshaders; i++)
     {
@@ -122,6 +125,7 @@ shader* allocateNewShader(const char* vertex,
             samestring(s->evalname, tesseval)
         )
         {
+            *id = i;
             return s;
         }
     }
@@ -146,6 +150,7 @@ shader* allocateNewShader(const char* vertex,
     }
 
     shader* s = &shaders[numshaders];
+    *id = numshaders;
     s->vertname = strdupnull(vertex);
     s->fragname = strdupnull(pixel);
     s->geomname = strdupnull(geometry);
@@ -167,7 +172,8 @@ int loadShader(const char* vertex,
                const char* tesscontrol,
                const char* tesseval)
 {
-    shader* s = allocateNewShader(vertex, pixel, geometry, tesscontrol, tesseval);
+    size_t out = 0;
+    shader* s = allocateNewShader(vertex, pixel, geometry, tesscontrol, tesseval, &out);
     s->working = 1;
     char error = 0;
 
@@ -307,9 +313,10 @@ int loadShader(const char* vertex,
                 s->controlname,
                 s->evalname,
                 shaderlog);
+        s->working = 0;
     }
 
-    return 0;
+    return out;
 }
 
 void reloadShader(const char* filename)
@@ -397,10 +404,36 @@ void cleanupShaders(int shader)
     }
 }
 
-void bindShader(int shader)
+void bindShader(int id)
 {
-    if(shader >= numshaders)
+    if(id < 0)
     {
-        return;
+        glUseProgram(0);
+        currentprogram = 0;
+    }
+    else
+    {
+        if(id >= numshaders)
+        {
+            return;
+        }
+
+        if(shaders[id].program == currentprogram)
+        {
+            return;
+        }
+
+        shader* s = &shaders[id];
+
+        if(s->working)
+        {
+            glUseProgram(s->program);
+            currentprogram = s->program;
+        }
+        else
+        {
+            glUseProgram(0);
+            currentprogram = 0;
+        }
     }
 }
