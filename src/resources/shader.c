@@ -53,6 +53,7 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
     else
     {
         out = shaderobject;
+        printf("reusing shader object:%i\n", out);
     }
 
     glShaderSource(out, 1, (const char**)&data, &len);
@@ -150,6 +151,12 @@ shader* allocateNewShader(const char* vertex,
     s->geomname = strdupnull(geometry);
     s->controlname = strdupnull(tesscontrol);
     s->evalname = strdupnull(tesseval);
+    s->program = glCreateProgram();
+    s->control = 0;
+    s->eval = 0;
+    s->frag = 0;
+    s->geom = 0;
+    s->vert = 0;
     numshaders++;
     return s;
 }
@@ -174,6 +181,8 @@ int loadShader(const char* vertex,
             return -1;
         }
 
+        glAttachShader(s->program, s->vert);
+
         if(error != 0)
         {
             s->working = 0;
@@ -189,6 +198,8 @@ int loadShader(const char* vertex,
             fprintf(stderr, "file not found:%s\n", pixel);
             return -1;
         }
+
+        glAttachShader(s->program, s->frag);
 
         if(error != 0)
         {
@@ -206,6 +217,8 @@ int loadShader(const char* vertex,
             return -1;
         }
 
+        glAttachShader(s->program, s->geom);
+
         if(error != 0)
         {
             s->working = 0;
@@ -222,6 +235,8 @@ int loadShader(const char* vertex,
             return -1;
         }
 
+        glAttachShader(s->program, s->control);
+
         if(error != 0)
         {
             s->working = 0;
@@ -237,6 +252,8 @@ int loadShader(const char* vertex,
             fprintf(stderr, "file not found:%s\n", tesseval);
             return -1;
         }
+
+        glAttachShader(s->program, s->eval);
 
         if(error != 0)
         {
@@ -272,6 +289,24 @@ int loadShader(const char* vertex,
     if(tesseval)
     {
         watchFile(tesseval, &reloadShader);
+    }
+
+    glLinkProgram(s->program);
+    int linked;
+    glGetProgramiv(s->program, GL_LINK_STATUS, &linked);
+
+    if(!linked)
+    {
+        int shaderloglen = 0;
+        char shaderlog[4096] = {0};
+        glGetProgramInfoLog(s->program, 4096, &shaderloglen, shaderlog);
+        fprintf(stderr, "Error linking shader: %s %s %s %s %s\n%s\n",
+                s->vertname,
+                s->fragname,
+                s->geomname,
+                s->controlname,
+                s->evalname,
+                shaderlog);
     }
 
     return 0;
@@ -350,6 +385,11 @@ void cleanupShaders(int shader)
                 free(shaders[i].geomname);
                 glDeleteShader(shaders[i].geom);
             }
+
+            if(shaders[i].program)
+            {
+                glDeleteProgram(shaders[i].program);
+            }
         }
 
         free(shaders);
@@ -359,4 +399,8 @@ void cleanupShaders(int shader)
 
 void bindShader(int shader)
 {
+    if(shader >= numshaders)
+    {
+        return;
+    }
 }

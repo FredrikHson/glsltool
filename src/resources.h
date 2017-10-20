@@ -33,6 +33,7 @@ typedef struct shader
     unsigned int frag;
     unsigned int geom;
     unsigned int vert;
+    unsigned int program;
     char working;
 } shader;
 
