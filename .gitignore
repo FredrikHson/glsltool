@@ -1,4 +1,5 @@
 #build folder
 build
+data
 .clang
 *.trace
