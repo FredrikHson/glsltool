@@ -399,10 +399,9 @@ void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset
     {
         if(attribs[i].flag & flag)
         {
-            fprintf(stdout, "attrib:%u %s ", *attrib, attribs[i].name);
-            printmeshflags(flag);
-            glBindAttribLocation(currentprogram, *attrib, attribs[i].name);
+            glEnableVertexAttribArray(*attrib);
             glVertexAttribPointer(*attrib, components, GL_FLOAT, GL_FALSE, 0, (void*)offset);
+            glBindAttribLocation(currentprogram, *attrib, attribs[i].name);
             *attrib += 1;
             return;
         }
@@ -412,15 +411,12 @@ void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset
 void drawSubmesh(int id, int submesh)
 {
     mesh* m = &meshes[id];
-    fprintf(stdout, "drawing:%i %i\n", id, submesh);
+    /*fprintf(stdout, "drawing:%s id:%i submesh:%i\n", m->name,id, submesh);*/
     // vertex index format pos.xyz[numverts],next.xyz[numverts]
     unsigned int flags = m->flags[submesh];
     unsigned int numverts = m->numverts[submesh];
     size_t offset = 0;
-    printmeshflags(flags);
     size_t stride = sizeof(float) * numverts;
-    fprintf(stdout, "verts:%u indices:%u\n", numverts, m->numindices[submesh]);
-    fprintf(stdout, "stride:%zu\n", stride);
     glBindBuffer(GL_ARRAY_BUFFER, m->vbo[submesh]);
     unsigned int currattrib = 0;
 
@@ -466,6 +462,8 @@ void drawSubmesh(int id, int submesh)
         }
     }
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices[submesh]);
+    glDrawElements(GL_TRIANGLES, m->numindices[submesh], GL_UNSIGNED_INT, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -520,7 +518,6 @@ int bindAttrib(const char* name, int flag)
     {
         attribs[numActiveAttribs].flag = flag;
         snprintf(attribs[numActiveAttribs].name, 256, "%s", name);
-        fprintf(stdout, "bindAttrib:%s\n", name);
         numActiveAttribs++;
     }
     else

@@ -235,7 +235,6 @@ static enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
             return V7_INTERNAL_ERROR;
         }
 
-        printf("shaderid %i\n", shader);
         *res = v7_mk_number(v7e, shader);
         return V7_OK;
     }
@@ -285,7 +284,6 @@ static enum v7_err js_bind_shader(v7* v7e, v7_val_t* res)
     {
         const int shaderid = v7_get_int(v7e, v7_arg(v7e, 0));
         bindShader(shaderid);
-        printf("shaderid from script %i\n",shaderid);
     }
     else
     {
