@@ -38,5 +38,6 @@ void drawMesh(int id, int submesh);
 int bindAttrib(const char* name, int flag);
 void resetAttribs();
 void bindShader(int shader);
+void setUniformf(const char* name, float* f, int argc);
 
 #endif //__RENDERFUNC_H__

@@ -437,3 +437,34 @@ void bindShader(int id)
         }
     }
 }
+void setUniformf(const char* name, float* f, int argc)
+{
+    if(currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+
+    switch(argc)
+    {
+        case 1:
+            glUniform1f(loc, f[0]);
+            break;
+
+        case 2:
+            glUniform2f(loc, f[0], f[1]);
+            break;
+
+        case 3:
+            glUniform3f(loc, f[0], f[1], f[2]);
+            break;
+
+        case 4:
+            glUniform4f(loc, f[0], f[1], f[2], f[3]);
+            break;
+
+        default:
+            break;
+    }
+}
