@@ -19,6 +19,7 @@ typedef struct vertattribute
 {
     int flag;  // MESH_FLAGS
     char name[256];
+    char used;
 } vertattribute;
 
 mesh* meshes = 0;
@@ -399,6 +400,7 @@ void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset
     {
         if(attribs[i].flag & flag)
         {
+            attribs[i].used = 1;
             glEnableVertexAttribArray(*attrib);
             glVertexAttribPointer(*attrib, components, GL_FLOAT, GL_FALSE, 0, (void*)offset);
             glBindAttribLocation(currentprogram, *attrib, attribs[i].name);
@@ -466,10 +468,16 @@ void drawSubmesh(int id, int submesh)
     glDrawElements(GL_TRIANGLES, m->numindices[submesh], GL_UNSIGNED_INT, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    currattrib = 0;
 
     for(int i = 0; i < maxattribs; i++)
     {
-        glDisableVertexAttribArray(i);
+        if(attribs[i].used)
+        {
+            attribs[i].used = 0;
+            glDisableVertexAttribArray(currattrib);
+            currattrib += 1;
+        }
     }
 }
 
