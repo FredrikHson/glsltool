@@ -293,6 +293,7 @@ static enum v7_err js_bind_shader(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
 static enum v7_err js_set_uniformf(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -321,6 +322,74 @@ static enum v7_err js_set_uniformf(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_set_depth(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int enable = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(enable)
+        {
+            glEnable(GL_DEPTH_TEST);
+        }
+        else
+        {
+            glDisable(GL_DEPTH_TEST);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_set_cullface(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int cullmode = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        switch(cullmode)
+        {
+            case CULL_NONE:
+                glDisable(GL_CULL_FACE);
+                break;
+
+            case CULL_FRONT:
+                glCullFace(GL_FRONT);
+                glEnable(GL_CULL_FACE);
+                break;
+
+            case CULL_BACK:
+                glCullFace(GL_BACK);
+                glEnable(GL_CULL_FACE);
+                break;
+
+            case CULL_BOTH:
+                glCullFace(GL_FRONT_AND_BACK);
+                glEnable(GL_CULL_FACE);
+                break;
+
+            default:
+                break;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -335,6 +404,8 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "resetattributes", &js_reset_attribs);
     v7_set_method(v7g, v7_get_global(v7g), "bindshader", &js_bind_shader);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformf", &js_set_uniformf);
+    v7_set_method(v7g, v7_get_global(v7g), "depthtest", &js_set_depth);
+    v7_set_method(v7g, v7_get_global(v7g), "culling", &js_set_cullface);
 }
 
 void create_js_defines()
@@ -403,6 +474,10 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR5", 16, v7_mk_number(v7g, MESH_FLAG_COLOR5));
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR6", 16, v7_mk_number(v7g, MESH_FLAG_COLOR6));
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR7", 16, v7_mk_number(v7g, MESH_FLAG_COLOR7));
+    v7_set(v7g, v7_get_global(v7g), "CULL_FRONT", 10, v7_mk_number(v7g, CULL_FRONT));
+    v7_set(v7g, v7_get_global(v7g), "CULL_BACK", 9, v7_mk_number(v7g, CULL_BACK));
+    v7_set(v7g, v7_get_global(v7g), "CULL_NONE", 9, v7_mk_number(v7g, CULL_NONE));
+    v7_set(v7g, v7_get_global(v7g), "CULL_BOTH", 9, v7_mk_number(v7g, CULL_BOTH));
 }
 
 int initScript(const char* filename)
