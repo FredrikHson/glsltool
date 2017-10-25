@@ -483,7 +483,7 @@ void drawSubmesh(int id, int submesh)
 
 void drawMesh(int id, int submesh)
 {
-    if(id >= nummeshes)
+    if(id >= nummeshes || id < 0)
     {
         return;
     }

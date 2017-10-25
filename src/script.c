@@ -101,6 +101,7 @@ static enum v7_err js_endPass(v7* v7e, v7_val_t* res)
 static enum v7_err js_load_image(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
+    *res = v7_mk_number(v7e, 0);
 
     if(argc == 1)
     {
@@ -115,7 +116,7 @@ static enum v7_err js_load_image(v7* v7e, v7_val_t* res)
             if(image == -1)
             {
                 fprintf(stderr, "failed to load image %s\n", filename);
-                return V7_INTERNAL_ERROR;
+                return V7_OK;
             }
 
             printf("imageid %i\n", image);
@@ -152,10 +153,12 @@ static enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
             if(mesh == -1)
             {
                 fprintf(stderr, "failed to load mesh %s\n", filename);
-                return V7_INTERNAL_ERROR;
+            }
+            else
+            {
+                printf("meshid %i\n", mesh);
             }
 
-            printf("meshid %i\n", mesh);
             *res = v7_mk_number(v7e, mesh);
             return V7_OK;
         }
@@ -232,7 +235,6 @@ static enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
                     geomfilename,
                     controlfilename,
                     evalfilename);
-            return V7_INTERNAL_ERROR;
         }
 
         *res = v7_mk_number(v7e, shader);
@@ -544,14 +546,18 @@ int initScript(const char* filename)
     create_js_functions();
     create_js_defines();
     v7_val_t result;
+    fprintf(stderr, "%s:%i\n", __FILE__, __LINE__);
     enum v7_err rcode = v7_exec_file(v7g, filename, &result);
+    fprintf(stderr, "%s:%i\n", __FILE__, __LINE__);
 
     if(rcode != V7_OK)
     {
         v7_print_error(stderr, v7g, "Error", result);
         validscript = 0;
+        return 0;
     }
 
+    fprintf(stderr, "%s:%i the script should be valid\n", __FILE__, __LINE__);
     validscript = 1;
     run_loop();
     return 1;

@@ -104,29 +104,28 @@ int main(int argc, char* argv[])
     ilInit();
     iluInit();
     watchFile(options.inputfile, reloadScript);
+    initScript(options.inputfile);
 
-    if(initScript(options.inputfile))
+    while(!glfwWindowShouldClose(window) && !should_quit)
     {
-        while(!glfwWindowShouldClose(window) && !should_quit)
+        if(validscript)
         {
-            if(validscript)
-            {
-                run_loop();
-            }
-            else
-            {
-                glClearColor(1, 0, 0, 1);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                glfwSwapBuffers(window);
-            }
-
-            glfwPollEvents();
-            watchChanges();
-            updateTime();
-            usleep(16666);
+            run_loop();
         }
+        else
+        {
+            glClearColor(1, 0, 0, 1);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glfwSwapBuffers(window);
+        }
+
+        glfwPollEvents();
+        watchChanges();
+        updateTime();
+        usleep(16666);
     }
 
+    fprintf(stderr, "after initscript\n");
     shutdownScript();
     cleanupImages();
     cleanupMeshes();
