@@ -437,6 +437,7 @@ void bindShader(int id)
         }
     }
 }
+
 void setUniformf(const char* name, float* f, int argc)
 {
     if(currentprogram == 0)
@@ -462,6 +463,70 @@ void setUniformf(const char* name, float* f, int argc)
 
         case 4:
             glUniform4f(loc, f[0], f[1], f[2], f[3]);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void setUniformi(const char* name, int* f, int argc)
+{
+    if(currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+
+    switch(argc)
+    {
+        case 1:
+            glUniform1i(loc, f[0]);
+            break;
+
+        case 2:
+            glUniform2i(loc, f[0], f[1]);
+            break;
+
+        case 3:
+            glUniform3i(loc, f[0], f[1], f[2]);
+            break;
+
+        case 4:
+            glUniform4i(loc, f[0], f[1], f[2], f[3]);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void setUniformui(const char* name, unsigned int* f, int argc)
+{
+    if(currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+
+    switch(argc)
+    {
+        case 1:
+            glUniform1ui(loc, f[0]);
+            break;
+
+        case 2:
+            glUniform2ui(loc, f[0], f[1]);
+            break;
+
+        case 3:
+            glUniform3ui(loc, f[0], f[1], f[2]);
+            break;
+
+        case 4:
+            glUniform4ui(loc, f[0], f[1], f[2], f[3]);
             break;
 
         default:

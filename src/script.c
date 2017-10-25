@@ -322,6 +322,62 @@ static enum v7_err js_set_uniformf(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_set_uniformi(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc >= 2 && argc <= 5)
+    {
+        v7_val_t val = v7_arg(v7e, 0);
+        size_t len = 0;
+        const char* name = v7_get_string(v7e, &val, &len);
+        int vars[4] = {0};
+
+        for(int i = 1; i < argc; i++)
+        {
+            v7_val_t val2 = v7_arg(v7e, i);
+            vars[i - 1] = v7_get_int(v7e, val2);
+        }
+
+        setUniformi(name, vars, argc - 1);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_set_uniformui(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc >= 2 && argc <= 5)
+    {
+        v7_val_t val = v7_arg(v7e, 0);
+        size_t len = 0;
+        const char* name = v7_get_string(v7e, &val, &len);
+        unsigned int vars[4] = {0};
+
+        for(int i = 1; i < argc; i++)
+        {
+            v7_val_t val2 = v7_arg(v7e, i);
+            vars[i - 1] = v7_get_int(v7e, val2);
+        }
+
+        setUniformui(name, vars, argc - 1);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 static enum v7_err js_set_depth(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -404,6 +460,8 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "resetattributes", &js_reset_attribs);
     v7_set_method(v7g, v7_get_global(v7g), "bindshader", &js_bind_shader);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformf", &js_set_uniformf);
+    v7_set_method(v7g, v7_get_global(v7g), "setuniformi", &js_set_uniformi);
+    v7_set_method(v7g, v7_get_global(v7g), "setuniformui", &js_set_uniformui);
     v7_set_method(v7g, v7_get_global(v7g), "depthtest", &js_set_depth);
     v7_set_method(v7g, v7_get_global(v7g), "culling", &js_set_cullface);
 }

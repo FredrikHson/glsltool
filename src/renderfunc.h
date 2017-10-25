@@ -39,5 +39,7 @@ int bindAttrib(const char* name, int flag);
 void resetAttribs();
 void bindShader(int shader);
 void setUniformf(const char* name, float* f, int argc);
+void setUniformi(const char* name, int* f, int argc);
+void setUniformui(const char* name, unsigned int* f, int argc);
 
 #endif //__RENDERFUNC_H__
