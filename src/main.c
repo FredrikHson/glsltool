@@ -12,6 +12,7 @@
 GLFWwindow* window = 0;
 int should_quit = 0;
 double deltaTime = 0;
+double currenttime = 0;
 double lasttime = 0;
 
 void error_callback(int error, const char* description)
@@ -34,18 +35,18 @@ void key_handler_callback(GLFWwindow* window, int key, int scancode, int action,
 }
 void updateTime() // call once per frame
 {
-    double now = glfwGetTime();
+    currenttime = glfwGetTime();
     static double lastdelta = 0;
-    deltaTime = now - lastdelta;
-    lastdelta = now;
+    deltaTime = currenttime - lastdelta;
+    lastdelta = currenttime;
     static int framecounter = 0;
     framecounter++;
 
-    if(now - lasttime > 1.0)
+    if(currenttime - lasttime > 1.0)
     {
         printf("%i fps frametime:%f\n", framecounter, deltaTime);
         framecounter = 0;
-        lasttime = now;
+        lasttime = currenttime;
     }
 }
 

@@ -21,7 +21,7 @@ unsigned int CreateRenderTarget(unsigned int width,
     }
     else
     {
-        void *newrendertargets = realloc(rendertargets, sizeof(rendertarget) * (numrendertargets + 1));
+        void* newrendertargets = realloc(rendertargets, sizeof(rendertarget) * (numrendertargets + 1));
 
         if(newrendertargets == 0)
         {
@@ -30,7 +30,7 @@ unsigned int CreateRenderTarget(unsigned int width,
         }
         else
         {
-            rendertargets= newrendertargets;
+            rendertargets = newrendertargets;
         }
     }
 
@@ -160,7 +160,7 @@ void cleanupRender()
     numrendertargets = 0;
 }
 int currentPassTarget = 0;
-void beginPass(int target)
+void beginPass(int target, int* width, int* height)
 {
     currentPassTarget = target;
 
@@ -168,11 +168,15 @@ void beginPass(int target)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, options.width, options.height);
+        *width = options.width;
+        *height = options.height;
     }
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, rendertargets[target].buffer);
         glViewport(0, 0, rendertargets[target].width, rendertargets[target].height);
+        *height = rendertargets[target].height;
+        *width = rendertargets[target].width;
     }
 }
 void endPass()

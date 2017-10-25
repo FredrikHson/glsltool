@@ -81,15 +81,20 @@ static enum v7_err js_clear(v7* v7e, v7_val_t* res)
 
 static enum v7_err js_beginPass(v7* v7e, v7_val_t* res)
 {
+    int width;
+    int height;
+
     if(v7_argc(v7e) == 0)
     {
-        beginPass(-1);
+        beginPass(-1, &width, &height);
     }
     else
     {
-        beginPass(v7_get_int(v7e, v7_arg(v7e, 0)));
+        beginPass(v7_get_int(v7e, v7_arg(v7e, 0)), &width, &height);
     }
 
+    v7_set(v7g, v7_get_global(v7g), "RENDER_WIDTH", 12, v7_mk_number(v7g, width));
+    v7_set(v7g, v7_get_global(v7g), "RENDER_HEIGHT", 13, v7_mk_number(v7g, height));
     return V7_OK;
 }
 static enum v7_err js_endPass(v7* v7e, v7_val_t* res)
@@ -560,8 +565,13 @@ int initScript(const char* filename)
     return 1;
 }
 
+extern double deltaTime;
+extern double currenttime;
+
 void run_loop()
 {
+    v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
+    v7_set(v7g, v7_get_global(v7g), "DELTA_TIME", 10, v7_mk_number(v7g, deltaTime));
     v7_val_t function;
     v7_val_t result;
     function = v7_get(v7g, v7_get_global(v7g), "loop", 4);

@@ -31,7 +31,7 @@ unsigned int CreateRenderTarget(unsigned int width,
 
 void clear(float red, float green, float blue, float alpha);
 void cleanupRender();
-void beginPass(int target);
+void beginPass(int target, int* width, int* height);
 void endPass();
 
 void drawMesh(int id, int submesh);
