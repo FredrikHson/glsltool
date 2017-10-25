@@ -7,6 +7,7 @@
 #include "resources.h"
 #include <unistd.h>
 #include "notify.h"
+#include <stdlib.h>
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -133,5 +134,11 @@ int main(int argc, char* argv[])
     destroyFileWatcher();
     glfwDestroyWindow(window);
     glfwTerminate();
+
+    if(options.inputfile)
+    {
+        free(options.inputfile);
+    }
+
     return 0;
 }

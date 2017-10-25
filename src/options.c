@@ -2,6 +2,10 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <limits.h>
+#include <string.h>
+#include <libgen.h>
 
 glsltool_options options =
 {
@@ -71,8 +75,18 @@ int handle_options(int argc, char* argv[])
                 break;
 
             case 'f':
-                options.inputfile = optarg;
+            {
+                options.inputfile = realpath(optarg, 0);
+                char* dir = strdup(options.inputfile);
+
+                if(dir != 0)
+                {
+                    chdir(dirname(dir));
+                    free(dir);
+                }
+
                 break;
+            }
 
             case 'h':
                 print_help(longOpts);
