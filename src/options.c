@@ -76,6 +76,12 @@ int handle_options(int argc, char* argv[])
 
             case 'f':
             {
+                if(access(optarg, F_OK) != 0)
+                {
+                    fprintf(stderr, "could not find: %s\n", optarg);
+                    exit(1);
+                }
+
                 options.inputfile = realpath(optarg, 0);
                 char* dir = strdup(options.inputfile);
 

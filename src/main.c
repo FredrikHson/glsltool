@@ -51,15 +51,15 @@ void updateTime() // call once per frame
 
 int main(int argc, char* argv[])
 {
+    if(!handle_options(argc, argv))
+    {
+        return 0;
+    }
+
     if(access(options.inputfile, F_OK) != 0)
     {
         fprintf(stderr, "could not find: %s\n", options.inputfile);
         return 1;
-    }
-
-    if(!handle_options(argc, argv))
-    {
-        return 0;
     }
 
     if(!glfwInit())
