@@ -546,9 +546,7 @@ int initScript(const char* filename)
     create_js_functions();
     create_js_defines();
     v7_val_t result;
-    fprintf(stderr, "%s:%i\n", __FILE__, __LINE__);
     enum v7_err rcode = v7_exec_file(v7g, filename, &result);
-    fprintf(stderr, "%s:%i\n", __FILE__, __LINE__);
 
     if(rcode != V7_OK)
     {
@@ -557,7 +555,6 @@ int initScript(const char* filename)
         return 0;
     }
 
-    fprintf(stderr, "%s:%i the script should be valid\n", __FILE__, __LINE__);
     validscript = 1;
     run_loop();
     return 1;
