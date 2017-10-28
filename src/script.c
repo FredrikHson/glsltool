@@ -495,12 +495,152 @@ static enum v7_err js_vec3_normalize(v7* v7e, v7_val_t* res)
             v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
             v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
             vec3 normalized = vec3normalize(v1);
-            fprintf(stdout, "v1  x:%f y:%f z:%f\n", v1.x, v1.y, v1.z);
-            fprintf(stdout, "normalized: x:%f y:%f z:%f\n", normalized.x, normalized.y, normalized.z);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, normalized.x));
+            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, normalized.y));
+            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, normalized.z));
         }
         else
         {
             fprintf(stderr, "invalid type for vec3normalize\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_vec3_cross(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            vec3 v1;
+            vec3 v2;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            vec3 crossproduct = vec3cross(v1, v2);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, crossproduct.x));
+            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, crossproduct.y));
+            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, crossproduct.z));
+        }
+        else
+        {
+            fprintf(stderr, "invalid type for vec3cross\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_vec3_add(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            vec3 v1;
+            vec3 v2;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            vec3 add = vec3add(v1, v2);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, add.x));
+            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, add.y));
+            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, add.z));
+        }
+        else
+        {
+            fprintf(stderr, "invalid type for vec3add\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_vec3_sub(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            vec3 v1;
+            vec3 v2;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            vec3 sub = vec3add(v1, v2);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, sub.x));
+            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, sub.y));
+            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, sub.z));
+        }
+        else
+        {
+            fprintf(stderr, "invalid type for vec3sub\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_vec3_mul(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1))
+        {
+            vec3 v1;
+            float scalar;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            scalar = v7_get_double(v7e, arg2);
+            vec3 mul = vec3mul(v1, scalar);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, mul.x));
+            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, mul.y));
+            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, mul.z));
+        }
+        else
+        {
+            fprintf(stderr, "invalid type for vec3mul\n");
             return V7_SYNTAX_ERROR;
         }
     }
@@ -528,8 +668,11 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "culling", &js_set_cullface);
     v7_set_method(v7g, v7_get_global(v7g), "vec3dot", &js_vec3_dot);
     v7_set_method(v7g, v7_get_global(v7g), "vec3normalize", &js_vec3_normalize);
+    v7_set_method(v7g, v7_get_global(v7g), "vec3cross", &js_vec3_cross);
+    v7_set_method(v7g, v7_get_global(v7g), "vec3add", &js_vec3_add);
+    v7_set_method(v7g, v7_get_global(v7g), "vec3sub", &js_vec3_sub);
+    v7_set_method(v7g, v7_get_global(v7g), "vec3mul", &js_vec3_mul);
 }
-
 void create_js_defines()
 {
     /* gl data types */
@@ -601,7 +744,6 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "CULL_NONE", 9, v7_mk_number(v7g, CULL_NONE));
     v7_set(v7g, v7_get_global(v7g), "CULL_BOTH", 9, v7_mk_number(v7g, CULL_BOTH));
 }
-
 int initScript(const char* filename)
 {
     v7g = v7_create();
@@ -621,10 +763,8 @@ int initScript(const char* filename)
     run_loop();
     return 1;
 }
-
 extern double deltaTime;
 extern double currenttime;
-
 void run_loop()
 {
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
@@ -640,14 +780,12 @@ void run_loop()
         validscript = 0;
     }
 }
-
 int shutdownScript()
 {
     v7_destroy(v7g);
     cleanupRender();
     return 1;
 }
-
 void reloadScript(const char* filename)
 {
     printf("reloading script: %s\n", filename);
