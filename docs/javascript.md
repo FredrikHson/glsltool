@@ -20,6 +20,10 @@
 | culling(cullmode) | see CULL_* flags |
 | float vec3dot(vec3, vec3) | |
 | vec3 vec3normalize(vec3) | |
+| vec3 vec3cross(vec3,vec3) | |
+| vec3 vec3add(vec3,vec3) | |
+| vec3 vec3sub(vec3,vec3) | |
+| vec3 vec3mul(vec3,scalar) | |
 
 # Objects
 
