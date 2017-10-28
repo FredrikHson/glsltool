@@ -5,6 +5,7 @@
 #include "renderfunc.h"
 #include "resources.h"
 #include "defines.h"
+#include "vector.h"
 
 typedef struct v7 v7;
 
@@ -453,6 +454,60 @@ static enum v7_err js_set_cullface(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_vec3_dot(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            vec3 v1;
+            vec3 v2;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            *res = v7_mk_number(v7e, vec3dot(v1, v2));
+        }
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_vec3_normalize(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+
+        if(v7_is_object(arg1))
+        {
+            vec3 v1 = {0};
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            vec3 normalized = vec3normalize(v1);
+            fprintf(stdout, "v1  x:%f y:%f z:%f\n", v1.x, v1.y, v1.z);
+            fprintf(stdout, "normalized: x:%f y:%f z:%f\n", normalized.x, normalized.y, normalized.z);
+        }
+        else
+        {
+            fprintf(stderr, "invalid type for vec3normalize\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+
+    return V7_OK;
+}
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -471,6 +526,8 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "setuniformui", &js_set_uniformui);
     v7_set_method(v7g, v7_get_global(v7g), "depthtest", &js_set_depth);
     v7_set_method(v7g, v7_get_global(v7g), "culling", &js_set_cullface);
+    v7_set_method(v7g, v7_get_global(v7g), "vec3dot", &js_vec3_dot);
+    v7_set_method(v7g, v7_get_global(v7g), "vec3normalize", &js_vec3_normalize);
 }
 
 void create_js_defines()
