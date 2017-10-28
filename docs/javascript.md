@@ -26,6 +26,13 @@
 vec3={x:0,y:0,z:0}
 
 # Variables
+| Dynamic variables | comment |
+-|-
+| RENDER_WIDTH | updated with beginpass |
+| RENDER_HEIGHT | updated with beginpass |
+| TIME | time since glsltool starts|
+| DELTA_TIME | time since last loop start | 
+
 | Mesh flags |
 ---
 | MESH_FLAG_POSITION |
