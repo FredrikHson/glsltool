@@ -85,6 +85,12 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    if(!(options.x == INT_MIN || options.y == INT_MIN))
+    {
+        printf("%i,%i\n", options.x, options.y);
+        glfwSetWindowPos(window, options.x, options.y);
+    }
+
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetKeyCallback(window, key_handler_callback);
