@@ -1,7 +1,7 @@
 # Functions
 
 | Function *optional | comment|
--|-
+|-|-|
 | rendertargetid createrendertarget(width,height,layers,colors,type,minfilter*,magfilter*)   | |
 | clear(r*,g*,b*,a*) | can be 0 1 3 or 4 variables set|
 | beginpass(rendertargetid*) | no render target set will result rendering to the backbuffer |
@@ -31,14 +31,14 @@ vec3={x:0,y:0,z:0}
 
 # Variables
 | Dynamic variables | comment |
--|-
+|-|-|
 | RENDER_WIDTH | updated with beginpass |
 | RENDER_HEIGHT | updated with beginpass |
 | TIME | time since glsltool starts|
 | DELTA_TIME | time since last loop start | 
 
 | Mesh flags |
----
+|---|
 | MESH_FLAG_POSITION |
 | MESH_FLAG_NORMAL |
 | MESH_FLAG_TANGENT |
@@ -61,7 +61,7 @@ vec3={x:0,y:0,z:0}
 | MESH_FLAG_COLOR7 |
 
 | Culling flags |
----
+|---|
 | CULL_FRONT |
 | CULL_BACK |
 | CULL_NONE |
