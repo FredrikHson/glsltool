@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetKeyCallback(window, key_handler_callback);
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     glfwSwapBuffers(window);
     ilInit();
     iluInit();
@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
         glfwPollEvents();
         watchChanges();
         updateTime();
-        usleep(16666);
+        /*usleep(16666);*/
     }
 
     fprintf(stderr, "after initscript\n");

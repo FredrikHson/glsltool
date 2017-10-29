@@ -18,6 +18,7 @@ set(COMMON_SRC
     "../external/v7/v7.c"
     "notify.c"
     "vector.c"
+    "matrix.c"
     "resources/image.c"
     "resources/shader.c"
     "resources/mesh.c"

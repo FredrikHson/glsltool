@@ -27,7 +27,15 @@
 
 # Objects
 
-vec3={x:0,y:0,z:0}
+```javascript
+vec3={x:0,y:0,z:0};
+mat4={
+    m11:0,m12:0,m13:0,m14,
+    m21:0,m22:0,m23:0,m24,
+    m31:0,m32:0,m33:0,m34,
+    m41:0,m42:0,m43:0,m44
+};
+```
 
 # Variables
 | Dynamic variables | comment |
@@ -35,7 +43,7 @@ vec3={x:0,y:0,z:0}
 | RENDER_WIDTH | updated with beginpass |
 | RENDER_HEIGHT | updated with beginpass |
 | TIME | time since glsltool starts|
-| DELTA_TIME | time since last loop start | 
+| DELTA_TIME | time since last loop start |
 
 | Mesh flags |
 |---|

@@ -6,6 +6,7 @@
 #include "resources.h"
 #include "defines.h"
 #include "vector.h"
+#include "matrix.h"
 
 typedef struct v7 v7;
 
@@ -648,6 +649,68 @@ static enum v7_err js_vec3_mul(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+v7_val_t mat4tov7_val(v7* v7e, const mat4 m)
+{
+    v7_val_t out = v7_mk_object(v7e);
+    v7_set(v7e, out, "m11", ~0, v7_mk_number(v7e, m.m[0]));
+    v7_set(v7e, out, "m12", ~0, v7_mk_number(v7e, m.m[1]));
+    v7_set(v7e, out, "m13", ~0, v7_mk_number(v7e, m.m[2]));
+    v7_set(v7e, out, "m14", ~0, v7_mk_number(v7e, m.m[3]));
+    v7_set(v7e, out, "m21", ~0, v7_mk_number(v7e, m.m[4]));
+    v7_set(v7e, out, "m22", ~0, v7_mk_number(v7e, m.m[5]));
+    v7_set(v7e, out, "m23", ~0, v7_mk_number(v7e, m.m[6]));
+    v7_set(v7e, out, "m24", ~0, v7_mk_number(v7e, m.m[7]));
+    v7_set(v7e, out, "m31", ~0, v7_mk_number(v7e, m.m[8]));
+    v7_set(v7e, out, "m32", ~0, v7_mk_number(v7e, m.m[9]));
+    v7_set(v7e, out, "m33", ~0, v7_mk_number(v7e, m.m[10]));
+    v7_set(v7e, out, "m34", ~0, v7_mk_number(v7e, m.m[11]));
+    v7_set(v7e, out, "m41", ~0, v7_mk_number(v7e, m.m[12]));
+    v7_set(v7e, out, "m42", ~0, v7_mk_number(v7e, m.m[13]));
+    v7_set(v7e, out, "m43", ~0, v7_mk_number(v7e, m.m[14]));
+    v7_set(v7e, out, "m44", ~0, v7_mk_number(v7e, m.m[15]));
+    return out;
+}
+
+mat4 v7_val_tomat4(v7* v7e, v7_val_t* m)
+{
+    mat4 out;
+    out.m[0] = v7_get_double(v7e, v7_get(v7e, *m, "m11", ~0));
+    out.m[1] = v7_get_double(v7e, v7_get(v7e, *m, "m12", ~0));
+    out.m[2] = v7_get_double(v7e, v7_get(v7e, *m, "m13", ~0));
+    out.m[3] = v7_get_double(v7e, v7_get(v7e, *m, "m14", ~0));
+    out.m[4] = v7_get_double(v7e, v7_get(v7e, *m, "m21", ~0));
+    out.m[5] = v7_get_double(v7e, v7_get(v7e, *m, "m22", ~0));
+    out.m[6] = v7_get_double(v7e, v7_get(v7e, *m, "m23", ~0));
+    out.m[7] = v7_get_double(v7e, v7_get(v7e, *m, "m24", ~0));
+    out.m[8] = v7_get_double(v7e, v7_get(v7e, *m, "m31", ~0));
+    out.m[9] = v7_get_double(v7e, v7_get(v7e, *m, "m32", ~0));
+    out.m[10] = v7_get_double(v7e, v7_get(v7e, *m, "m33", ~0));
+    out.m[11] = v7_get_double(v7e, v7_get(v7e, *m, "m34", ~0));
+    out.m[12] = v7_get_double(v7e, v7_get(v7e, *m, "m41", ~0));
+    out.m[13] = v7_get_double(v7e, v7_get(v7e, *m, "m42", ~0));
+    out.m[14] = v7_get_double(v7e, v7_get(v7e, *m, "m43", ~0));
+    out.m[15] = v7_get_double(v7e, v7_get(v7e, *m, "m44", ~0));
+    return out;
+}
+
+static enum v7_err js_mat4_loadidentity(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 0)
+    {
+        *res = mat4tov7_val(v7e, mat4loadidentity());
+    }
+    else
+    {
+        fprintf(stderr, "mat4loadidentity does not take any arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -672,6 +735,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "vec3add", &js_vec3_add);
     v7_set_method(v7g, v7_get_global(v7g), "vec3sub", &js_vec3_sub);
     v7_set_method(v7g, v7_get_global(v7g), "vec3mul", &js_vec3_mul);
+    v7_set_method(v7g, v7_get_global(v7g), "mat4loadidentity", &js_mat4_loadidentity);
 }
 void create_js_defines()
 {
