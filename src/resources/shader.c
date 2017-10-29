@@ -5,6 +5,7 @@
 #include "notify.h"
 #include "resources.h"
 #include "renderfunc.h"
+#include "matrix.h"
 
 shader* shaders;
 unsigned int numshaders = 0;
@@ -532,4 +533,14 @@ void setUniformui(const char* name, unsigned int* f, int argc)
         default:
             break;
     }
+}
+void setUniformMat4(const char* name, const mat4* m)
+{
+    if(currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+    glUniformMatrix4fv(loc, 1, 0, m->m);
 }

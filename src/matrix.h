@@ -12,5 +12,6 @@ mat4 mat4settranslation(float x, float y, float z);
 mat4 mat4mul(const mat4* m1, const mat4* m2);
 mat4 mat4setperspective(float fov, float aspect, float near, float far);
 mat4 mat4setrotr(float angle, float x, float y, float z);
+void setUniformMat4(const char* name, const mat4* m);
 
 #endif //__MATRIX_H__

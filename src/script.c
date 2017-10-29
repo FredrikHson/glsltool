@@ -324,7 +324,7 @@ static enum v7_err js_set_uniformf(v7* v7e, v7_val_t* res)
     }
     else
     {
-        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        fprintf(stderr, "invalid number of arguments to setuniformf\n");
         return V7_SYNTAX_ERROR;
     }
 
@@ -352,7 +352,7 @@ static enum v7_err js_set_uniformi(v7* v7e, v7_val_t* res)
     }
     else
     {
-        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        fprintf(stderr, "invalid number of arguments to setuniformi\n");
         return V7_SYNTAX_ERROR;
     }
 
@@ -380,7 +380,7 @@ static enum v7_err js_set_uniformui(v7* v7e, v7_val_t* res)
     }
     else
     {
-        fprintf(stderr, "invalid number of arguments to bindshader\n");
+        fprintf(stderr, "invalid number of arguments to setUniformui\n");
         return V7_SYNTAX_ERROR;
     }
 
@@ -827,6 +827,32 @@ static enum v7_err js_mat4_mul(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+        size_t len = 0;
+        const char* name = v7_get_string(v7e, &arg1, &len);
+
+        if(v7_is_object(arg2))
+        {
+            const mat4 m1 = v7_val_tomat4(v7e, arg2);
+            setUniformMat4(name, &m1);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to setuniformmat4\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -843,6 +869,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "setuniformf", &js_set_uniformf);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformi", &js_set_uniformi);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformui", &js_set_uniformui);
+    v7_set_method(v7g, v7_get_global(v7g), "setuniformmat4", &js_set_uniform_matrix);
     v7_set_method(v7g, v7_get_global(v7g), "depthtest", &js_set_depth);
     v7_set_method(v7g, v7_get_global(v7g), "culling", &js_set_cullface);
     v7_set_method(v7g, v7_get_global(v7g), "vec3dot", &js_vec3_dot);

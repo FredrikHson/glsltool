@@ -16,6 +16,7 @@
 | setuniformf(name,x,y*,z*,w*) | |
 | setuniformi(name,x,y*,z*,w*) | |
 | setuniformui(name,x,y*,z*,w*) | |
+| setuniformmat4(name,mat4) | |;
 | depthtest(enable) | 0 1 |
 | culling(cullmode) | see CULL_* flags |
 | float vec3dot(vec3, vec3) | |
