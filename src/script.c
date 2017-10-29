@@ -468,12 +468,12 @@ static enum v7_err js_vec3_dot(v7* v7e, v7_val_t* res)
         {
             vec3 v1;
             vec3 v2;
-            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
-            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
-            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
-            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
-            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
-            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", 1));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", 1));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", 1));
             *res = v7_mk_number(v7e, vec3dot(v1, v2));
         }
     }
@@ -492,14 +492,14 @@ static enum v7_err js_vec3_normalize(v7* v7e, v7_val_t* res)
         if(v7_is_object(arg1))
         {
             vec3 v1 = {0};
-            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
-            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
-            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
             vec3 normalized = vec3normalize(v1);
             *res = v7_mk_object(v7e);
-            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, normalized.x));
-            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, normalized.y));
-            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, normalized.z));
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, normalized.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, normalized.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, normalized.z));
         }
         else
         {
@@ -524,17 +524,17 @@ static enum v7_err js_vec3_cross(v7* v7e, v7_val_t* res)
         {
             vec3 v1;
             vec3 v2;
-            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
-            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
-            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
-            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
-            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
-            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", 1));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", 1));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", 1));
             vec3 crossproduct = vec3cross(v1, v2);
             *res = v7_mk_object(v7e);
-            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, crossproduct.x));
-            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, crossproduct.y));
-            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, crossproduct.z));
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, crossproduct.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, crossproduct.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, crossproduct.z));
         }
         else
         {
@@ -559,17 +559,17 @@ static enum v7_err js_vec3_add(v7* v7e, v7_val_t* res)
         {
             vec3 v1;
             vec3 v2;
-            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
-            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
-            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
-            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
-            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
-            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", 1));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", 1));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", 1));
             vec3 add = vec3add(v1, v2);
             *res = v7_mk_object(v7e);
-            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, add.x));
-            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, add.y));
-            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, add.z));
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, add.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, add.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, add.z));
         }
         else
         {
@@ -594,17 +594,17 @@ static enum v7_err js_vec3_sub(v7* v7e, v7_val_t* res)
         {
             vec3 v1;
             vec3 v2;
-            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
-            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
-            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
-            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", ~0));
-            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", ~0));
-            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", ~0));
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
+            v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", 1));
+            v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", 1));
+            v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", 1));
             vec3 sub = vec3add(v1, v2);
             *res = v7_mk_object(v7e);
-            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, sub.x));
-            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, sub.y));
-            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, sub.z));
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, sub.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, sub.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, sub.z));
         }
         else
         {
@@ -629,15 +629,15 @@ static enum v7_err js_vec3_mul(v7* v7e, v7_val_t* res)
         {
             vec3 v1;
             float scalar;
-            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", ~0));
-            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", ~0));
-            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", ~0));
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
             scalar = v7_get_double(v7e, arg2);
             vec3 mul = vec3mul(v1, scalar);
             *res = v7_mk_object(v7e);
-            v7_set(v7e, *res, "x", ~0, v7_mk_number(v7e, mul.x));
-            v7_set(v7e, *res, "y", ~0, v7_mk_number(v7e, mul.y));
-            v7_set(v7e, *res, "z", ~0, v7_mk_number(v7e, mul.z));
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, mul.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, mul.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, mul.z));
         }
         else
         {
@@ -652,44 +652,44 @@ static enum v7_err js_vec3_mul(v7* v7e, v7_val_t* res)
 v7_val_t mat4tov7_val(v7* v7e, const mat4 m)
 {
     v7_val_t out = v7_mk_object(v7e);
-    v7_set(v7e, out, "m11", ~0, v7_mk_number(v7e, m.m[0]));
-    v7_set(v7e, out, "m12", ~0, v7_mk_number(v7e, m.m[1]));
-    v7_set(v7e, out, "m13", ~0, v7_mk_number(v7e, m.m[2]));
-    v7_set(v7e, out, "m14", ~0, v7_mk_number(v7e, m.m[3]));
-    v7_set(v7e, out, "m21", ~0, v7_mk_number(v7e, m.m[4]));
-    v7_set(v7e, out, "m22", ~0, v7_mk_number(v7e, m.m[5]));
-    v7_set(v7e, out, "m23", ~0, v7_mk_number(v7e, m.m[6]));
-    v7_set(v7e, out, "m24", ~0, v7_mk_number(v7e, m.m[7]));
-    v7_set(v7e, out, "m31", ~0, v7_mk_number(v7e, m.m[8]));
-    v7_set(v7e, out, "m32", ~0, v7_mk_number(v7e, m.m[9]));
-    v7_set(v7e, out, "m33", ~0, v7_mk_number(v7e, m.m[10]));
-    v7_set(v7e, out, "m34", ~0, v7_mk_number(v7e, m.m[11]));
-    v7_set(v7e, out, "m41", ~0, v7_mk_number(v7e, m.m[12]));
-    v7_set(v7e, out, "m42", ~0, v7_mk_number(v7e, m.m[13]));
-    v7_set(v7e, out, "m43", ~0, v7_mk_number(v7e, m.m[14]));
-    v7_set(v7e, out, "m44", ~0, v7_mk_number(v7e, m.m[15]));
+    v7_set(v7e, out, "m11", 3, v7_mk_number(v7e, m.m[0]));
+    v7_set(v7e, out, "m12", 3, v7_mk_number(v7e, m.m[1]));
+    v7_set(v7e, out, "m13", 3, v7_mk_number(v7e, m.m[2]));
+    v7_set(v7e, out, "m14", 3, v7_mk_number(v7e, m.m[3]));
+    v7_set(v7e, out, "m21", 3, v7_mk_number(v7e, m.m[4]));
+    v7_set(v7e, out, "m22", 3, v7_mk_number(v7e, m.m[5]));
+    v7_set(v7e, out, "m23", 3, v7_mk_number(v7e, m.m[6]));
+    v7_set(v7e, out, "m24", 3, v7_mk_number(v7e, m.m[7]));
+    v7_set(v7e, out, "m31", 3, v7_mk_number(v7e, m.m[8]));
+    v7_set(v7e, out, "m32", 3, v7_mk_number(v7e, m.m[9]));
+    v7_set(v7e, out, "m33", 3, v7_mk_number(v7e, m.m[10]));
+    v7_set(v7e, out, "m34", 3, v7_mk_number(v7e, m.m[11]));
+    v7_set(v7e, out, "m41", 3, v7_mk_number(v7e, m.m[12]));
+    v7_set(v7e, out, "m42", 3, v7_mk_number(v7e, m.m[13]));
+    v7_set(v7e, out, "m43", 3, v7_mk_number(v7e, m.m[14]));
+    v7_set(v7e, out, "m44", 3, v7_mk_number(v7e, m.m[15]));
     return out;
 }
 
 mat4 v7_val_tomat4(v7* v7e, v7_val_t* m)
 {
     mat4 out;
-    out.m[0] = v7_get_double(v7e, v7_get(v7e, *m, "m11", ~0));
-    out.m[1] = v7_get_double(v7e, v7_get(v7e, *m, "m12", ~0));
-    out.m[2] = v7_get_double(v7e, v7_get(v7e, *m, "m13", ~0));
-    out.m[3] = v7_get_double(v7e, v7_get(v7e, *m, "m14", ~0));
-    out.m[4] = v7_get_double(v7e, v7_get(v7e, *m, "m21", ~0));
-    out.m[5] = v7_get_double(v7e, v7_get(v7e, *m, "m22", ~0));
-    out.m[6] = v7_get_double(v7e, v7_get(v7e, *m, "m23", ~0));
-    out.m[7] = v7_get_double(v7e, v7_get(v7e, *m, "m24", ~0));
-    out.m[8] = v7_get_double(v7e, v7_get(v7e, *m, "m31", ~0));
-    out.m[9] = v7_get_double(v7e, v7_get(v7e, *m, "m32", ~0));
-    out.m[10] = v7_get_double(v7e, v7_get(v7e, *m, "m33", ~0));
-    out.m[11] = v7_get_double(v7e, v7_get(v7e, *m, "m34", ~0));
-    out.m[12] = v7_get_double(v7e, v7_get(v7e, *m, "m41", ~0));
-    out.m[13] = v7_get_double(v7e, v7_get(v7e, *m, "m42", ~0));
-    out.m[14] = v7_get_double(v7e, v7_get(v7e, *m, "m43", ~0));
-    out.m[15] = v7_get_double(v7e, v7_get(v7e, *m, "m44", ~0));
+    out.m[0] = v7_get_double(v7e, v7_get(v7e, *m, "m11", 3));
+    out.m[1] = v7_get_double(v7e, v7_get(v7e, *m, "m12", 3));
+    out.m[2] = v7_get_double(v7e, v7_get(v7e, *m, "m13", 3));
+    out.m[3] = v7_get_double(v7e, v7_get(v7e, *m, "m14", 3));
+    out.m[4] = v7_get_double(v7e, v7_get(v7e, *m, "m21", 3));
+    out.m[5] = v7_get_double(v7e, v7_get(v7e, *m, "m22", 3));
+    out.m[6] = v7_get_double(v7e, v7_get(v7e, *m, "m23", 3));
+    out.m[7] = v7_get_double(v7e, v7_get(v7e, *m, "m24", 3));
+    out.m[8] = v7_get_double(v7e, v7_get(v7e, *m, "m31", 3));
+    out.m[9] = v7_get_double(v7e, v7_get(v7e, *m, "m32", 3));
+    out.m[10] = v7_get_double(v7e, v7_get(v7e, *m, "m33", 3));
+    out.m[11] = v7_get_double(v7e, v7_get(v7e, *m, "m34", 3));
+    out.m[12] = v7_get_double(v7e, v7_get(v7e, *m, "m41", 3));
+    out.m[13] = v7_get_double(v7e, v7_get(v7e, *m, "m42", 3));
+    out.m[14] = v7_get_double(v7e, v7_get(v7e, *m, "m43", 3));
+    out.m[15] = v7_get_double(v7e, v7_get(v7e, *m, "m44", 3));
     return out;
 }
 

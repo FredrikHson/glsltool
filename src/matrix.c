@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <math.h>
 
 
 mat4 mat4loadidentity()
