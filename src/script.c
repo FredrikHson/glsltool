@@ -671,25 +671,25 @@ v7_val_t mat4tov7_val(v7* v7e, const mat4 m)
     return out;
 }
 
-mat4 v7_val_tomat4(v7* v7e, v7_val_t* m)
+mat4 v7_val_tomat4(v7* v7e, v7_val_t m)
 {
     mat4 out;
-    out.m[0] = v7_get_double(v7e, v7_get(v7e, *m, "m11", 3));
-    out.m[1] = v7_get_double(v7e, v7_get(v7e, *m, "m12", 3));
-    out.m[2] = v7_get_double(v7e, v7_get(v7e, *m, "m13", 3));
-    out.m[3] = v7_get_double(v7e, v7_get(v7e, *m, "m14", 3));
-    out.m[4] = v7_get_double(v7e, v7_get(v7e, *m, "m21", 3));
-    out.m[5] = v7_get_double(v7e, v7_get(v7e, *m, "m22", 3));
-    out.m[6] = v7_get_double(v7e, v7_get(v7e, *m, "m23", 3));
-    out.m[7] = v7_get_double(v7e, v7_get(v7e, *m, "m24", 3));
-    out.m[8] = v7_get_double(v7e, v7_get(v7e, *m, "m31", 3));
-    out.m[9] = v7_get_double(v7e, v7_get(v7e, *m, "m32", 3));
-    out.m[10] = v7_get_double(v7e, v7_get(v7e, *m, "m33", 3));
-    out.m[11] = v7_get_double(v7e, v7_get(v7e, *m, "m34", 3));
-    out.m[12] = v7_get_double(v7e, v7_get(v7e, *m, "m41", 3));
-    out.m[13] = v7_get_double(v7e, v7_get(v7e, *m, "m42", 3));
-    out.m[14] = v7_get_double(v7e, v7_get(v7e, *m, "m43", 3));
-    out.m[15] = v7_get_double(v7e, v7_get(v7e, *m, "m44", 3));
+    out.m[0] = v7_get_double(v7e, v7_get(v7e, m, "m11", 3));
+    out.m[1] = v7_get_double(v7e, v7_get(v7e, m, "m12", 3));
+    out.m[2] = v7_get_double(v7e, v7_get(v7e, m, "m13", 3));
+    out.m[3] = v7_get_double(v7e, v7_get(v7e, m, "m14", 3));
+    out.m[4] = v7_get_double(v7e, v7_get(v7e, m, "m21", 3));
+    out.m[5] = v7_get_double(v7e, v7_get(v7e, m, "m22", 3));
+    out.m[6] = v7_get_double(v7e, v7_get(v7e, m, "m23", 3));
+    out.m[7] = v7_get_double(v7e, v7_get(v7e, m, "m24", 3));
+    out.m[8] = v7_get_double(v7e, v7_get(v7e, m, "m31", 3));
+    out.m[9] = v7_get_double(v7e, v7_get(v7e, m, "m32", 3));
+    out.m[10] = v7_get_double(v7e, v7_get(v7e, m, "m33", 3));
+    out.m[11] = v7_get_double(v7e, v7_get(v7e, m, "m34", 3));
+    out.m[12] = v7_get_double(v7e, v7_get(v7e, m, "m41", 3));
+    out.m[13] = v7_get_double(v7e, v7_get(v7e, m, "m42", 3));
+    out.m[14] = v7_get_double(v7e, v7_get(v7e, m, "m43", 3));
+    out.m[15] = v7_get_double(v7e, v7_get(v7e, m, "m44", 3));
     return out;
 }
 
@@ -710,6 +710,122 @@ static enum v7_err js_mat4_loadidentity(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_mat4_setscale(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const float scale = v7_get_double(v7e, v7_arg(v7e, 0));
+        *res = mat4tov7_val(v7e, mat4setscale(scale, scale, scale));
+    }
+    else if(argc == 3)
+    {
+        const float x = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float y = v7_get_double(v7e, v7_arg(v7e, 1));
+        const float z = v7_get_double(v7e, v7_arg(v7e, 2));
+        *res = mat4tov7_val(v7e, mat4setscale(x, y, z));
+    }
+    else
+    {
+        fprintf(stderr, "mat4setscale requires 1 or 3 arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_mat4_settranslation(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 3)
+    {
+        const float x = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float y = v7_get_double(v7e, v7_arg(v7e, 1));
+        const float z = v7_get_double(v7e, v7_arg(v7e, 2));
+        *res = mat4tov7_val(v7e, mat4settranslation(x, y, z));
+    }
+    else
+    {
+        fprintf(stderr, "mat4settranslation requires 3 arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_mat4_setrotation(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 4)
+    {
+        const float angle = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float x = v7_get_double(v7e, v7_arg(v7e, 1));
+        const float y = v7_get_double(v7e, v7_arg(v7e, 2));
+        const float z = v7_get_double(v7e, v7_arg(v7e, 3));
+        *res = mat4tov7_val(v7e, mat4setrotr(angle, x, y, z));
+    }
+    else
+    {
+        fprintf(stderr, "mat4setrotation requires 4 arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_mat4_setperspective(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 4)
+    {
+        const float fov = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float aspect = v7_get_double(v7e, v7_arg(v7e, 1));
+        const float near = v7_get_double(v7e, v7_arg(v7e, 2));
+        const float far = v7_get_double(v7e, v7_arg(v7e, 3));
+        *res = mat4tov7_val(v7e, mat4setperspective(fov, aspect, near, far));
+    }
+    else
+    {
+        fprintf(stderr, "mat4setperspective requires 4 arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+static enum v7_err js_mat4_mul(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            const mat4 m1 = v7_val_tomat4(v7e, arg1);
+            const mat4 m2 = v7_val_tomat4(v7e, arg2);
+            *res = mat4tov7_val(v7e, mat4mul(&m1, &m2));
+        }
+        else
+        {
+            *res = mat4tov7_val(v7e, mat4loadidentity());
+            fprintf(stderr, "mat4mul needs 2 matrices as arguments\n");
+        }
+    }
+    else
+    {
+        fprintf(stderr, "mat4mul needs 2 arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
 
 void create_js_functions()
 {
@@ -736,6 +852,11 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "vec3sub", &js_vec3_sub);
     v7_set_method(v7g, v7_get_global(v7g), "vec3mul", &js_vec3_mul);
     v7_set_method(v7g, v7_get_global(v7g), "mat4loadidentity", &js_mat4_loadidentity);
+    v7_set_method(v7g, v7_get_global(v7g), "mat4setscale", &js_mat4_setscale);
+    v7_set_method(v7g, v7_get_global(v7g), "mat4settranslation", &js_mat4_settranslation);
+    v7_set_method(v7g, v7_get_global(v7g), "mat4setrotation", &js_mat4_setrotation);
+    v7_set_method(v7g, v7_get_global(v7g), "mat4setperspective", &js_mat4_setperspective);
+    v7_set_method(v7g, v7_get_global(v7g), "mat4mul", &js_mat4_mul);
 }
 void create_js_defines()
 {

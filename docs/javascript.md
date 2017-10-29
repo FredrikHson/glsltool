@@ -24,6 +24,12 @@
 | vec3 vec3add(vec3,vec3) | |
 | vec3 vec3sub(vec3,vec3) | |
 | vec3 vec3mul(vec3,scalar) | |
+| mat4 mat4loadidentity() | |
+| mat4 mat4setscale(x,y*,z*) | 1 or 3 variables|
+| mat4 mat4settranslation(x,y,z) | |
+| mat4 mat4setrotation(angle,x,y,z) | |
+| mat4 mat4setperspective(fov,aspect,near,far) | |
+| mat4 mat4mul(mat4,mat4) | |
 
 # Objects
 
