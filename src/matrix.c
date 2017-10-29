@@ -35,9 +35,9 @@ mat4 mat4settranslation(float x, float y, float z)
     mat4 out =
     {
         {
-            0, 0, 0, 0,
-            0, 0, 0, 0,
-            0, 0, 0, 0,
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
             x, y, z, 1
         }
     };
@@ -65,6 +65,7 @@ mat4 mat4mul(const mat4* m1, const mat4* m2)
     out.m[15] = m1->m[12] * m2->m[3] + m1->m[13] * m2->m[7] + m1->m[14] * m2->m[11] + m1->m[15] * m2->m[15];
     return out;
 }
+
 mat4 mat4setperspective(float fov, float aspect, float near, float far)
 {
     mat4 out;
@@ -85,5 +86,34 @@ mat4 mat4setperspective(float fov, float aspect, float near, float far)
     out.m[13] = 0;
     out.m[14] = -1;
     out.m[15] = 0;
+    return out;
+}
+
+mat4 mat4setrotr(float angle, float x, float y, float z)
+{
+    float l = sqrt(x * x + y * y + z * z);
+    float x2 = x / l;
+    float y2 = y / l;
+    float z2 = z / l;
+    float s = sin(angle);
+    float c = cos(angle);
+    float ic = 1.0f - c;
+    mat4 out;
+    out.m[0]  = (ic * x2 * x2) + c;
+    out.m[1]  = (ic * x2 * y2) - z2 * s;
+    out.m[2]  = (ic * z2 * x2) + y2 * s;
+    out.m[3]  = 0.0f;
+    out.m[4]  = (ic * x2 * y2) + z2 * s;
+    out.m[5]  = (ic * y2 * y2) + c;
+    out.m[6]  = (ic * y2 * z2) - x2 * s;
+    out.m[7]  = 0.0f;
+    out.m[8]  = (ic * z2 * x2) - y2 * s;
+    out.m[9]  = (ic * y2 * z2) + x2 * s;
+    out.m[10] = (ic * z2 * z2) + c;
+    out.m[11] = 0.0f;
+    out.m[12] = 0.0f;
+    out.m[13] = 0.0f;
+    out.m[14] = 0.0f;
+    out.m[15] = 1.0f;
     return out;
 }
