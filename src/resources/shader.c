@@ -407,6 +407,8 @@ void cleanupShaders(int shader)
 
 void bindShader(int id)
 {
+    resetTexturebindings();
+
     if(id < 0)
     {
         glUseProgram(0);

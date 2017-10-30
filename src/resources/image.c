@@ -10,6 +10,11 @@
 image* textures = 0;
 int numtextures = 0;
 
+int maxboundtextures = 0;
+unsigned int numboundtextures = 0;
+
+extern unsigned int currentprogram;
+
 int loadImageOntoTexture(const char* filename, unsigned int texture)
 {
     if(texture >= numtextures)
@@ -167,6 +172,7 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     glBindTexture(GL_TEXTURE_2D, tex->glImage);
     glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glInternalFormat, glType, data);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glGenerateTextureMipmap(tex->glImage);
     free(data);
     ilBindImage(0);
     ilDeleteImage(id);
@@ -253,4 +259,47 @@ void cleanupImages()
 
     numtextures = 0;
     textures = 0;
+}
+
+void initImages()
+{
+    /*TODO: should i handle vertex and fragment textures differently?*/
+    /*for now just set the max bound textures to how many textures the fragment shader can handle*/
+    int vertmax = 0;
+    int fragmax = 0;
+    int combinedmax = 0;
+    glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vertmax);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &fragmax);
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &combinedmax);
+    fprintf(stdout, "Max bound textures:\n");
+    fprintf(stdout, "\tfragment:%i\n\tvertex:%i\n\tcombined:%i\n", fragmax, vertmax, combinedmax);
+    maxboundtextures = fragmax;
+    numboundtextures = 0;
+}
+
+void resetTexturebindings()
+{
+    for(int i = 0; i < numboundtextures; i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    numboundtextures = 0;
+}
+
+void bindTexture(const char* name, int id)
+{
+    if(id > numtextures || currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+    glActiveTexture(GL_TEXTURE0 + numboundtextures);
+    glBindTexture(GL_TEXTURE_2D, textures[id].glImage);
+    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);*/
+    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);*/
+    glUniform1i(loc, numboundtextures);
+    numboundtextures += 1;
 }

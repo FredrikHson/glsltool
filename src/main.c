@@ -98,6 +98,7 @@ int main(int argc, char* argv[])
     glfwSwapBuffers(window);
     ilInit();
     iluInit();
+    initImages();
     watchFile(options.inputfile, reloadScript);
     initScript(options.inputfile);
 

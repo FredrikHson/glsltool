@@ -20,6 +20,7 @@ typedef struct vertattribute
     int flag;  // MESH_FLAGS
     char name[256];
 } vertattribute;
+extern int currentPassTarget;
 
 unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,
@@ -41,5 +42,7 @@ void bindShader(int shader);
 void setUniformf(const char* name, float* f, int argc);
 void setUniformi(const char* name, int* f, int argc);
 void setUniformui(const char* name, unsigned int* f, int argc);
+void bindTexture(const char* name, int id);
+void resetTexturebindings();
 
 #endif //__RENDERFUNC_H__
