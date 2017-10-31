@@ -288,7 +288,7 @@ void resetTexturebindings()
     numboundtextures = 0;
 }
 
-void bindTexture(const char* name, int id)
+void bindTexture(const char* name, int id, unsigned int magfilter, unsigned int minfilter)
 {
     if(id > numtextures || currentprogram == 0)
     {
@@ -298,8 +298,8 @@ void bindTexture(const char* name, int id)
     int loc = glGetUniformLocation(currentprogram, name);
     glActiveTexture(GL_TEXTURE0 + numboundtextures);
     glBindTexture(GL_TEXTURE_2D, textures[id].glImage);
-    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);*/
-    /*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);*/
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
     glUniform1i(loc, numboundtextures);
     numboundtextures += 1;
 }

@@ -857,18 +857,31 @@ static enum v7_err js_bind_texture(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
 
-    if(argc == 2)
+    if(argc >= 2)
     {
         v7_val_t val = v7_arg(v7e, 0);
         size_t len = 0;
         const char* name = v7_get_string(v7e, &val, &len);
         v7_val_t val2 = v7_arg(v7e, 1);
         int textureid = v7_get_int(v7e, val2);
-        bindTexture(name, textureid);
+        unsigned int magfilter = GL_LINEAR;
+        unsigned int minfilter = GL_LINEAR;
+
+        if(argc >= 3)
+        {
+            magfilter = v7_get_int(v7e, v7_arg(v7e, 2));
+        }
+
+        if(argc >= 4)
+        {
+            minfilter = v7_get_int(v7e, v7_arg(v7e, 3));
+        }
+
+        bindTexture(name, textureid, magfilter, minfilter);
     }
     else
     {
-        fprintf(stderr, "invalid number of arguments to setuniformi\n");
+        fprintf(stderr, "invalid number of arguments to bindtexture\n");
         return V7_SYNTAX_ERROR;
     }
 
