@@ -853,6 +853,9 @@ static enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+unsigned int default_magfilter = GL_LINEAR;
+unsigned int default_minfilter = GL_LINEAR;
+
 static enum v7_err js_bind_texture(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -864,8 +867,8 @@ static enum v7_err js_bind_texture(v7* v7e, v7_val_t* res)
         const char* name = v7_get_string(v7e, &val, &len);
         v7_val_t val2 = v7_arg(v7e, 1);
         int textureid = v7_get_int(v7e, val2);
-        unsigned int magfilter = GL_LINEAR;
-        unsigned int minfilter = GL_LINEAR;
+        unsigned int magfilter = default_magfilter;
+        unsigned int minfilter = default_minfilter;
 
         if(argc >= 3)
         {
@@ -888,6 +891,25 @@ static enum v7_err js_bind_texture(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+static enum v7_err js_set_default_filter(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        default_magfilter = v7_get_int(v7e, v7_arg(v7e, 0));
+        default_minfilter = v7_get_int(v7e, v7_arg(v7e, 1));
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to setdefaultfilter\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+
 void create_js_functions()
 {
     v7_set_method(v7g, v7_get_global(v7g), "createrendertarget", &js_create_rendertarget);
@@ -902,6 +924,7 @@ void create_js_functions()
     v7_set_method(v7g, v7_get_global(v7g), "resetattributes", &js_reset_attribs);
     v7_set_method(v7g, v7_get_global(v7g), "bindshader", &js_bind_shader);
     v7_set_method(v7g, v7_get_global(v7g), "bindtexture", &js_bind_texture);
+    v7_set_method(v7g, v7_get_global(v7g), "setdefaultfilter", &js_set_default_filter);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformf", &js_set_uniformf);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformi", &js_set_uniformi);
     v7_set_method(v7g, v7_get_global(v7g), "setuniformui", &js_set_uniformui);
