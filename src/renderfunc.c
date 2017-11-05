@@ -6,6 +6,10 @@
 
 rendertarget* rendertargets = 0;
 unsigned int numrendertargets = 0;
+extern int maxboundtextures;
+extern unsigned int numboundtextures;
+
+extern unsigned int currentprogram;
 
 unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,
@@ -117,7 +121,7 @@ unsigned int CreateRenderTarget(unsigned int width,
         glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0, format, type, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, target->textures[i], 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, target->textures[i], 0);
     }
 
     glGenRenderbuffers(1, &target->depth);
@@ -188,5 +192,31 @@ void endPass()
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        for(int i = 0; i < rendertargets[currentPassTarget].layers; i++)
+        {
+            glGenerateTextureMipmap(rendertargets[currentPassTarget].textures[i]);
+        }
     }
+}
+
+void bindRendertarget(const char* name, int id, int layer, unsigned int magfilter, unsigned int minfilter)
+{
+    if(id > numrendertargets || currentprogram == 0)
+    {
+        return;
+    }
+
+    if(rendertargets[id].layers <= layer)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+    glActiveTexture(GL_TEXTURE0 + numboundtextures);
+    glBindTexture(GL_TEXTURE_2D, rendertargets[id].textures[layer]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
+    glUniform1i(loc, numboundtextures);
+    numboundtextures += 1;
 }

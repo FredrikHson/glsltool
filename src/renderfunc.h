@@ -43,6 +43,7 @@ void setUniformf(const char* name, float* f, int argc);
 void setUniformi(const char* name, int* f, int argc);
 void setUniformui(const char* name, unsigned int* f, int argc);
 void bindTexture(const char* name, int id, unsigned int magfilter, unsigned int minfilter);
+void bindRendertarget(const char* name, int id, int layer, unsigned int magfilter, unsigned int minfilter);
 void resetTexturebindings();
 
 #endif //__RENDERFUNC_H__
