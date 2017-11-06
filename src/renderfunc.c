@@ -134,10 +134,22 @@ unsigned int CreateRenderTarget(unsigned int width,
     return out;
 }
 
-void clear(float red, float green, float blue, float alpha)
+void clear(float red, float green, float blue, float alpha, char color, char depth)
 {
     glClearColor(red, green, blue, alpha);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLbitfield mask = 0;
+
+    if(color != 0)
+    {
+        mask |= GL_COLOR_BUFFER_BIT;
+    }
+
+    if(depth != 0)
+    {
+        mask |= GL_DEPTH_BUFFER_BIT;
+    }
+
+    glClear(mask);
 }
 
 void cleanupRender()

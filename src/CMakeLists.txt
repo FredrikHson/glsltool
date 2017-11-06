@@ -22,6 +22,10 @@ set(COMMON_SRC
     "resources/image.c"
     "resources/shader.c"
     "resources/mesh.c"
+    "script/math.c"
+    "script/shader.c"
+    "script/resources.c"
+    "script/render.c"
     )
 
 include_directories(

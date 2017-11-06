@@ -30,7 +30,7 @@ unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int magfilter,
                                 unsigned int minfilter);
 
-void clear(float red, float green, float blue, float alpha);
+void clear(float red, float green, float blue, float alpha, char color, char depth);
 void cleanupRender();
 void beginPass(int target, int* width, int* height);
 void endPass();
