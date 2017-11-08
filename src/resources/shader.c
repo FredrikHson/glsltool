@@ -180,6 +180,11 @@ int loadShader(const char* vertex,
 
     if(vertex)
     {
+        if(s->vert)
+        {
+            glDetachShader(s->program, s->vert);
+        }
+
         s->vert = loadShaderfile(vertex, GL_VERTEX_SHADER, s->vert, &error);
 
         if(s->vert == 0)
@@ -198,6 +203,11 @@ int loadShader(const char* vertex,
 
     if(pixel)
     {
+        if(s->frag)
+        {
+            glDetachShader(s->program, s->frag);
+        }
+
         s->frag = loadShaderfile(pixel, GL_FRAGMENT_SHADER, s->frag, &error);
 
         if(s->frag == 0)
@@ -216,6 +226,11 @@ int loadShader(const char* vertex,
 
     if(geometry)
     {
+        if(s->geom)
+        {
+            glDetachShader(s->program, s->geom);
+        }
+
         s->geom = loadShaderfile(geometry, GL_GEOMETRY_SHADER, s->geom, &error);
 
         if(s->geom == 0)
@@ -234,6 +249,11 @@ int loadShader(const char* vertex,
 
     if(tesscontrol)
     {
+        if(s->control)
+        {
+            glDetachShader(s->program, s->control);
+        }
+
         s->control = loadShaderfile(tesscontrol, GL_TESS_CONTROL_SHADER, s->control, &error);
 
         if(s->control == 0)
@@ -252,6 +272,11 @@ int loadShader(const char* vertex,
 
     if(tesseval)
     {
+        if(s->eval)
+        {
+            glDetachShader(s->program, s->eval);
+        }
+
         s->eval = loadShaderfile(tesseval, GL_TESS_EVALUATION_SHADER, s->eval, &error);
 
         if(s->eval == 0)
@@ -367,30 +392,35 @@ void cleanupShaders(int shader)
             if(shaders[i].vertname)
             {
                 free(shaders[i].vertname);
+                glDetachShader(shaders[i].program, shaders[i].vert);
                 glDeleteShader(shaders[i].vert);
             }
 
             if(shaders[i].fragname)
             {
                 free(shaders[i].fragname);
+                glDetachShader(shaders[i].program, shaders[i].frag);
                 glDeleteShader(shaders[i].frag);
             }
 
             if(shaders[i].evalname)
             {
                 free(shaders[i].evalname);
+                glDetachShader(shaders[i].program, shaders[i].eval);
                 glDeleteShader(shaders[i].eval);
             }
 
             if(shaders[i].controlname)
             {
                 free(shaders[i].controlname);
+                glDetachShader(shaders[i].program, shaders[i].control);
                 glDeleteShader(shaders[i].control);
             }
 
             if(shaders[i].geomname)
             {
                 free(shaders[i].geomname);
+                glDetachShader(shaders[i].program, shaders[i].geom);
                 glDeleteShader(shaders[i].geom);
             }
 
