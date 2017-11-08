@@ -8,12 +8,21 @@
 #include <unistd.h>
 #include "notify.h"
 #include <stdlib.h>
+#include "defines.h"
 
 GLFWwindow* window = 0;
 int should_quit = 0;
 double deltaTime = 0;
 double currenttime = 0;
 double lasttime = 0;
+double xpos = 0;
+double ypos = 0;
+char mousebuttons[8] = {0};
+char mouseinside = 0;
+double lastxpos = 0;
+double lastypos = 0;
+char lastmousebuttons[8] = {0};
+char lastmouseinside = 0;
 
 void error_callback(int error, const char* description)
 {
@@ -47,6 +56,39 @@ void updateTime() // call once per frame
         printf("%i fps frametime:%f\n", framecounter, deltaTime);
         framecounter = 0;
         lasttime = currenttime;
+    }
+}
+
+void handleMouse()
+{
+    lastxpos = xpos;
+    lastypos = ypos;
+    lastmouseinside = mouseinside;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    mouseinside = 1;
+
+    if(xpos < 0 || xpos >= options.width)
+    {
+        mouseinside = 0;
+    }
+
+    if(ypos < 0 || ypos >= options.height)
+    {
+        mouseinside = 0;
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        lastmousebuttons[i] = mousebuttons[i];
+
+        if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1 + i) == GLFW_PRESS)
+        {
+            mousebuttons[i] = 1;
+        }
+        else
+        {
+            mousebuttons[i] = 0;
+        }
     }
 }
 
@@ -104,6 +146,8 @@ int main(int argc, char* argv[])
 
     while(!glfwWindowShouldClose(window) && !should_quit)
     {
+        handleMouse();
+
         if(validscript)
         {
             run_loop();

@@ -126,10 +126,14 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR5", 16, v7_mk_number(v7g, MESH_FLAG_COLOR5));
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR6", 16, v7_mk_number(v7g, MESH_FLAG_COLOR6));
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_COLOR7", 16, v7_mk_number(v7g, MESH_FLAG_COLOR7));
+    /* render flags */
     v7_set(v7g, v7_get_global(v7g), "CULL_FRONT", 10, v7_mk_number(v7g, CULL_FRONT));
     v7_set(v7g, v7_get_global(v7g), "CULL_BACK", 9, v7_mk_number(v7g, CULL_BACK));
     v7_set(v7g, v7_get_global(v7g), "CULL_NONE", 9, v7_mk_number(v7g, CULL_NONE));
     v7_set(v7g, v7_get_global(v7g), "CULL_BOTH", 9, v7_mk_number(v7g, CULL_BOTH));
+    /* input flags*/
+    v7_set(v7g, v7_get_global(v7g), "MOUSE_PRESSED", 13, v7_mk_number(v7g, MOUSE_PRESSED));
+    v7_set(v7g, v7_get_global(v7g), "MOUSE_PRESSED_NOW", 17, v7_mk_number(v7g, MOUSE_PRESSED_NOW));
 }
 
 int initScript(const char* filename)
@@ -158,6 +162,7 @@ void run_loop()
 {
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
     v7_set(v7g, v7_get_global(v7g), "DELTA_TIME", 10, v7_mk_number(v7g, deltaTime));
+    updateinput();
     v7_val_t function;
     v7_val_t result;
     function = v7_get(v7g, v7_get_global(v7g), "loop", 4);

@@ -25,5 +25,7 @@
 #define CULL_FRONT 1
 #define CULL_BACK 2
 #define CULL_BOTH 3
+#define MOUSE_PRESSED 1
+#define MOUSE_PRESSED_NOW 2
 
 #endif //__DEFINES_H__

@@ -26,6 +26,7 @@ set(COMMON_SRC
     "script/shader.c"
     "script/resources.c"
     "script/render.c"
+    "script/input.c"
     )
 
 include_directories(
