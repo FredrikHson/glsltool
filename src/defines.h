@@ -27,5 +27,7 @@
 #define CULL_BOTH 3
 #define MOUSE_PRESSED 1
 #define MOUSE_PRESSED_NOW 2
+#define RADIANS 0
+#define DEGREES 1
 
 #endif //__DEFINES_H__

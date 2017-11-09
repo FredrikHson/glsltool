@@ -51,6 +51,7 @@ enum v7_err js_floor(v7* v7e, v7_val_t* res);
 enum v7_err js_ceil(v7* v7e, v7_val_t* res);
 enum v7_err js_abs(v7* v7e, v7_val_t* res);
 enum v7_err js_sqrt(v7* v7e, v7_val_t* res);
+enum v7_err js_set_angle_mode(v7* v7e, v7_val_t* res);
 /* update variables functions */
 void updateinput();
 

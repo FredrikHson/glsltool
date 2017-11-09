@@ -7,6 +7,45 @@
 
 typedef struct v7 v7;
 extern v7* v7g;
+char anglemode = RADIANS;
+
+float convertangle(float inputangle)
+{
+    if(anglemode == DEGREES)
+    {
+        return inputangle * (M_PI / 180.0f);
+    }
+    else
+    {
+        return inputangle;
+    }
+}
+
+enum v7_err js_set_angle_mode(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        char newmode = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(newmode == DEGREES || newmode == RADIANS)
+        {
+            anglemode = newmode;
+        }
+        else
+        {
+            fprintf(stderr, "setmat4anglemode needs to have DEGREES or RADIANS as input\n");
+        }
+    }
+    else
+    {
+        fprintf(stderr, "setmat4anglemode needs to have DEGREES or RADIANS as input\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
 
 enum v7_err js_vec3_dot(v7* v7e, v7_val_t* res)
 {
@@ -314,7 +353,7 @@ enum v7_err js_mat4_setrotation(v7* v7e, v7_val_t* res)
 
     if(argc == 4)
     {
-        const float angle = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float angle = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
         const float x = v7_get_double(v7e, v7_arg(v7e, 1));
         const float y = v7_get_double(v7e, v7_arg(v7e, 2));
         const float z = v7_get_double(v7e, v7_arg(v7e, 3));
@@ -335,7 +374,7 @@ enum v7_err js_mat4_setperspective(v7* v7e, v7_val_t* res)
 
     if(argc == 4)
     {
-        const float fov = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float fov = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
         const float aspect = v7_get_double(v7e, v7_arg(v7e, 1));
         const float near = v7_get_double(v7e, v7_arg(v7e, 2));
         const float far = v7_get_double(v7e, v7_arg(v7e, 3));

@@ -58,6 +58,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "ceil", js_ceil);
     v7_set_method(v7g, global, "abs", js_abs);
     v7_set_method(v7g, global, "sqrt", js_sqrt);
+    v7_set_method(v7g, global, "setmat4anglemode", js_set_angle_mode);
 }
 
 void create_js_defines()
@@ -134,6 +135,9 @@ void create_js_defines()
     /* input flags*/
     v7_set(v7g, v7_get_global(v7g), "MOUSE_PRESSED", 13, v7_mk_number(v7g, MOUSE_PRESSED));
     v7_set(v7g, v7_get_global(v7g), "MOUSE_PRESSED_NOW", 17, v7_mk_number(v7g, MOUSE_PRESSED_NOW));
+    /* math flags */
+    v7_set(v7g, v7_get_global(v7g), "RADIANS", 7, v7_mk_number(v7g, RADIANS));
+    v7_set(v7g, v7_get_global(v7g), "DEGREES", 7, v7_mk_number(v7g, DEGREES));
 }
 
 int initScript(const char* filename)
