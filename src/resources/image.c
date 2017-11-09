@@ -288,7 +288,9 @@ void resetTexturebindings()
     numboundtextures = 0;
 }
 
-void bindTexture(const char* name, int id, unsigned int magfilter, unsigned int minfilter)
+void bindTexture(const char* name, int id,
+                 unsigned int magfilter, unsigned int minfilter,
+                 unsigned int clamp_s, unsigned int clamp_t)
 {
     if(id > numtextures || currentprogram == 0)
     {
@@ -300,6 +302,8 @@ void bindTexture(const char* name, int id, unsigned int magfilter, unsigned int 
     glBindTexture(GL_TEXTURE_2D, textures[id].glImage);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp_s);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp_t);
     glUniform1i(loc, numboundtextures);
     numboundtextures += 1;
 }

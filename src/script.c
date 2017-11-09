@@ -106,6 +106,9 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "GL_LINEAR_MIPMAP_NEAREST", 24, v7_mk_number(v7g, GL_LINEAR_MIPMAP_NEAREST));
     v7_set(v7g, v7_get_global(v7g), "GL_NEAREST_MIPMAP_LINEAR", 24, v7_mk_number(v7g, GL_NEAREST_MIPMAP_LINEAR));
     v7_set(v7g, v7_get_global(v7g), "GL_LINEAR_MIPMAP_LINEAR", 23, v7_mk_number(v7g, GL_LINEAR_MIPMAP_LINEAR));
+    v7_set(v7g, v7_get_global(v7g), "GL_CLAMP_TO_EDGE", 16, v7_mk_number(v7g, GL_CLAMP_TO_EDGE));
+    v7_set(v7g, v7_get_global(v7g), "GL_MIRRORED_REPEAT", 18, v7_mk_number(v7g, GL_MIRRORED_REPEAT));
+    v7_set(v7g, v7_get_global(v7g), "GL_REPEAT", 9, v7_mk_number(v7g, GL_REPEAT));
     /* mesh flags */
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_POSITION", 18, v7_mk_number(v7g, MESH_FLAG_POSITION));
     v7_set(v7g, v7_get_global(v7g), "MESH_FLAG_NORMAL", 16, v7_mk_number(v7g, MESH_FLAG_NORMAL));

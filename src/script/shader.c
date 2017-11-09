@@ -7,6 +7,9 @@
 typedef struct v7 v7;
 unsigned int default_magfilter = GL_LINEAR;
 unsigned int default_minfilter = GL_LINEAR;
+unsigned int default_clamp_s = GL_REPEAT;
+unsigned int default_clamp_t = GL_REPEAT;
+
 enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -155,6 +158,8 @@ enum v7_err js_bind_texture(v7* v7e, v7_val_t* res)
         int textureid = v7_get_int(v7e, val2);
         unsigned int magfilter = default_magfilter;
         unsigned int minfilter = default_minfilter;
+        unsigned int clamp_s = default_clamp_s;
+        unsigned int clamp_t = default_clamp_t;
 
         if(argc >= 3)
         {
@@ -166,7 +171,18 @@ enum v7_err js_bind_texture(v7* v7e, v7_val_t* res)
             minfilter = v7_get_int(v7e, v7_arg(v7e, 3));
         }
 
-        bindTexture(name, textureid, magfilter, minfilter);
+        if(argc >= 5)
+        {
+            clamp_s = v7_get_int(v7e, v7_arg(v7e, 4));
+            clamp_t = clamp_s;
+        }
+
+        if(argc >= 6)
+        {
+            clamp_t = v7_get_int(v7e, v7_arg(v7e, 5));
+        }
+
+        bindTexture(name, textureid, magfilter, minfilter, clamp_s, clamp_t);
     }
     else
     {
@@ -190,6 +206,8 @@ enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res)
         int layer = v7_get_int(v7e, v7_arg(v7e, 2));
         unsigned int magfilter = default_magfilter;
         unsigned int minfilter = default_minfilter;
+        unsigned int clamp_s = default_clamp_s;
+        unsigned int clamp_t = default_clamp_t;
 
         if(argc >= 4)
         {
@@ -201,7 +219,18 @@ enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res)
             minfilter = v7_get_int(v7e, v7_arg(v7e, 4));
         }
 
-        bindRendertarget(name,  textureid, layer, magfilter, minfilter);
+        if(argc >= 6)
+        {
+            clamp_s = v7_get_int(v7e, v7_arg(v7e, 5));
+            clamp_t = clamp_s;
+        }
+
+        if(argc >= 7)
+        {
+            clamp_t = v7_get_int(v7e, v7_arg(v7e, 6));
+        }
+
+        bindRendertarget(name,  textureid, layer, magfilter, minfilter, clamp_s, clamp_t);
     }
     else
     {
@@ -224,6 +253,24 @@ enum v7_err js_set_default_filter(v7* v7e, v7_val_t* res)
     else
     {
         fprintf(stderr, "invalid number of arguments to setdefaultfilter\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_set_default_clamp(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        default_clamp_s = v7_get_int(v7e, v7_arg(v7e, 0));
+        default_clamp_t = v7_get_int(v7e, v7_arg(v7e, 1));
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to setdefaultclamp\n");
         return V7_SYNTAX_ERROR;
     }
 

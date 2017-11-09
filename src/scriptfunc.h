@@ -27,6 +27,7 @@ enum v7_err js_set_uniformf(v7* v7e, v7_val_t* res);
 enum v7_err js_set_uniformi(v7* v7e, v7_val_t* res);
 enum v7_err js_set_uniformui(v7* v7e, v7_val_t* res);
 enum v7_err js_set_default_filter(v7* v7e, v7_val_t* res);
+enum v7_err js_set_default_clamp(v7* v7e, v7_val_t* res);
 /* math */
 enum v7_err js_vec3_dot(v7* v7e, v7_val_t* res);
 enum v7_err js_vec3_normalize(v7* v7e, v7_val_t* res);
