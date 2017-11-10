@@ -2,7 +2,7 @@
 
 | Function *optional | comment|
 |-|-|
-| rendertargetid createrendertarget(width,height,layers,colors,type,minfilter*,magfilter*)   | |
+| rendertargetid createrendertarget(width,height,layers,colors,type)   | |
 | clear(r*,g*,b*,a*) | can be 0 1 3 or 4 variables set|
 | beginpass(rendertargetid*) | no render target set will result rendering to the backbuffer |
 | endpass()  | |
@@ -11,8 +11,9 @@
 | shaderid loadshader(vertfile,fragfile,geomfile,controlfile,evalfile)  | 0 on unused shader files |
 | drawmesh(meshid,submesh*) | will draw all submeshes if none are given |
 | bindattribute(attribute_name,MESH_FLAG) | see MESH_FLAG_* |
-| resetattributes() | |
 | bindshader(shaderid) | -1 unbinds all shaders |
+| bindtexture(samplername,textureid,minfilter*,magfilter*,clamp_s*,clamp_t*);
+| bindrendertarget(samplername,textureid,layer,minfilter*,magfilter*,clamp_s*,clamp_t*);
 | setuniformf(name,x,y*,z*,w*) | |
 | setuniformi(name,x,y*,z*,w*) | |
 | setuniformui(name,x,y*,z*,w*) | |
@@ -31,6 +32,17 @@
 | mat4 mat4setrotation(angle,x,y,z) | |
 | mat4 mat4setperspective(fov,aspect,near,far) | |
 | mat4 mat4mul(mat4,mat4) | |
+| setmat4anglemode(mode) | RADIANS or DEGREES |
+| sin | |
+| cos | |
+| tan | |
+| asin | |
+| acos | |
+| atan | |
+| floor | |
+| ceil | |
+| abs | |
+| sqrt | |
 
 # Objects
 
@@ -82,6 +94,23 @@ mat4={
 | CULL_NONE |
 | CULL_BOTH |
 
+| Mouse | comment |
+|-|-|
+| MOUSE_X | |
+| MOUSE_Y | |
+| MOUSE_DELTA_X | change in mouse position since the last frame |
+| MOUSE_DELTA_Y | change in mouse position since the last frame |
+| MOUSE_1 | |
+| MOUSE_2 | |
+| MOUSE_3 | |
+| MOUSE_4 | |
+| MOUSE_5 | |
+| MOUSE_6 | |
+| MOUSE_7 | |
+| MOUSE_8 | |
+| MOUSE_PRESSED | mouse button state |
+| MOUSE_PRESSED_NOW | is the button pressed this frame |
+
 ## OpenGL variables
 
 GL_UNSIGNED_BYTE
@@ -126,3 +155,6 @@ GL_NEAREST_MIPMAP_NEAREST
 GL_LINEAR_MIPMAP_NEAREST
 GL_NEAREST_MIPMAP_LINEAR
 GL_LINEAR_MIPMAP_LINEAR
+GL_CLAMP_TO_EDGE
+GL_MIRRORED_REPEAT
+GL_REPEAT
