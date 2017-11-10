@@ -26,9 +26,7 @@ unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,
                                 unsigned int layers,
                                 unsigned int format,
-                                unsigned int type,
-                                unsigned int magfilter,
-                                unsigned int minfilter);
+                                unsigned int type);
 
 void clear(float red, float green, float blue, float alpha, char color, char depth);
 void cleanupRender();

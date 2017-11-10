@@ -15,9 +15,7 @@ unsigned int CreateRenderTarget(unsigned int width,
                                 unsigned int height,
                                 unsigned int layers,
                                 unsigned int format,
-                                unsigned int type,
-                                unsigned int magfilter,
-                                unsigned int minfilter)
+                                unsigned int type)
 {
     if(numrendertargets == 0)
     {
@@ -119,8 +117,6 @@ unsigned int CreateRenderTarget(unsigned int width,
     {
         glBindTexture(GL_TEXTURE_2D, target->textures[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0, format, type, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, target->textures[i], 0);
     }
 

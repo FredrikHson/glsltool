@@ -141,20 +141,8 @@ enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res)
     int layers = v7_get_int(v7e, v7_arg(v7e, 2));
     int colors = v7_get_int(v7e, v7_arg(v7e, 3));
     int type   = v7_get_int(v7e, v7_arg(v7e, 4));
-    int magfilter = GL_NEAREST;
-    int minfilter = GL_NEAREST;
 
-    if(v7_argc(v7e) > 5)
-    {
-        magfilter = v7_get_int(v7e, v7_arg(v7e, 6));
-    }
-
-    if(v7_argc(v7e) > 6)
-    {
-        minfilter = v7_get_int(v7e, v7_arg(v7e, 7));
-    }
-
-    unsigned int target = CreateRenderTarget(width, height, layers, colors, type, minfilter, magfilter);
+    unsigned int target = CreateRenderTarget(width, height, layers, colors, type);
     *res = v7_mk_number(v7e, target);
     return V7_OK;
 }
