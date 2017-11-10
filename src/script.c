@@ -25,7 +25,6 @@ void create_js_functions()
     v7_set_method(v7g, global, "loadshader", &js_load_shader);
     v7_set_method(v7g, global, "drawmesh", &js_draw_mesh);
     v7_set_method(v7g, global, "bindattribute", &js_bind_attrib);
-    v7_set_method(v7g, global, "resetattributes", &js_reset_attribs);
     v7_set_method(v7g, global, "bindshader", &js_bind_shader);
     v7_set_method(v7g, global, "bindtexture", &js_bind_texture);
     v7_set_method(v7g, global, "bindrendertarget", &js_bind_rendertarget);

@@ -37,18 +37,13 @@ enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
-enum v7_err js_reset_attribs(v7* v7e, v7_val_t* res)
-{
-    resetAttribs();
-    return V7_OK;
-}
-
 enum v7_err js_bind_shader(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
 
     if(argc == 1)
     {
+        resetAttribs();
         const int shaderid = v7_get_int(v7e, v7_arg(v7e, 0));
         bindShader(shaderid);
     }
