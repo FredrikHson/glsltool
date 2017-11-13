@@ -135,8 +135,8 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "CULL_NONE", 9, v7_mk_number(v7g, CULL_NONE));
     v7_set(v7g, v7_get_global(v7g), "CULL_BOTH", 9, v7_mk_number(v7g, CULL_BOTH));
     /* input flags*/
-    v7_set(v7g, v7_get_global(v7g), "MOUSE_PRESSED", 13, v7_mk_number(v7g, MOUSE_PRESSED));
-    v7_set(v7g, v7_get_global(v7g), "MOUSE_PRESSED_NOW", 17, v7_mk_number(v7g, MOUSE_PRESSED_NOW));
+    v7_set(v7g, v7_get_global(v7g), "PRESSED", 7, v7_mk_number(v7g, PRESSED));
+    v7_set(v7g, v7_get_global(v7g), "PRESSED_NOW", 11, v7_mk_number(v7g, PRESSED_NOW));
     /* math flags */
     v7_set(v7g, v7_get_global(v7g), "RADIANS", 7, v7_mk_number(v7g, RADIANS));
     v7_set(v7g, v7_get_global(v7g), "DEGREES", 7, v7_mk_number(v7g, DEGREES));

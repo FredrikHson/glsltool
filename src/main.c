@@ -24,6 +24,10 @@ double lastypos = 0;
 char lastmousebuttons[8] = {0};
 char lastmouseinside = 0;
 
+char keyboard[GLFW_KEY_LAST + 1] = {0};
+char keyboardlast[GLFW_KEY_LAST + 1] = {0};
+
+
 void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -92,6 +96,15 @@ void handleMouse()
     }
 }
 
+void handleKeys()
+{
+    for(int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST + 1; i++)
+    {
+        keyboardlast[i] = keyboard[i];
+        keyboard[i] = glfwGetKey(window, i) == GLFW_PRESS;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     if(!handle_options(argc, argv))
@@ -147,6 +160,7 @@ int main(int argc, char* argv[])
     while(!glfwWindowShouldClose(window) && !should_quit)
     {
         handleMouse();
+        handleKeys();
 
         if(validscript)
         {

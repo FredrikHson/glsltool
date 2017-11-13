@@ -1,7 +1,9 @@
 #include "script.h"
 #include "v7.h"
 #include <stdio.h>
+#include "opengl.h"
 #include "defines.h"
+#include "keys.h"
 
 extern double xpos;
 extern double ypos;
@@ -11,9 +13,29 @@ extern double lastxpos;
 extern double lastypos;
 extern char lastmousebuttons[8];
 extern char lastmouseinside;
+extern char keyboard[GLFW_KEY_LAST + 1];
+extern char keyboardlast[GLFW_KEY_LAST + 1];
 
 typedef struct v7 v7;
 extern v7* v7g;
+
+char getstate(char last, char now)
+{
+    char state = 0;
+
+    if(now == 1)
+    {
+        state |= PRESSED;
+
+        if(last == 0)
+        {
+            state |= PRESSED_NOW;
+        }
+    }
+
+    return state;
+}
+
 void updateinput()
 {
     v7_set(v7g, v7_get_global(v7g), "MOUSE_X", 7, v7_mk_number(v7g, xpos));
@@ -26,18 +48,14 @@ void updateinput()
     {
         char buttondef[8] = {0};
         snprintf(buttondef, 8, "MOUSE_%i", i + 1);
-        char state = 0;
-
-        if(mousebuttons[i] == 1)
-        {
-            state |= MOUSE_PRESSED;
-
-            if(lastmousebuttons[i] == 0)
-            {
-                state |= MOUSE_PRESSED_NOW;
-            }
-        }
-
+        char state = getstate(lastmousebuttons[i], mousebuttons[i]);
         v7_set(v7g, v7_get_global(v7g), buttondef, 7, v7_mk_number(v7g, state));
+    }
+
+    for(int i = 0; keys[i].name[0] != 0; i++)
+    {
+        int id = keys[i].glfwid;
+        char state = getstate(keyboardlast[id], keyboard[id]);
+        v7_set(v7g, v7_get_global(v7g), keys[i].name, ~0, v7_mk_number(v7g, state));
     }
 }
