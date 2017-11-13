@@ -413,8 +413,6 @@ void bindAttribute(int flag, unsigned int* attrib, int components, size_t offset
 void drawSubmesh(int id, int submesh)
 {
     mesh* m = &meshes[id];
-    /*fprintf(stdout, "drawing:%s id:%i submesh:%i\n", m->name,id, submesh);*/
-    // vertex index format pos.xyz[numverts],next.xyz[numverts]
     unsigned int flags = m->flags[submesh];
     unsigned int numverts = m->numverts[submesh];
     size_t offset = 0;

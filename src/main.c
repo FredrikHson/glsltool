@@ -176,7 +176,6 @@ int main(int argc, char* argv[])
         glfwPollEvents();
         watchChanges();
         updateTime();
-        /*usleep(16666);*/
     }
 
     fprintf(stderr, "after initscript\n");
