@@ -34,6 +34,7 @@
 | mat4 mat4setperspective(fov,aspect,near,far) | |
 | mat4 mat4mul(mat4,mat4) | |
 | mat4 mat4transpose(mat4) | |
+| mat4 mat4invert(mat4) | |
 | setmat4anglemode(mode) | RADIANS or DEGREES |
 | sin | |
 | cos | |

@@ -48,6 +48,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "mat4setperspective", &js_mat4_setperspective);
     v7_set_method(v7g, global, "mat4mul", &js_mat4_mul);
     v7_set_method(v7g, global, "mat4transpose", &js_mat4_transpose);
+    v7_set_method(v7g, global, "mat4invert", &js_mat4_invert);
     v7_set_method(v7g, global, "vec3mat4mul", &js_vec3_mat4_mul);
     v7_set_method(v7g, global, "sin", &js_sin);
     v7_set_method(v7g, global, "cos", js_cos);

@@ -512,6 +512,33 @@ enum v7_err js_mat4_transpose(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+enum v7_err js_mat4_invert(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+
+        if(v7_is_object(arg1))
+        {
+            const mat4 m = v7_val_tomat4(v7e, arg1);
+            *res = mat4tov7_val(v7e, mat4invert(&m));
+        }
+        else
+        {
+            *res = mat4tov7_val(v7e, mat4loadidentity());
+            fprintf(stderr, "mat4invert needs 1 matrix as arguments\n");
+        }
+    }
+    else
+    {
+        fprintf(stderr, "mat4invert needs 1 matrix as arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
 
 enum v7_err js_sin(v7* v7e, v7_val_t* res)
 {
