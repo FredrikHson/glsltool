@@ -132,3 +132,25 @@ vec3 vec3mat4mul(const vec3* v, const mat4* mat)
     out.z /= w;
     return out;
 }
+
+mat4 mat4transpose(const mat4* m)
+{
+    mat4 out;
+    out.m[0]  = m->m[0];
+    out.m[1]  = m->m[4];
+    out.m[2]  = m->m[8];
+    out.m[3]  = m->m[12];
+    out.m[4]  = m->m[1];
+    out.m[5]  = m->m[5];
+    out.m[6]  = m->m[9];
+    out.m[7]  = m->m[13];
+    out.m[8]  = m->m[2];
+    out.m[9]  = m->m[6];
+    out.m[10] = m->m[10];
+    out.m[11] = m->m[14];
+    out.m[12] = m->m[3];
+    out.m[13] = m->m[7];
+    out.m[14] = m->m[11];
+    out.m[15] = m->m[15];
+    return out;
+}

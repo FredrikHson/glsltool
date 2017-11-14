@@ -42,6 +42,7 @@ enum v7_err js_mat4_setrotation(v7* v7e, v7_val_t* res);
 enum v7_err js_mat4_setperspective(v7* v7e, v7_val_t* res);
 enum v7_err js_mat4_mul(v7* v7e, v7_val_t* res);
 enum v7_err js_vec3_mat4_mul(v7* v7e, v7_val_t* res);
+enum v7_err js_mat4_transpose(v7* v7e, v7_val_t* res);
 enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res);
 enum v7_err js_sin(v7* v7e, v7_val_t* res);
 enum v7_err js_cos(v7* v7e, v7_val_t* res);
