@@ -443,13 +443,16 @@ enum v7_err js_vec3_mat4_mul(v7* v7e, v7_val_t* res)
         }
         else
         {
-            *res = mat4tov7_val(v7e, mat4loadidentity());
-            fprintf(stderr, "vec3mat4mul needs 2 matrices as arguments\n");
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, 0));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, 0));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, 0));
+            fprintf(stderr, "vec3mat4mul needs 1 vec3 and 1 matrix as arguments\n");
         }
     }
     else
     {
-        fprintf(stderr, "mat4mul needs 2 arguments\n");
+        fprintf(stderr, "vec3mat4mul needs 1 vec3 and 1 matrix as arguments\n");
         return V7_SYNTAX_ERROR;
     }
 
