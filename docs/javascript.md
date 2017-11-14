@@ -26,6 +26,7 @@
 | vec3 vec3add(vec3,vec3) | |
 | vec3 vec3sub(vec3,vec3) | |
 | vec3 vec3mul(vec3,scalar) | |
+| vec3 vec3mat4mul(vec3,mat4) | assumes that w is 1 and will divide by w after multiplying |
 | mat4 mat4loadidentity() | |
 | mat4 mat4setscale(x,y*,z*) | 1 or 3 variables|
 | mat4 mat4settranslation(x,y,z) | |

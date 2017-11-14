@@ -419,6 +419,43 @@ enum v7_err js_mat4_mul(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+enum v7_err js_vec3_mat4_mul(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            vec3 v1;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
+            const mat4 m = v7_val_tomat4(v7e, arg2);
+            vec3 mul = vec3mat4mul(&v1, &m);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, mul.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, mul.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, mul.z));
+        }
+        else
+        {
+            *res = mat4tov7_val(v7e, mat4loadidentity());
+            fprintf(stderr, "vec3mat4mul needs 2 matrices as arguments\n");
+        }
+    }
+    else
+    {
+        fprintf(stderr, "mat4mul needs 2 arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);

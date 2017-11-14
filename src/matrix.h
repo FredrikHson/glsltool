@@ -13,5 +13,6 @@ mat4 mat4mul(const mat4* m1, const mat4* m2);
 mat4 mat4setperspective(float fov, float aspect, float near, float far);
 mat4 mat4setrotr(float angle, float x, float y, float z);
 void setUniformMat4(const char* name, const mat4* m);
+struct vec3 vec3mat4mul(const struct vec3* v, const mat4* mat);
 
 #endif //__MATRIX_H__
