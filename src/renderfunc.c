@@ -113,14 +113,17 @@ unsigned int CreateRenderTarget(unsigned int width,
 
     GLint oldTextureBinding = 0;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldTextureBinding);
+    GLenum DrawBuffers[32] = {0};
 
     for(int i = 0; i < layers; i++)
     {
+        DrawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
         glBindTexture(GL_TEXTURE_2D, target->textures[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, components, width, height, 0, format, type, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, target->textures[i], 0);
     }
 
+    glDrawBuffers(layers, DrawBuffers);
     glGenRenderbuffers(1, &target->depth);
     glBindRenderbuffer(GL_RENDERBUFFER, target->depth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
