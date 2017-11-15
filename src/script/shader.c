@@ -236,6 +236,29 @@ enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+enum v7_err js_bind_fragment_data(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc >= 2)
+    {
+        int shaderid = v7_get_int(v7e, v7_arg(v7e, 0));
+        v7_val_t val = v7_arg(v7e, 1);
+        size_t len = 0;
+        const char* name = v7_get_string(v7e, &val, &len);
+        int rendertargetid = v7_get_int(v7e, v7_arg(v7e, 2));
+        int layer = v7_get_int(v7e, v7_arg(v7e, 3));
+        bindFragDataLocation(shaderid, name, rendertargetid, layer);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to bindframentdata\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 enum v7_err js_set_default_filter(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);

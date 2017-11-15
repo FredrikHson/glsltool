@@ -1,5 +1,6 @@
 #include "opengl.h"
 #include "renderfunc.h"
+#include "resources.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "options.h"
@@ -212,7 +213,7 @@ void bindRendertarget(const char* name, int id, int layer,
                       unsigned int magfilter, unsigned int minfilter,
                       unsigned int clamp_s, unsigned int clamp_t)
 {
-    if(id > numrendertargets || currentprogram == 0)
+    if(id >= numrendertargets || currentprogram == 0)
     {
         return;
     }
@@ -231,4 +232,29 @@ void bindRendertarget(const char* name, int id, int layer,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp_t);
     glUniform1i(loc, numboundtextures);
     numboundtextures += 1;
+}
+
+extern shader* shaders;
+extern unsigned int numshaders;
+void bindFragDataLocation(int shaderid, const char* name, int rtid, int layer)
+{
+    if(rtid >= numrendertargets || shaderid >= numshaders)
+    {
+        return;
+    }
+
+    if(rendertargets[rtid].layers <= layer)
+    {
+        return;
+    }
+
+    int maxdrawbuffers = 0;
+    glGetIntegerv(GL_MAX_DRAW_BUFFERS, &maxdrawbuffers);
+
+    if(layer < maxboundtextures)
+    {
+        unsigned int program = shaders[shaderid].program;
+        glBindFragDataLocation(program, layer, name);
+        glLinkProgram(program);
+    }
 }

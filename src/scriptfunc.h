@@ -22,6 +22,7 @@ enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res);
 enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res);
 enum v7_err js_bind_shader(v7* v7e, v7_val_t* res);
 enum v7_err js_bind_texture(v7* v7e, v7_val_t* res);
+enum v7_err js_bind_fragment_data(v7* v7e, v7_val_t* res);
 enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res);
 enum v7_err js_set_uniformf(v7* v7e, v7_val_t* res);
 enum v7_err js_set_uniformi(v7* v7e, v7_val_t* res);

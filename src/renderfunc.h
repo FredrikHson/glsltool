@@ -47,5 +47,6 @@ void bindRendertarget(const char* name, int id, int layer,
                       unsigned int magfilter, unsigned int minfilter,
                       unsigned int clamp_s, unsigned int clamp_t);
 void resetTexturebindings();
+void bindFragDataLocation(int shaderid, const char* name, int rtid, int layer);
 
 #endif //__RENDERFUNC_H__
