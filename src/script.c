@@ -1,19 +1,70 @@
-#include "script.h"
-#include <stdio.h>
-#include <math.h>
-#include "opengl.h"
-#include "v7.h"
-#include "renderfunc.h"
 #include "defines.h"
+#include "opengl.h"
+#include "renderfunc.h"
+#include "script.h"
 #include "scriptfunc.h"
+#include "v7.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct v7 v7;
 unsigned char validscript = 0;
 v7* v7g = 0;
 
+char** globals = 0;
+size_t numglobals = 0;
+
+enum v7_err js_register_global(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        size_t len = 0;
+        v7_val_t val = v7_arg(v7e, 0);
+        const char* name = v7_get_string(v7e, &val, &len);
+
+        for(int i = 0; i < numglobals; i++)
+        {
+            if(strcmp(name, globals[i]) == 0)
+            {
+                return V7_OK;
+            }
+        }
+
+        if(numglobals == 0)
+        {
+            globals = malloc(sizeof(char*));
+        }
+        else
+        {
+            void* newglobals = realloc(globals, sizeof(char*) * (numglobals + 1));
+
+            if(newglobals == 0)
+            {
+                fprintf(stderr, "out of memory while registering a global%s\n", name);
+                exit(1);
+            }
+            else
+            {
+                globals = newglobals;
+            }
+        }
+
+        globals[numglobals] = strdup(name);
+        numglobals++;
+        printf("registered: %s\n", name);
+    }
+
+    return V7_OK;
+}
+
 void create_js_functions()
 {
     v7_val_t global = v7_get_global(v7g);
+    v7_set_method(v7g, global, "registerglobal", &js_register_global);
     v7_set_method(v7g, global, "createrendertarget", &js_create_rendertarget);
     v7_set_method(v7g, global, "clear", &js_clear);
     v7_set_method(v7g, global, "cleardepth", &js_cleardepth);
@@ -162,7 +213,14 @@ int initScript(const char* filename)
     }
 
     validscript = 1;
-    run_loop();
+    static char firstrun = 1;
+
+    if(firstrun)
+    {
+        firstrun = 0;
+        run_loop();
+    }
+
     return 1;
 }
 
@@ -189,13 +247,62 @@ int shutdownScript()
 {
     v7_destroy(v7g);
     cleanupRender();
+
+    if(globals)
+    {
+        for(int i = 0; i < numglobals; i++)
+        {
+            free(globals[i]);
+        }
+
+        free(globals);
+    }
+
     return 1;
 }
 
 void reloadScript(const char* filename)
 {
+    int oldnumglobals = numglobals;
     printf("reloading script: %s\n", filename);
+    char** tmpstorage = malloc(sizeof(char*)*oldnumglobals);
+
+    for(int i = 0; i < oldnumglobals; i++)
+    {
+        tmpstorage[i] = 0;
+        v7_val_t g = v7_get(v7g, v7_get_global(v7g), globals[i], ~0);
+
+        if(v7_is_undefined(g) == 0)
+        {
+            tmpstorage[i] = v7_to_json(v7g, g, 0, 0);
+        }
+    }
+
     v7_destroy(v7g);
     cleanupRender();
     initScript(filename);
+
+    for(int i = 0; i < oldnumglobals; i++)
+    {
+        if(tmpstorage[i] != 0)
+        {
+            v7_val_t oldvalues;
+            enum v7_err err = v7_parse_json(v7g, tmpstorage[i], &oldvalues);
+
+            if(err == V7_OK)
+            {
+                v7_set(v7g, v7_get_global(v7g), globals[i], ~0, oldvalues);
+            }
+        }
+    }
+
+    if(tmpstorage)
+    {
+        for(int i = 0; i < oldnumglobals; i++)
+        {
+            free(tmpstorage[i]);
+        }
+
+        free(tmpstorage);
+    }
 }

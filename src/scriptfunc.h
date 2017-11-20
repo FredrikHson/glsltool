@@ -1,7 +1,9 @@
 #ifndef __SCRIPTFUNC_H__
 #define __SCRIPTFUNC_H__
 
+#include <stdint.h>
 typedef struct v7 v7;
+typedef uint64_t v7_val_t;
 /* resources */
 enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res);
 enum v7_err js_load_image(v7* v7e, v7_val_t* res);
@@ -59,5 +61,6 @@ enum v7_err js_sqrt(v7* v7e, v7_val_t* res);
 enum v7_err js_set_angle_mode(v7* v7e, v7_val_t* res);
 /* update variables functions */
 void updateinput();
+enum v7_err js_register_global(v7* v7e, v7_val_t* res);
 
 #endif //__SCRIPTFUNC_H__
