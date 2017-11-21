@@ -15,6 +15,8 @@ v7* v7g = 0;
 
 char** globals = 0;
 size_t numglobals = 0;
+extern double deltaTime;
+extern double currenttime;
 
 enum v7_err js_register_global(v7* v7e, v7_val_t* res)
 {
@@ -195,6 +197,9 @@ void create_js_defines()
     /* math flags */
     v7_set(v7g, v7_get_global(v7g), "RADIANS", 7, v7_mk_number(v7g, RADIANS));
     v7_set(v7g, v7_get_global(v7g), "DEGREES", 7, v7_mk_number(v7g, DEGREES));
+
+    v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
+    v7_set(v7g, v7_get_global(v7g), "DELTA_TIME", 10, v7_mk_number(v7g, deltaTime));
 }
 
 int initScript(const char* filename)
@@ -224,8 +229,6 @@ int initScript(const char* filename)
     return 1;
 }
 
-extern double deltaTime;
-extern double currenttime;
 void run_loop()
 {
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
