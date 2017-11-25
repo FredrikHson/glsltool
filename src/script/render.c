@@ -202,3 +202,29 @@ enum v7_err js_set_cullface(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
+enum v7_err js_wireframe(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int enable = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(enable)
+        {
+            glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to wireframe\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}

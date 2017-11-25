@@ -69,6 +69,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "registerglobal", &js_register_global);
     v7_set_method(v7g, global, "createrendertarget", &js_create_rendertarget);
     v7_set_method(v7g, global, "clear", &js_clear);
+    v7_set_method(v7g, global, "wireframe", &js_wireframe);
     v7_set_method(v7g, global, "cleardepth", &js_cleardepth);
     v7_set_method(v7g, global, "clearcolor", &js_clearcolor);
     v7_set_method(v7g, global, "beginpass", &js_beginPass);

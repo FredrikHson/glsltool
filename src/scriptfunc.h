@@ -19,6 +19,7 @@ enum v7_err js_draw_mesh(v7* v7e, v7_val_t* res);
 enum v7_err js_reset_attribs(v7* v7e, v7_val_t* res);
 enum v7_err js_set_cullface(v7* v7e, v7_val_t* res);
 enum v7_err js_set_depth(v7* v7e, v7_val_t* res);
+enum v7_err js_wireframe(v7* v7e, v7_val_t* res);
 /* shader */
 enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res);
 enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res);
