@@ -11,6 +11,7 @@ shader* shaders;
 unsigned int numshaders = 0;
 
 unsigned int currentprogram = 0;
+unsigned int usingtessellation = 0;
 
 size_t getFilesize(FILE* f)
 {
@@ -443,6 +444,7 @@ void bindShader(int id)
     {
         glUseProgram(0);
         currentprogram = 0;
+        usingtessellation = 0;
     }
     else
     {
@@ -467,6 +469,15 @@ void bindShader(int id)
         {
             glUseProgram(0);
             currentprogram = 0;
+        }
+
+        if(s->eval && s->control)
+        {
+            usingtessellation = 1;
+        }
+        else
+        {
+            usingtessellation = 0;
         }
     }
 }

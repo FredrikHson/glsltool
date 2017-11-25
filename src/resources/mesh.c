@@ -14,6 +14,7 @@ struct aiColor4D;
 struct aiVector3D;
 
 extern unsigned int currentprogram;
+extern unsigned int usingtessellation;
 
 typedef struct vertattribute
 {
@@ -463,7 +464,17 @@ void drawSubmesh(int id, int submesh)
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices[submesh]);
-    glDrawElements(GL_TRIANGLES, m->numindices[submesh], GL_UNSIGNED_INT, 0);
+
+    if(usingtessellation)
+    {
+        glPatchParameteri(GL_PATCH_VERTICES, 3);
+        glDrawElements(GL_PATCHES, m->numindices[submesh], GL_UNSIGNED_INT, 0);
+    }
+    else
+    {
+        glDrawElements(GL_TRIANGLES, m->numindices[submesh], GL_UNSIGNED_INT, 0);
+    }
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     currattrib = 0;
