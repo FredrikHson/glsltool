@@ -192,7 +192,7 @@ enum v7_err js_vec3_sub(v7* v7e, v7_val_t* res)
             v2.x = v7_get_double(v7e, v7_get(v7e, arg2, "x", 1));
             v2.y = v7_get_double(v7e, v7_get(v7e, arg2, "y", 1));
             v2.z = v7_get_double(v7e, v7_get(v7e, arg2, "z", 1));
-            vec3 sub = vec3add(v1, v2);
+            vec3 sub = vec3sub(v1, v2);
             *res = v7_mk_object(v7e);
             v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, sub.x));
             v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, sub.y));
