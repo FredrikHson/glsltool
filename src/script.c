@@ -84,6 +84,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "bindrendertarget", &js_bind_rendertarget);
     v7_set_method(v7g, global, "bindfragmentdata", &js_bind_fragment_data);
     v7_set_method(v7g, global, "setdefaultfilter", &js_set_default_filter);
+    v7_set_method(v7g, global, "setdefaultclamp", &js_set_default_clamp);
     v7_set_method(v7g, global, "setuniformf", &js_set_uniformf);
     v7_set_method(v7g, global, "setuniformi", &js_set_uniformi);
     v7_set_method(v7g, global, "setuniformui", &js_set_uniformui);
