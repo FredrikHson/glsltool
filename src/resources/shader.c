@@ -57,7 +57,7 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
     else
     {
         out = shaderobject;
-        printf("reusing shader object:%i\n", out);
+        printf("reusing shader object:%u\n", out);
     }
 
     glShaderSource(out, 1, (const char**)&data, &len);
