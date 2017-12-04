@@ -134,7 +134,14 @@ void cleanupRender()
 int currentPassTarget = 0;
 void beginPass(int target, int* width, int* height)
 {
-    currentPassTarget = target;
+    if(target >= numrendertargets)
+    {
+        currentPassTarget = -1;
+    }
+    else
+    {
+        currentPassTarget = target;
+    }
 
     if(currentPassTarget == -1)
     {
