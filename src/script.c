@@ -1,5 +1,6 @@
 #include "defines.h"
 #include "opengl.h"
+#include "options.h"
 #include "renderfunc.h"
 #include "script.h"
 #include "scriptfunc.h"
@@ -295,6 +296,8 @@ void run_loop()
 {
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
     v7_set(v7g, v7_get_global(v7g), "DELTA_TIME", 10, v7_mk_number(v7g, deltaTime));
+    v7_set(v7g, v7_get_global(v7g), "WINDOW_WIDTH", 12, v7_mk_number(v7g, options.width));
+    v7_set(v7g, v7_get_global(v7g), "WINDOW_HEIGHT", 13, v7_mk_number(v7g, options.height));
     updateinput();
     v7_val_t function;
     v7_val_t result;

@@ -64,6 +64,8 @@ mat4={
 |-|-|
 | RENDER_WIDTH | updated with beginpass |
 | RENDER_HEIGHT | updated with beginpass |
+| WINDOW_WIDTH | updated on loop start |
+| WINDOW_HEIGHT | updated on loop start |
 | TIME | time since glsltool starts|
 | DELTA_TIME | time since last loop start |
 
