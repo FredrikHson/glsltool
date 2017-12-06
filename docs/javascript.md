@@ -2,7 +2,7 @@
 
 | Function *optional | comment|
 |-|-|
-| rendertargetid createrendertarget(width,height,layers,components,glformat)   | components 1-4 or GL_R, G_RGB...|
+| rendertargetid createrendertarget(width,height,layers,components,glformat,relative*)   | components 1-4 or GL_R, G_RGB... if relative is set width and height are float numbers where 1.0 = window size |
 | clear(r*,g*,b*,a*) | can be 0 1 3 or 4 variables set|
 | beginpass(rendertargetid*) | no render target set will result rendering to the backbuffer |
 | endpass()  | |

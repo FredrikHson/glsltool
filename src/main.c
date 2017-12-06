@@ -9,6 +9,7 @@
 #include "notify.h"
 #include <stdlib.h>
 #include "defines.h"
+#include "renderfunc.h"
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -37,6 +38,7 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 {
     options.width = width;
     options.height = height;
+    resizeTargets();
 }
 void key_handler_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {

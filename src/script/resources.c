@@ -136,13 +136,19 @@ enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 
-    int width  = v7_get_int(v7e, v7_arg(v7e, 0));
-    int height = v7_get_int(v7e, v7_arg(v7e, 1));
-    int layers = v7_get_int(v7e, v7_arg(v7e, 2));
-    int colors = v7_get_int(v7e, v7_arg(v7e, 3));
-    int type   = v7_get_int(v7e, v7_arg(v7e, 4));
+    float width  = v7_get_double(v7e, v7_arg(v7e, 0));
+    float height = v7_get_double(v7e, v7_arg(v7e, 1));
+    int layers   = v7_get_int(v7e, v7_arg(v7e, 2));
+    int colors   = v7_get_int(v7e, v7_arg(v7e, 3));
+    int type     = v7_get_int(v7e, v7_arg(v7e, 4));
+    char relative = 0;
 
-    unsigned int target = CreateRenderTarget(width, height, layers, colors, type);
+    if(v7_argc(v7e) == 6)
+    {
+        relative = (char)v7_get_int(v7e, v7_arg(v7e, 5));
+    }
+
+    unsigned int target = CreateRenderTarget(width, height, layers, colors, type, relative);
     *res = v7_mk_number(v7e, target);
     return V7_OK;
 }

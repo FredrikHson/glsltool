@@ -12,11 +12,12 @@ extern unsigned int numboundtextures;
 
 extern unsigned int currentprogram;
 
-unsigned int CreateRenderTarget(unsigned int width,
-                                unsigned int height,
+unsigned int CreateRenderTarget(float width,
+                                float height,
                                 unsigned int layers,
                                 unsigned int format,
-                                unsigned int type)
+                                unsigned int type,
+                                char relative)
 {
     if(numrendertargets == 0)
     {
@@ -41,8 +42,9 @@ unsigned int CreateRenderTarget(unsigned int width,
     numrendertargets += 1;
     rendertarget* target = &rendertargets[out];
     printf("creating a buffer:\n");
-    printf("    width:  %u\n", width);
-    printf("    height: %u\n", height);
+    printf("    width:  %f\n", width);
+    printf("    height: %f\n", height);
+    printf("    relative:%i\n", relative);
 
     if(layers <= 32)
     {
@@ -62,6 +64,7 @@ unsigned int CreateRenderTarget(unsigned int width,
     target->format   = format;
     target->type     = type;
     target->layers   = layers;
+    target->relative = relative;
     GLint oldFramebuffer = 0;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
     glGenFramebuffers(1, &target->buffer);
@@ -70,24 +73,62 @@ unsigned int CreateRenderTarget(unsigned int width,
     GLint oldTextureBinding = 0;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldTextureBinding);
     GLenum DrawBuffers[32] = {0};
+    unsigned int targetx;
+    unsigned int targety;
+
+    if(relative == 0)
+    {
+        targetx = (unsigned int)width;
+        targety = (unsigned int)height;
+    }
+    else
+    {
+        targetx = (unsigned int)(width * (float)options.width);
+        targety = (unsigned int)(height * (float)options.height);
+        printf("    relative width:  %u\n", targetx);
+        printf("    relative height: %u\n", targety);
+    }
 
     for(int i = 0; i < layers; i++)
     {
         DrawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
         glBindTexture(GL_TEXTURE_2D, target->textures[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, format, GL_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, type, targetx, targety, 0, format, GL_BYTE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, target->textures[i], 0);
     }
 
     glDrawBuffers(layers, DrawBuffers);
     glGenRenderbuffers(1, &target->depth);
     glBindRenderbuffer(GL_RENDERBUFFER, target->depth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, targetx, targety);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, target->depth);
     glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer);
     glBindTexture(GL_TEXTURE_2D, oldTextureBinding);
     printf("numrendertargets:%u\n", numrendertargets);
     return out;
+}
+
+void resizeTargets()
+{
+    for(int i = 0; i < numrendertargets; i++)
+    {
+        rendertarget* t = &rendertargets[i];
+
+        if(t->relative)
+        {
+            unsigned int targetx = (unsigned int)(t->width * (float)options.width);
+            unsigned int targety = (unsigned int)(t->height * (float)options.height);
+
+            for(int j = 0; j < t->layers; j++)
+            {
+                glBindTexture(GL_TEXTURE_2D, t->textures[j]);
+                glTexImage2D(GL_TEXTURE_2D, 0, t->type, targetx, targety, 0, t->format, GL_BYTE, 0);
+            }
+
+            glBindRenderbuffer(GL_RENDERBUFFER, t->depth);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, targetx, targety);
+        }
+    }
 }
 
 void clear(float red, float green, float blue, float alpha, char color, char depth)
@@ -146,17 +187,26 @@ void beginPass(int target, int* width, int* height)
     if(currentPassTarget == -1)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, options.width, options.height);
         *width = options.width;
         *height = options.height;
     }
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, rendertargets[target].buffer);
-        glViewport(0, 0, rendertargets[target].width, rendertargets[target].height);
-        *height = rendertargets[target].height;
-        *width = rendertargets[target].width;
+
+        if(rendertargets[target].relative)
+        {
+            *height = (int)(rendertargets[target].height * (float)options.height);
+            *width = (int)(rendertargets[target].width * (float)options.width);
+        }
+        else
+        {
+            *height = (int)rendertargets[target].height;
+            *width = (int)rendertargets[target].width;
+        }
     }
+
+    glViewport(0, 0, *width, *height);
 }
 void endPass()
 {

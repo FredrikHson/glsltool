@@ -5,14 +5,15 @@ extern struct GLFWwindow* window;
 
 typedef struct rendertarget
 {
-    unsigned int width;
-    unsigned int height;
+    float width;
+    float height;
     unsigned int layers;
     unsigned int format;
     unsigned int type;
     unsigned int buffer;
     unsigned int* textures;
     unsigned int depth;
+    char relative;
 } rendertarget;
 
 typedef struct vertattribute
@@ -22,11 +23,13 @@ typedef struct vertattribute
 } vertattribute;
 extern int currentPassTarget;
 
-unsigned int CreateRenderTarget(unsigned int width,
-                                unsigned int height,
+unsigned int CreateRenderTarget(float width,
+                                float height,
                                 unsigned int layers,
                                 unsigned int format,
-                                unsigned int type);
+                                unsigned int type,
+                                char relative);
+void resizeTargets();
 
 void clear(float red, float green, float blue, float alpha, char color, char depth);
 void cleanupRender();
