@@ -4,6 +4,7 @@
 #include "renderfunc.h"
 #include "script.h"
 #include "scriptfunc.h"
+#include "resources.h"
 #include "v7.h"
 #include <math.h>
 #include <stdio.h>
@@ -267,6 +268,7 @@ void create_js_defines()
 
 int initScript(const char* filename)
 {
+    initResourceCleanup();
     v7g = v7_create();
     create_js_functions();
     create_js_defines();
@@ -289,6 +291,7 @@ int initScript(const char* filename)
         run_loop();
     }
 
+    endResourceCleanup();
     return 1;
 }
 

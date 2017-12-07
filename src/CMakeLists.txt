@@ -19,6 +19,7 @@ set(COMMON_SRC
     "notify.c"
     "vector.c"
     "matrix.c"
+    "resources.c"
     "resources/image.c"
     "resources/shader.c"
     "resources/mesh.c"

@@ -1,6 +1,10 @@
 #ifndef __RESOURCES_H__
 #define __RESOURCES_H__
 
+#define CLEAN_USED    0
+#define CLEAN_DELETED 1
+#define CLEAN_LATER   2
+
 typedef struct image
 {
     char* name;
@@ -12,6 +16,7 @@ typedef struct image
 
 typedef struct mesh
 {
+    char cleanup;
     char* name;
     unsigned int numsubmeshes;
     unsigned int* indices;
@@ -45,7 +50,11 @@ void reloadMesh(const char* filename);
 void reloadShader(const char* filename);
 void cleanupImages();
 void cleanupMeshes();
+void cleanupMesh(mesh* m);
 void cleanupShaders();
 void initImages();
+
+void initResourceCleanup();
+void endResourceCleanup();
 
 #endif //__RESOURCES_H__

@@ -300,34 +300,54 @@ int loadMesh(const char* filename)
 
     for(int i = 0; i < nummeshes; i++)
     {
-        if(strcmp(filename, meshes[i].name) == 0)
+        if(!(meshes[i].cleanup & CLEAN_DELETED))
         {
-            printf("already loaded mesh %s id:%i\n", filename, i);
-            return i;
+            if(strcmp(filename, meshes[i].name) == 0)
+            {
+                meshes[i].cleanup = CLEAN_USED;
+                printf("already loaded mesh %s id:%i\n", filename, i);
+                return i;
+            }
         }
     }
 
     if(nummeshes == 0)
     {
         meshes = malloc(sizeof(mesh));
+        out = 0;
+        nummeshes = 1;
     }
     else
     {
-        void* newmeshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
+        char reuse = 0;
 
-        if(newmeshes == 0)
+        for(int i = 0; i < nummeshes; i++)
         {
-            fprintf(stderr, "out of memory while creating mesh %s\n", filename);
-            exit(1);
+            if((meshes[i].cleanup & CLEAN_DELETED))
+            {
+                reuse = 1;
+                out = i;
+            }
         }
-        else
+
+        if(reuse == 0)
         {
-            meshes = newmeshes;
+            void* newmeshes = realloc(meshes, sizeof(mesh) * (nummeshes + 1));
+
+            if(newmeshes == 0)
+            {
+                fprintf(stderr, "out of memory while creating mesh %s\n", filename);
+                exit(1);
+            }
+            else
+            {
+                meshes = newmeshes;
+                out = nummeshes;
+                nummeshes += 1;
+            }
         }
     }
 
-    out = nummeshes;
-    nummeshes += 1;
     mesh* m = &meshes[out];
     memset(m, 0, sizeof(mesh));
     m->name = malloc(strlen(filename) + 1);
@@ -335,6 +355,7 @@ int loadMesh(const char* filename)
     out = loadMeshfileOntoMesh(filename, out);
     return out;
 }
+
 void reloadMesh(const char* filename)
 {
     for(int i = 0; i < nummeshes; i++)
@@ -347,43 +368,57 @@ void reloadMesh(const char* filename)
         }
     }
 }
+
+void cleanupMesh(mesh* m)
+{
+    if(m == 0)
+    {
+        return;
+    }
+
+    if(m->name)
+    {
+        free(m->name);
+        m->name=0;
+    }
+
+    if(m->flags)
+    {
+        free(m->flags);
+        m->flags=0;
+    }
+
+    if(m->indices)
+    {
+        glDeleteBuffers(m->numsubmeshes, m->indices);
+        free(m->indices);
+        m->indices=0;
+    }
+
+    if(m->vbo)
+    {
+        glDeleteBuffers(m->numsubmeshes, m->vbo);
+        free(m->vbo);
+        m->vbo=0;
+    }
+
+    if(m->numindices)
+    {
+        free(m->numindices);
+        m->numindices = 0;
+    }
+
+    if(m->numverts)
+    {
+        free(m->numverts);
+        m->numverts = 0;
+    }
+}
 void cleanupMeshes()
 {
     for(int i = 0; i < nummeshes; i++)
     {
-        if(meshes[i].name)
-        {
-            free(meshes[i].name);
-        }
-
-        if(meshes[i].flags)
-        {
-            free(meshes[i].flags);
-        }
-
-        if(meshes[i].indices)
-        {
-            glDeleteBuffers(meshes[i].numsubmeshes, meshes[i].indices);
-            free(meshes[i].indices);
-        }
-
-        if(meshes[i].vbo)
-        {
-            glDeleteBuffers(meshes[i].numsubmeshes, meshes[i].vbo);
-            free(meshes[i].vbo);
-        }
-
-        if(meshes[i].numindices)
-        {
-            free(meshes[i].numindices);
-            meshes[i].numindices = 0;
-        }
-
-        if(meshes[i].numverts)
-        {
-            free(meshes[i].numverts);
-            meshes[i].numverts = 0;
-        }
+        cleanupMesh(&meshes[i]);
     }
 
     if(meshes)
