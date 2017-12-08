@@ -11,23 +11,23 @@ pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
 
 set(COMMON_SRC
+    "../external/v7/v7.c"
     "main.c"
+    "matrix.c"
+    "notify.c"
     "options.c"
     "renderfunc.c"
-    "script.c"
-    "../external/v7/v7.c"
-    "notify.c"
-    "vector.c"
-    "matrix.c"
     "resources.c"
     "resources/image.c"
-    "resources/shader.c"
     "resources/mesh.c"
-    "script/math.c"
-    "script/shader.c"
-    "script/resources.c"
-    "script/render.c"
+    "resources/shader.c"
+    "script.c"
     "script/input.c"
+    "script/math.c"
+    "script/render.c"
+    "script/resources.c"
+    "script/shader.c"
+    "vector.c"
     )
 
 include_directories(
