@@ -2,6 +2,8 @@
 #define __SCRIPTFUNC_H__
 
 #include <stdint.h>
+#include "v7.h"
+
 typedef struct v7 v7;
 typedef uint64_t v7_val_t;
 /* resources */

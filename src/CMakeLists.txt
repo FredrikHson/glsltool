@@ -11,7 +11,6 @@ pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
 
 set(COMMON_SRC
-    "../external/v7/v7.c"
     "main.c"
     "matrix.c"
     "notify.c"
@@ -42,8 +41,7 @@ include_directories(
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
 
-add_definitions("-DGL_GLEXT_PROTOTYPES")
-add_definitions("-Werror -Wall")
+add_library(v7 "../external/v7/v7.c")
 
 add_executable(${CMAKE_PROJECT_NAME} ${COMMON_SRC})
 
@@ -54,7 +52,12 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     ${ILU_LIBRARIES}
     ${ASSIMP_LIBRARIES}
     m
+    v7
     )
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC "GL_GLEXT_PROTOTYPES")
+target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC "-Werror")
+target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC "-Wall")
+target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC "-Wpedantic")
 install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin)
 
 # uninstall target
