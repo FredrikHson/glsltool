@@ -1,4 +1,5 @@
 #include "resources.h"
+#include "generators.h"
 #include <stdio.h>
 
 extern mesh* meshes;

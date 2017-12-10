@@ -11,6 +11,8 @@ pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
 
 set(COMMON_SRC
+    "generators.c"
+    "generators/plane.c"
     "main.c"
     "matrix.c"
     "notify.c"

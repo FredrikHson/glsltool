@@ -1,0 +1,10 @@
+#ifndef __GENERATORPARAMS_H__
+#define __GENERATORPARAMS_H__
+
+typedef struct plane_params
+{
+    float w;
+    float h;
+} plane_params;
+
+#endif //__GENERATORPARAMS_H__
