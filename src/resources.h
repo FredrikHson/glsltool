@@ -53,6 +53,7 @@ void cleanupMeshes();
 void cleanupMesh(mesh* m);
 void cleanupShaders();
 void initImages();
+int allocateMesh(const char* filename);
 
 void initResourceCleanup();
 void endResourceCleanup();

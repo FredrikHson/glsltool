@@ -25,7 +25,8 @@ extern int nummeshes;
 
 void startGeneratorCleanup();
 void endGeneratorCleanup();
+unsigned int allocateGenMesh(gentype t, void* params);
 
-int generatePlane();
+int generatePlane(unsigned int subw, unsigned int subh, float w, float h);
 
 #endif //__GENERATORS_H__

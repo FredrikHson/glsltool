@@ -2,6 +2,8 @@
 #include "v7.h"
 #include "renderfunc.h"
 #include "resources.h"
+#include "generators.h"
+
 typedef struct v7 v7;
 enum v7_err js_load_image(v7* v7e, v7_val_t* res)
 {
@@ -149,6 +151,12 @@ enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res)
     }
 
     unsigned int target = CreateRenderTarget(width, height, layers, colors, type, relative);
+    *res = v7_mk_number(v7e, target);
+    return V7_OK;
+}
+enum v7_err js_generate_plane(v7* v7e, v7_val_t* res)
+{
+    unsigned int target = generatePlane(2, 2, 1, 1);
     *res = v7_mk_number(v7e, target);
     return V7_OK;
 }

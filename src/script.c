@@ -79,6 +79,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "loadimage", &js_load_image);
     v7_set_method(v7g, global, "loadmesh", &js_load_mesh);
     v7_set_method(v7g, global, "loadshader", &js_load_shader);
+    v7_set_method(v7g, global, "generateplane", &js_generate_plane);
     v7_set_method(v7g, global, "drawmesh", &js_draw_mesh);
     v7_set_method(v7g, global, "bindattribute", &js_bind_attrib);
     v7_set_method(v7g, global, "bindshader", &js_bind_shader);

@@ -294,19 +294,23 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     aiReleaseImport(scene);
     return meshid;
 }
-int loadMesh(const char* filename)
+
+int allocateMesh(const char* filename)
 {
     unsigned int out  = 0;
 
-    for(int i = 0; i < nummeshes; i++)
+    if(filename != 0)
     {
-        if(!(meshes[i].cleanup & CLEAN_DELETED))
+        for(int i = 0; i < nummeshes; i++)
         {
-            if(strcmp(filename, meshes[i].name) == 0)
+            if(!(meshes[i].cleanup & CLEAN_DELETED) && meshes[i].name != 0)
             {
-                meshes[i].cleanup = CLEAN_USED;
-                printf("already loaded mesh %s id:%i\n", filename, i);
-                return i;
+                if(strcmp(filename, meshes[i].name) == 0)
+                {
+                    meshes[i].cleanup = CLEAN_USED;
+                    printf("already loaded mesh %s id:%i\n", filename, i);
+                    return i;
+                }
             }
         }
     }
@@ -348,6 +352,14 @@ int loadMesh(const char* filename)
         }
     }
 
+    meshes[out].name = 0;
+    meshes[out].cleanup = CLEAN_USED;
+    return out;
+}
+
+int loadMesh(const char* filename)
+{
+    unsigned int out  = allocateMesh(filename);
     mesh* m = &meshes[out];
     memset(m, 0, sizeof(mesh));
     m->name = malloc(strlen(filename) + 1);
@@ -360,11 +372,14 @@ void reloadMesh(const char* filename)
 {
     for(int i = 0; i < nummeshes; i++)
     {
-        if(strcmp(filename, meshes[i].name) == 0)
+        if(meshes[i].name != 0)
         {
-            printf("wants to reload:%i %s\n", i, filename);
-            loadMeshfileOntoMesh(filename, i);
-            break;
+            if(strcmp(filename, meshes[i].name) == 0)
+            {
+                printf("wants to reload:%i %s\n", i, filename);
+                loadMeshfileOntoMesh(filename, i);
+                break;
+            }
         }
     }
 }
@@ -379,27 +394,27 @@ void cleanupMesh(mesh* m)
     if(m->name)
     {
         free(m->name);
-        m->name=0;
+        m->name = 0;
     }
 
     if(m->flags)
     {
         free(m->flags);
-        m->flags=0;
+        m->flags = 0;
     }
 
     if(m->indices)
     {
         glDeleteBuffers(m->numsubmeshes, m->indices);
         free(m->indices);
-        m->indices=0;
+        m->indices = 0;
     }
 
     if(m->vbo)
     {
         glDeleteBuffers(m->numsubmeshes, m->vbo);
         free(m->vbo);
-        m->vbo=0;
+        m->vbo = 0;
     }
 
     if(m->numindices)

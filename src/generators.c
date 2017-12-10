@@ -3,6 +3,7 @@
 #include "generatorparams.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 generatedmesh* gen_meshes = 0;
 unsigned int numgen_meshes = 0;
@@ -116,6 +117,19 @@ unsigned int allocateGenMesh(gentype t, void* params)
                 numgen_meshes += 1;
             }
         }
+    }
+
+    switch(t)
+    {
+        case GEN_PLANE:
+        {
+            gen_meshes[out].params = malloc(sizeof(plane_params));
+            memcpy(gen_meshes[out].params, &params, sizeof(plane_params));
+            break;
+        }
+
+        default:
+            break;
     }
 
     gen_meshes[out].meshid = ~0;  // if its not ~0 ignore the generation code
