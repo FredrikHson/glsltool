@@ -7,7 +7,6 @@
 
 int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
 {
-    printf("starting to generate an amazing plane!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
     plane_params p;
     p.w = w;
     p.h = h;
@@ -20,64 +19,100 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         printf("\n");
         gen_meshes[out].meshid = allocateMesh(0);
         mesh* m = &meshes[gen_meshes[out].meshid];
-        unsigned int size = 14 * sizeof(float);
+        size_t vlen = 14;
         unsigned int numverts = (subw + 2) * (subh + 2);
-        float* data = (float*)malloc(numverts * size);
+        float* data = (float*)malloc(numverts * vlen * sizeof(float));
         float dw = w / (subw + 1);
         float dh = h / (subh + 1);
-        float* d = data;
+        size_t noffset = numverts * 3;
+        size_t toffset = noffset + numverts * 3;
+        size_t boffset = toffset + numverts * 3;
+        size_t uoffset = boffset + numverts * 3;
+        size_t offset3 = 0;
+        size_t offset2 = 0;
 
         for(float i = 0; i < subh + 2; i += 1.0f)
         {
-            float y = dh * i;
+            float y = (dh * i)  - h / 2.0f;
 
-            for(unsigned int j = 0; j < subw + 2; j++)
+            for(float j = 0; j < subw + 2; j += 1.0f)
             {
-                float x = dw * j;
+                float x = (dw * j) - (w / 2.0f);
                 float u = j / (float)(subw + 1);
                 float v = i / (float)(subh + 1);
-                printf("x:%f y:%f z:%f u:%f v:%f\n", x, y, 0.0f, u, v);
                 // pos
-                d[0] = x;
-                d[1] = y;
-                d[2] = 0.0f;
+                data[offset3] = x;
+                data[offset3 + 1] = y;
+                data[offset3 + 2] = 0.0f;
                 // normals
-                d[3] = 0.0f;
-                d[4] = 0.0f;
-                d[5] = 1.0f;
+                data[noffset + offset3] = 0.0f;
+                data[noffset + offset3 + 1] = 0.0f;
+                data[noffset + offset3 + 2] = 1.0f;
                 // tangent
-                d[6] = 1.0f;
-                d[7] = 0.0f;
-                d[8] = 0.0f;
+                data[toffset + offset3] = 1.0f;
+                data[toffset + offset3 + 1] = 0.0f;
+                data[toffset + offset3 + 2] = 0.0f;
                 // binormal
-                d[9] = 0.0f;
-                d[10] = 1.0f;
-                d[11] = 0.0f;
-                // texcoord
-                d[12] = u;
-                d[13] = v;
-                d += size;
+                data[boffset + offset3] = 0.0f;
+                data[boffset + offset3 + 1] = 1.0f;
+                data[boffset + offset3 + 2] = 0.0f;
+                // texcoordata
+                data[uoffset + offset2] = u;
+                data[uoffset + offset2 + 1] = v;
+                offset3 += 3;
+                offset2 += 2;
             }
         }
 
-        m->flags      = malloc(sizeof(unsigned int));
-        m->vbo        = malloc(sizeof(unsigned int));
-        m->indices    = malloc(sizeof(unsigned int));
-        m->numindices = malloc(sizeof(unsigned int));
-        m->numverts   = malloc(sizeof(unsigned int));
-        m->numverts[0] = numverts;
-        m->flags[0] = MESH_FLAG_POSITION;
-        m->flags[0] |= MESH_FLAG_NORMAL;
-        m->flags[0] |= MESH_FLAG_TANGENT;
-        m->flags[0] |= MESH_FLAG_BINORMAL;
-        m->flags[0] |= MESH_FLAG_TEXCOORD0;
+        m->numsubmeshes = 1;
+        m->flags        = malloc(sizeof(unsigned int));
+        m->vbo          = malloc(sizeof(unsigned int));
+        m->indices      = malloc(sizeof(unsigned int));
+        m->numindices   = malloc(sizeof(unsigned int));
+        m->numverts     = malloc(sizeof(unsigned int));
+        m->numverts[0]   = numverts;
+        m->numindices[0] = (subw + 1) * (subh + 1) * 6;
+        m->flags[0] = MESH_FLAG_POSITION |
+                      MESH_FLAG_NORMAL |
+                      MESH_FLAG_TANGENT |
+                      MESH_FLAG_BINORMAL |
+                      MESH_FLAG_TEXCOORD0;
         glGenBuffers(1, m->vbo);
         glGenBuffers(1, m->indices);
         glBindBuffer(GL_ARRAY_BUFFER, m->vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, size * numverts, data, GL_STATIC_DRAW);
-        free(data);
+        glBufferData(GL_ARRAY_BUFFER, vlen * sizeof(float)* numverts, data, GL_STATIC_DRAW);
+        unsigned int* idata = malloc(sizeof(unsigned int) * m->numindices[0]);
+        unsigned int* id = idata;
+
+        for(unsigned int i = 0; i < subh + 1; i++)
+        {
+            unsigned int offset = i * (subw + 2);
+
+            for(unsigned int j = 0; j < subw + 1; j++)
+            {
+                id[0] = offset + j;
+                id[1] = offset + j + 1;
+                id[2] = offset + j + (subw + 2);
+                id[3] = offset + j + 1;
+                id[4] = offset + j + (subw + 2) + 1;
+                id[5] = offset + j + (subw + 2);
+                id += 6;
+            }
+        }
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices[0]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m->numindices[0], idata, GL_STATIC_DRAW);
+
+        if(idata != 0)
+        {
+            free(idata);
+        }
+
+        if(data != 0)
+        {
+            free(data);
+        }
     }
 
-    printf("done %u generating an amazing plane!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", out);
-    return out;
+    return gen_meshes[out].meshid;
 }

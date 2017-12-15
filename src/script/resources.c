@@ -156,7 +156,35 @@ enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res)
 }
 enum v7_err js_generate_plane(v7* v7e, v7_val_t* res)
 {
-    unsigned int target = generatePlane(2, 2, 1, 1);
+    int subw = 0;
+    int subh = 0;
+    float w = 2;
+    float h = 2;
+
+    if(v7_argc(v7e) > 0)
+    {
+        subw = v7_get_int(v7e, v7_arg(v7e, 0));
+        subh = subw;
+    }
+
+    if(v7_argc(v7e) > 1)
+    {
+        subh = v7_get_int(v7e, v7_arg(v7e, 1));
+    }
+
+    if(v7_argc(v7e) > 2)
+    {
+        w = v7_get_double(v7e, v7_arg(v7e, 2));
+        h = w;
+    }
+
+    if(v7_argc(v7e) > 3)
+    {
+        h = v7_get_double(v7e, v7_arg(v7e, 3));
+    }
+
+    printf("generating plane %i %i %f %f\n", subw, subh, w, h);
+    unsigned int target = generatePlane(subw, subh, w, h);
     *res = v7_mk_number(v7e, target);
     return V7_OK;
 }
