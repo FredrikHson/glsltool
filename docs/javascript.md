@@ -8,6 +8,7 @@
 | endpass()  | |
 | imageid loadimage(filename)  | |
 | meshid loadmesh(filename) | |
+| meshid generateplane(subdivw*,subdivh*,width*,height*) | defaults to 0 0 2 2 | 
 | shaderid loadshader(vertfile,fragfile,geomfile,controlfile,evalfile)  | 0 on unused shader files |
 | drawmesh(meshid,submesh*) | will draw all submeshes if none are given |
 | bindattribute(attribute_name,MESH_FLAG) | see MESH_FLAG_* |
