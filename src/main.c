@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "defines.h"
 #include "renderfunc.h"
+#include "debug.h"
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -185,6 +186,7 @@ int main(int argc, char* argv[])
     cleanupImages();
     cleanupMeshes();
     cleanupShaders();
+    cleanupDebug();
     destroyFileWatcher();
     glfwDestroyWindow(window);
     glfwTerminate();
