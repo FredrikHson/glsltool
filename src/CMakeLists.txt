@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.11)
 
 project(glsltool)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
@@ -11,6 +11,7 @@ pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
 
 set(COMMON_SRC
+    "debug.c"
     "generators.c"
     "generators/plane.c"
     "main.c"

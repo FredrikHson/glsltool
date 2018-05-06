@@ -1,6 +1,7 @@
 #include "opengl.h"
 #include "renderfunc.h"
 #include "resources.h"
+#include "debug.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "options.h"
@@ -210,8 +211,17 @@ void beginPass(int target, int* width, int* height)
 }
 void endPass()
 {
+    /*
+     * https://stackoverflow.com/questions/15306899/is-it-possible-to-copy-data-from-one-framebuffer-to-another-in-opengl
+     * if (debugview)
+     *      copy framebuffer to new texture
+     *      create new textures if the debug buffers run out
+     *      on reload/disabling the debug view, trow all of the debug textures away
+     *      on next loop draw all buffers to screen
+     * */
     if(currentPassTarget == -1)
     {
+        copyTargetToDebug(~0);
         glfwSwapBuffers(window);
     }
     else
@@ -221,6 +231,7 @@ void endPass()
         for(int i = 0; i < rendertargets[currentPassTarget].layers; i++)
         {
             glGenerateTextureMipmap(rendertargets[currentPassTarget].textures[i]);
+            copyTargetToDebug(rendertargets[currentPassTarget].textures[i]);
         }
     }
 }

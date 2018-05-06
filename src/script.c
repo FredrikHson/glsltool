@@ -5,6 +5,7 @@
 #include "script.h"
 #include "scriptfunc.h"
 #include "resources.h"
+#include "debug.h"
 #include "v7.h"
 #include <math.h>
 #include <stdio.h>
@@ -313,6 +314,10 @@ void run_loop()
         v7_print_error(stderr, v7g, "Error", result);
         validscript = 0;
     }
+    else
+    {
+        drawRenderTargets();
+    }
 }
 
 int shutdownScript()
@@ -352,6 +357,7 @@ void reloadScript(const char* filename)
 
     v7_destroy(v7g);
     cleanupRender();
+    cleanupDebug();
     initScript(filename);
 
     for(int i = 0; i < oldnumglobals; i++)
