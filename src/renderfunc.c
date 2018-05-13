@@ -231,8 +231,9 @@ void endPass()
         for(int i = 0; i < rendertargets[currentPassTarget].layers; i++)
         {
             glGenerateTextureMipmap(rendertargets[currentPassTarget].textures[i]);
-            copyTargetToDebug(rendertargets[currentPassTarget].textures[i]);
         }
+
+        copyTargetToDebug(currentPassTarget);
     }
 }
 
