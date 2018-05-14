@@ -125,10 +125,10 @@ void copyTargetToDebug(unsigned int id)
             printf("\tdebug width:%u height:%u\n", dt->width, dt->height);
 
             if(dt->width != targetx ||
-                    dt->height != targety ||
-                    dt->type != rt->type ||
-                    dt->depth != rt->depth ||
-                    dt->format != rt->format)
+               dt->height != targety ||
+               dt->type != rt->type ||
+               dt->depth != rt->depth ||
+               dt->format != rt->format)
             {
                 // recreate the texture
                 dt->width = targetx;

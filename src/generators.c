@@ -135,4 +135,3 @@ unsigned int allocateGenMesh(gentype t, void* params)
     gen_meshes[out].meshid = ~0;  // if its not ~0 ignore the generation code
     return out;
 }
-
