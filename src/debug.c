@@ -16,7 +16,6 @@ typedef struct debugtex
     unsigned int format;
     unsigned int type;
     unsigned int texture;
-    unsigned int depth;
 } debugtex;
 
 debugtex* debugTex = 0;
@@ -56,7 +55,6 @@ unsigned int generateNewDebugTexture()
     glGenTextures(1, &debugTex[out].texture);
     debugTex[out].width  = ~0;
     debugTex[out].height = ~0;
-    debugTex[out].depth  = ~0;
     debugTex[out].format = ~0;
     debugTex[out].type   = ~0;
     return out;
@@ -83,6 +81,9 @@ void cleanupDebug()
 
 void copyTargetToDebug(unsigned int id)
 {
+    int oldid = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldid);
+
     if(id == ~0)
     {
         printf("copying screen step:%i currentstep:%i\n", currentstep, currentstep);
@@ -127,18 +128,25 @@ void copyTargetToDebug(unsigned int id)
             if(dt->width != targetx ||
                dt->height != targety ||
                dt->type != rt->type ||
-               dt->depth != rt->depth ||
                dt->format != rt->format)
             {
                 // recreate the texture
                 dt->width = targetx;
                 dt->height = targety;
                 dt->type = rt->type;
-                dt->depth = rt->depth;
                 dt->format = rt->format;
-                printf("\trecreating texture\n");
+                glBindTexture(GL_TEXTURE_2D, dt->texture);
+                glTexImage2D(GL_TEXTURE_2D, 0, dt->type, targetx, targety, 0, dt->format, GL_BYTE, 0);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+                glBindTexture(GL_TEXTURE_2D, 0);
             }
 
+            glCopyImageSubData(rt->textures[i], GL_TEXTURE_2D, 0, 0, 0, 0,
+                               dt->texture, GL_TEXTURE_2D, 0, 0, 0, 0,
+                               targetx,targety, 1);
+            glBindTexture(GL_TEXTURE_2D,dt->texture);
+            glGenerateTextureMipmap(dt->texture);
             printf("\tdebug width:%u height:%u\n", dt->width, dt->height);
             currentstep += 1;
         }
@@ -149,9 +157,9 @@ void copyTargetToDebug(unsigned int id)
         /*glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldid);*/
         /*glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, format, GL_BYTE, 0);*/
         /*glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);*/
-        /*glBindTexture(GL_TEXTURE_2D, oldid);*/
     }
 
+    glBindTexture(GL_TEXTURE_2D, oldid);
     printf("numDebugTex:%i\n", numDebugTex);
 }
 
