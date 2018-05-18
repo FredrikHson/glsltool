@@ -25,7 +25,7 @@ extern unsigned int numrendertargets;
 
 void drawRenderTargets()
 {
-    printf("drawing rendertargets numDebugTex:%i\n", numDebugTex);
+    /*printf("drawing rendertargets numDebugTex:%i\n", numDebugTex);*/
     currentstep = 0;
 }
 
@@ -86,7 +86,7 @@ void copyTargetToDebug(unsigned int id)
 
     if(id == ~0)
     {
-        printf("copying screen step:%i currentstep:%i\n", currentstep, currentstep);
+        /*printf("copying screen step:%i currentstep:%i\n", currentstep, currentstep);*/
 
         if(currentstep >= numDebugTex)
         {
@@ -97,7 +97,7 @@ void copyTargetToDebug(unsigned int id)
     }
     else
     {
-        printf("copying rendertarget %i step:%i currentstep:%i\n", id, currentstep, currentstep);
+        /*printf("copying rendertarget %i step:%i currentstep:%i\n", id, currentstep, currentstep);*/
         rendertarget* rt = &rendertargets[id];
         unsigned int targetx = 0;
         unsigned int targety = 0;
@@ -113,7 +113,7 @@ void copyTargetToDebug(unsigned int id)
             targety = (unsigned int)rt->height;
         }
 
-        printf("\twidth:%u height:%u layers:%i\n", targetx, targety, rendertargets[id].layers);
+        /*printf("\twidth:%u height:%u layers:%i\n", targetx, targety, rendertargets[id].layers);*/
 
         for(int i = 0; i < rt->layers; i++)
         {
@@ -123,7 +123,7 @@ void copyTargetToDebug(unsigned int id)
             }
 
             debugtex* dt = &debugTex[currentstep];
-            printf("\tdebug width:%u height:%u\n", dt->width, dt->height);
+            /*printf("\tdebug width:%u height:%u\n", dt->width, dt->height);*/
 
             if(dt->width != targetx ||
                dt->height != targety ||
@@ -144,10 +144,10 @@ void copyTargetToDebug(unsigned int id)
 
             glCopyImageSubData(rt->textures[i], GL_TEXTURE_2D, 0, 0, 0, 0,
                                dt->texture, GL_TEXTURE_2D, 0, 0, 0, 0,
-                               targetx,targety, 1);
-            glBindTexture(GL_TEXTURE_2D,dt->texture);
+                               targetx, targety, 1);
+            glBindTexture(GL_TEXTURE_2D, dt->texture);
             glGenerateTextureMipmap(dt->texture);
-            printf("\tdebug width:%u height:%u\n", dt->width, dt->height);
+            /*printf("\tdebug width:%u height:%u\n", dt->width, dt->height);*/
             currentstep += 1;
         }
 
@@ -160,7 +160,7 @@ void copyTargetToDebug(unsigned int id)
     }
 
     glBindTexture(GL_TEXTURE_2D, oldid);
-    printf("numDebugTex:%i\n", numDebugTex);
+    /*printf("numDebugTex:%i\n", numDebugTex);*/
 }
 
 void setDebugMode(char mode)
