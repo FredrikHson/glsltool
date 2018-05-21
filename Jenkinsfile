@@ -1,12 +1,15 @@
 pipeline
 {
     agent any
-    stage('build')
+    stages
     {
-        steps
+        stage('build')
         {
-            sh 'ls'
-            sh 'make'
+            steps
+            {
+                sh 'ls'
+                sh 'make'
+            }
         }
     }
 }
