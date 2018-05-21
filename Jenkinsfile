@@ -28,3 +28,4 @@ pipeline
             slackSend color: 'bad', message: "glsltool ${env.BRANCH_NAME} failed to build ${env.BUILD_URL}"
         }
     }
+}
