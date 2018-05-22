@@ -10,6 +10,13 @@ pipeline
                 sh 'make'
             }
         }
+        stage('check')
+        {
+            steps
+            {
+                cppcheck("src")
+            }
+        }
     }
     post
     {
@@ -19,7 +26,7 @@ pipeline
         }
         success
         {
-           slackstatus("success")
+            slackstatus("success")
         }
         failure
         {
