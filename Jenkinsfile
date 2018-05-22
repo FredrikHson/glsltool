@@ -32,5 +32,10 @@ pipeline
         {
             slackstatus("fail")
         }
+        unstable
+        {
+            slackstatus("unstable")
+        }
+
     }
 }
