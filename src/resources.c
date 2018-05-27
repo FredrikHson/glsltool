@@ -24,7 +24,10 @@ void endResourceCleanup()
             if(!(m->cleanup & CLEAN_DELETED))
             {
                 m->cleanup = CLEAN_DELETED;
+                if(meshes[i].name!=0)
                 printf("deleting %s\n", meshes[i].name);
+                else
+                printf("deleting generated mesh\n");
                 cleanupMesh(m);
             }
         }

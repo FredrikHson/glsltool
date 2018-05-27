@@ -13,5 +13,6 @@ void drawRenderTargets();
 void copyTargetToDebug(unsigned int textureid);
 void setDebugMode(char mode);
 void cleanupDebug();
+void initDebug();
 
 #endif //__DEBUG_H__

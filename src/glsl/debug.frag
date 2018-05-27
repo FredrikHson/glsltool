@@ -6,4 +6,5 @@ in vec2 texcoord;
 void main()
 {
     color=texture(image,texcoord);
+    //color=vec4(texcoord,1,0);
 }

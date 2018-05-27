@@ -157,6 +157,7 @@ int main(int argc, char* argv[])
     ilInit();
     iluInit();
     initImages();
+    initDebug();
     watchFile(options.inputfile, reloadScript);
     initScript(options.inputfile);
 
