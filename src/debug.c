@@ -208,7 +208,9 @@ void copyTargetToDebug(unsigned int id)
 
         debugtex* dt = &debugTex[currentstep];
         glBindTexture(GL_TEXTURE_2D, dt->texture);
-        glCopyTextureSubImage2D(GL_TEXTURE_2D, 0,  0, 0, 0, 0, options.width, options.height);
+        glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, options.width, options.height, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
         currentstep += 1;
     }
