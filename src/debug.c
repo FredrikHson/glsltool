@@ -58,6 +58,7 @@ void initDebug()
     glBindAttribLocation(debug_program, 1, "in_Uvs");
     glLinkProgram(debug_program);
     debug_texloc = glGetUniformLocation(debug_program, "image");
+    numDebugTex = 0;
 }
 
 void drawRenderTargets()
@@ -79,19 +80,19 @@ void drawRenderTargets()
         for(int i = 0; i < numDebugTex; i++)
         {
             float x = (float)(i % lines);
-            float y = (float)(i / lines);
+            float y = (float)lines - (float)(i / lines);
             float x1 = width * x - 1.0f;
             float y1 = width * y - 1.0f;
             float x2 = width * x + width - 1.0f;
-            float y2 = width * y + width - 1.0f;
+            float y2 = width * y - width - 1.0f;
             float verts[30] =
             {
-                x1, y1, 0.0f, 0.0f, 0.0f,
-                x2, y1, 0.0f, 1.0f, 0.0f,
-                x1, y2, 0.0f, 0.0f, 1.0f,
-                x1, y2, 0.0f, 0.0f, 1.0f,
-                x2, y1, 0.0f, 1.0f, 0.0f,
-                x2, y2, 0.0f, 1.0f, 1.0f
+                x1, y1, 0.0f, 0.0f, 1.0f,
+                x2, y1, 0.0f, 1.0f, 1.0f,
+                x1, y2, 0.0f, 0.0f, 0.0f,
+                x1, y2, 0.0f, 0.0f, 0.0f,
+                x2, y1, 0.0f, 1.0f, 1.0f,
+                x2, y2, 0.0f, 1.0f, 0.0f
             };
             glBindVertexArray(debug_vao);
             glBindBuffer(GL_ARRAY_BUFFER, debug_vbo);
