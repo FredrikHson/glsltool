@@ -1,6 +1,7 @@
 #include "opengl.h"
 #include "v7.h"
 #include "renderfunc.h"
+#include "debug.h"
 #include "defines.h"
 typedef struct v7 v7;
 extern v7* v7g;
@@ -213,16 +214,58 @@ enum v7_err js_wireframe(v7* v7e, v7_val_t* res)
 
         if(enable)
         {
-            glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
         else
         {
-            glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
     else
     {
         fprintf(stderr, "invalid number of arguments to wireframe\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_set_debug_mode(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int mode = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(setDebugMode(mode))
+        {
+            return V7_OK;
+        }
+        else
+        {
+            return V7_SYNTAX_ERROR;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to debugmode\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
+enum v7_err js_set_debug_step(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int step = v7_get_int(v7e, v7_arg(v7e, 0));
+        setSingleDebugStep(step);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to debugmode\n");
         return V7_SYNTAX_ERROR;
     }
 

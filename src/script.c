@@ -121,6 +121,8 @@ void create_js_functions()
     v7_set_method(v7g, global, "abs", js_abs);
     v7_set_method(v7g, global, "sqrt", js_sqrt);
     v7_set_method(v7g, global, "setmat4anglemode", js_set_angle_mode);
+    v7_set_method(v7g, global, "debugmode", js_set_debug_mode);
+    v7_set_method(v7g, global, "debugstep", js_set_debug_step);
 }
 
 void create_js_defines()
@@ -266,6 +268,10 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "DEGREES", 7, v7_mk_number(v7g, DEGREES));
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
     v7_set(v7g, v7_get_global(v7g), "DELTA_TIME", 10, v7_mk_number(v7g, deltaTime));
+    /* debug flags */
+    v7_set(v7g, v7_get_global(v7g), "DEBUG_OFF", 9, v7_mk_number(v7g, DEBUG_OFF));
+    v7_set(v7g, v7_get_global(v7g), "DEBUG_RENDERALLSTEPS", 20, v7_mk_number(v7g, DEBUG_RENDERALLSTEPS));
+    v7_set(v7g, v7_get_global(v7g), "DEBUG_RENDERSINGLESTEP", 22, v7_mk_number(v7g, DEBUG_RENDERSINGLESTEP));
 }
 
 int initScript(const char* filename)

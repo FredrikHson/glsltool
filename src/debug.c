@@ -6,7 +6,7 @@
 #include "options.h"
 #include "renderfunc.h"
 
-char debugmode = DEBUG_RENDERSINGLESTEP;
+char debugmode = DEBUG_OFF;
 unsigned int debug_step = 0; // for single stepping/stop at this step
 unsigned int currentstep = 0; // internal current texture number
 
@@ -62,6 +62,11 @@ void initDebug()
 
 void drawRenderTargets()
 {
+    if(debugmode == DEBUG_OFF)
+    {
+        return;
+    }
+
     /*printf("drawing rendertargets numDebugTex:%i\n", numDebugTex);*/
     int lines = ceil(sqrt(numDebugTex));
     /*printf("x %i y %i\n", lines, lines);*/
@@ -69,22 +74,47 @@ void drawRenderTargets()
     glUseProgram(debug_program);
     glActiveTexture(GL_TEXTURE0);
 
-    for(int i = 0; i < numDebugTex; i++)
+    if(debugmode == DEBUG_RENDERALLSTEPS)
     {
-        float x = (float)(i % lines);
-        float y = (float)(i / lines);
-        float x1 = width * x - 1.0f;
-        float y1 = width * y - 1.0f;
-        float x2 = width * x + width - 1.0f;
-        float y2 = width * y + width - 1.0f;
+        for(int i = 0; i < numDebugTex; i++)
+        {
+            float x = (float)(i % lines);
+            float y = (float)(i / lines);
+            float x1 = width * x - 1.0f;
+            float y1 = width * y - 1.0f;
+            float x2 = width * x + width - 1.0f;
+            float y2 = width * y + width - 1.0f;
+            float verts[30] =
+            {
+                x1, y1, 0.0f, 0.0f, 0.0f,
+                x2, y1, 0.0f, 1.0f, 0.0f,
+                x1, y2, 0.0f, 0.0f, 1.0f,
+                x1, y2, 0.0f, 0.0f, 1.0f,
+                x2, y1, 0.0f, 1.0f, 0.0f,
+                x2, y2, 0.0f, 1.0f, 1.0f
+            };
+            glBindVertexArray(debug_vao);
+            glBindBuffer(GL_ARRAY_BUFFER, debug_vbo);
+            glBufferData(GL_ARRAY_BUFFER, 30 * sizeof(float), verts, GL_STATIC_DRAW);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
+            glUniform1i(debug_texloc, 0);
+            glBindTexture(GL_TEXTURE_2D, debugTex[i].texture);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+    }
+    else if(debugmode == DEBUG_RENDERSINGLESTEP)
+    {
         float verts[30] =
         {
-            x1, y1, 0.0f, 0.0f, 0.0f,
-            x2, y1, 0.0f, 1.0f, 0.0f,
-            x1, y2, 0.0f, 0.0f, 1.0f,
-            x1, y2, 0.0f, 0.0f, 1.0f,
-            x2, y1, 0.0f, 1.0f, 0.0f,
-            x2, y2, 0.0f, 1.0f, 1.0f
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f
         };
         glBindVertexArray(debug_vao);
         glBindBuffer(GL_ARRAY_BUFFER, debug_vbo);
@@ -94,7 +124,7 @@ void drawRenderTargets()
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glUniform1i(debug_texloc, 0);
-        glBindTexture(GL_TEXTURE_2D, debugTex[i].texture);
+        glBindTexture(GL_TEXTURE_2D, debugTex[debug_step % numDebugTex].texture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
@@ -161,17 +191,26 @@ void cleanupDebug()
 
 void copyTargetToDebug(unsigned int id)
 {
+    if(debugmode == DEBUG_OFF)
+    {
+        return;
+    }
+
     int oldid = 0;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldid);
 
     if(id == ~0)
     {
-        /*if(currentstep >= numDebugTex)*/
-        /*{*/
-            /*generateNewDebugTexture();*/
-        /*}*/
+        if(currentstep >= numDebugTex)
+        {
+            generateNewDebugTexture();
+        }
 
-        /*currentstep += 1;*/
+        debugtex* dt = &debugTex[currentstep];
+        glBindTexture(GL_TEXTURE_2D, dt->texture);
+        glCopyTextureSubImage2D(GL_TEXTURE_2D, 0,  0, 0, 0, 0, options.width, options.height);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        currentstep += 1;
     }
     else
     {
@@ -200,9 +239,9 @@ void copyTargetToDebug(unsigned int id)
             debugtex* dt = &debugTex[currentstep];
 
             if(dt->width != targetx ||
-                    dt->height != targety ||
-                    dt->type != rt->type ||
-                    dt->format != rt->format)
+               dt->height != targety ||
+               dt->type != rt->type ||
+               dt->format != rt->format)
             {
                 // recreate the texture
                 dt->width = targetx;
@@ -223,25 +262,26 @@ void copyTargetToDebug(unsigned int id)
             glGenerateTextureMipmap(dt->texture);
             currentstep += 1;
         }
-
-        /*glBindFramebuffer(GL_READ_FRAMEBUFFER, textureid);*/
-        /*int oldid = 0;*/
-        /*glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldid);*/
-        /*glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, format, GL_BYTE, 0);*/
-        /*glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);*/
     }
 
     glBindTexture(GL_TEXTURE_2D, oldid);
 }
 
-void setDebugMode(char mode)
+char setDebugMode(char mode)
 {
     if(mode < DEBUG_LAST)
     {
         debugmode = mode;
+        return 1;
     }
     else
     {
         printf("unknown debug mode\n");
+        return 0;
     }
+}
+
+void setSingleDebugStep(int step)
+{
+    debug_step = (unsigned int)step;
 }

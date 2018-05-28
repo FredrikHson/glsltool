@@ -47,6 +47,9 @@
 | ceil | |
 | abs | |
 | sqrt | |
+| debugmode | see DEBUG_*|
+| debugstep | sets which renderpass to show (step%renderpasses so its fine to just increase this number forever) | 
+
 
 # Objects
 
@@ -69,6 +72,12 @@ mat4={
 | WINDOW_HEIGHT | updated on loop start |
 | TIME | time since glsltool starts|
 | DELTA_TIME | time since last loop start |
+
+| Debug flags |
+|---|
+| DEBUG_OFF |
+| DEBUG_RENDERALLSTEPS |
+| DEBUG_RENDERSINGLESTEP |
 
 | Mesh flags |
 |---|

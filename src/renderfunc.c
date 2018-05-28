@@ -222,7 +222,11 @@ void endPass()
     if(currentPassTarget == -1)
     {
         copyTargetToDebug(~0);
-        /*glfwSwapBuffers(window);*/
+
+        if(debugmode == DEBUG_OFF)
+        {
+            glfwSwapBuffers(window);
+        }
     }
     else
     {
