@@ -12,6 +12,7 @@ extern int maxboundtextures;
 extern unsigned int numboundtextures;
 
 extern unsigned int currentprogram;
+extern char avoid_debugging;
 
 unsigned int CreateRenderTarget(float width,
                                 float height,
@@ -223,7 +224,7 @@ void endPass()
     {
         copyTargetToDebug(~0);
 
-        if(debugmode == DEBUG_OFF)
+        if(debugmode == DEBUG_OFF || avoid_debugging == 1)
         {
             glfwSwapBuffers(window);
         }

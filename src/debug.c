@@ -36,6 +36,8 @@ extern char glsl_debug_frag[];
 extern unsigned int glsl_debug_vert_len;
 extern unsigned int glsl_debug_frag_len;
 
+char avoid_debugging = 0;
+
 void initDebug()
 {
     glGenBuffers(1, &debug_vbo);
@@ -63,6 +65,12 @@ void initDebug()
 
 void drawRenderTargets()
 {
+    if(avoid_debugging == 1)
+    {
+        avoid_debugging = 0;
+        return;
+    }
+
     if(debugmode == DEBUG_OFF)
     {
         return;
@@ -77,7 +85,7 @@ void drawRenderTargets()
 
     if(debugmode == DEBUG_RENDERALLSTEPS)
     {
-        for(int i = 0; i < numDebugTex; i++)
+        for(int i = 0; i < currentstep && i < numDebugTex; i++)
         {
             float x = (float)(i % lines);
             float y = (float)lines - (float)(i / lines);
@@ -192,7 +200,7 @@ void cleanupDebug()
 
 void copyTargetToDebug(unsigned int id)
 {
-    if(debugmode == DEBUG_OFF)
+    if(debugmode == DEBUG_OFF || avoid_debugging == 1)
     {
         return;
     }

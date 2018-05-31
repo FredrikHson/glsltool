@@ -29,6 +29,7 @@ char lastmouseinside = 0;
 char keyboard[GLFW_KEY_LAST + 1] = {0};
 char keyboardlast[GLFW_KEY_LAST + 1] = {0};
 
+extern char avoid_debugging;
 
 void error_callback(int error, const char* description)
 {
@@ -39,6 +40,7 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 {
     options.width = width;
     options.height = height;
+    avoid_debugging = 1;
     resizeTargets();
 }
 void key_handler_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
