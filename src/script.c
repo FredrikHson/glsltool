@@ -368,7 +368,6 @@ void reloadScript(const char* filename)
     cleanupRender();
     cleanupDebug(); // mostly to delete opengl textures
     initDebug();
-
     initScript(filename);
 
     for(int i = 0; i < oldnumglobals; i++)
