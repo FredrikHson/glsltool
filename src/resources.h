@@ -12,6 +12,7 @@ typedef struct image
     int width;
     int height;
     int channels; /*1-4*/
+    char origin;
 } image;
 
 typedef struct mesh
@@ -42,7 +43,7 @@ typedef struct shader
     char working;
 } shader;
 
-int loadImage(const char* filename);
+int loadImage(const char* filename,char origin);
 int loadMesh(const char* filename);
 int loadShader(const char* vertex, const char* pixel, const char* geometry, const char* tesscontrol, const char* tesseval);
 void reloadImage(const char* filename);

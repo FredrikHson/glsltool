@@ -6,6 +6,7 @@
 #include "opengl.h"
 #include "notify.h"
 #include "resources.h"
+#include "defines.h"
 
 image* textures = 0;
 int numtextures = 0;
@@ -23,7 +24,16 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     }
 
     unsigned int id = 0;
-    ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+
+    if(textures[texture].origin == IMG_TOP)
+    {
+        ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+    }
+    else
+    {
+        ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    }
+
     ilEnable(IL_ORIGIN_SET);
     ilGenImages(1, &id);
     ilBindImage(id);
@@ -182,7 +192,7 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     return texture;
 }
 
-int loadImage(const char* filename)
+int loadImage(const char* filename, char origin)
 {
     unsigned int out  = 0;
 
@@ -190,6 +200,13 @@ int loadImage(const char* filename)
     {
         if(strcmp(filename, textures[i].name) == 0)
         {
+            if(textures[i].origin != origin)
+            {
+                textures[i].origin = origin;
+                reloadImage(filename);
+                return i;
+            }
+
             printf("already loaded image %s id:%i\n", filename, i);
             return i;
         }
@@ -218,6 +235,7 @@ int loadImage(const char* filename)
     numtextures += 1;
     image* img = &textures[out];
     img->name = malloc(strlen(filename) + 1);
+    img->origin = origin;
     glGenTextures(1, &img->glImage);
     out = loadImageOntoTexture(filename, out);
     sprintf(img->name, "%s", filename);

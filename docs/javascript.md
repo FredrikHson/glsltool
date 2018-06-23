@@ -6,7 +6,7 @@
 | clear(r*,g*,b*,a*) | can be 0 1 3 or 4 variables set|
 | beginpass(rendertargetid*) | no render target set will result rendering to the backbuffer |
 | endpass()  | |
-| imageid loadimage(filename)  | |
+| imageid loadimage(filename,origin*)  | IMG_TOP, IMG_BOTTOM|
 | meshid loadmesh(filename) | |
 | meshid generateplane(subdivw*,subdivh*,width*,height*) | defaults to 0 0 2 2 | 
 | shaderid loadshader(vertfile,fragfile,geomfile,controlfile,evalfile)  | 0 on unused shader files |
