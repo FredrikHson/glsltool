@@ -43,6 +43,7 @@ include_directories(
 
 set(SHADERS
     "glsl/debug.frag"
+    "glsl/debug_fp.frag"
     "glsl/debug.vert"
     )
 

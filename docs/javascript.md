@@ -49,6 +49,8 @@
 | sqrt | |
 | debugmode | see DEBUG_*|
 | debugstep | sets which renderpass to show (step%renderpasses so its fine to just increase this number forever) | 
+| debugrange(min,max) | range for floating point rendertargets |
+| debugclip | 0,1 will do a fract(color) on the texture for overflowing values | 
 
 
 # Objects

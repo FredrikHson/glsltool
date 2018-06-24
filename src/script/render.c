@@ -254,6 +254,40 @@ enum v7_err js_set_debug_mode(v7* v7e, v7_val_t* res)
     }
 }
 
+enum v7_err js_set_debug_range(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        debug_minvalue = v7_get_double(v7e, v7_arg(v7e, 0));
+        debug_maxvalue = v7_get_double(v7e, v7_arg(v7e, 1));
+        return V7_OK;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to debugrange\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
+enum v7_err js_set_debug_clip(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        debug_clip = v7_get_int(v7e, v7_arg(v7e, 0)) != 0;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to debugclip\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 enum v7_err js_set_debug_step(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);

@@ -7,6 +7,9 @@
 #include "renderfunc.h"
 
 char debugmode = DEBUG_OFF;
+float debug_maxvalue = 1.0f;
+float debug_minvalue = 0.0f;
+char debug_clip = 1;
 unsigned int debug_step = 0; // for single stepping/stop at this step
 unsigned int currentstep = 0; // internal current texture number
 
@@ -31,10 +34,19 @@ unsigned int debug_fs = 0;
 unsigned int debug_program = 0;
 int debug_texloc = 0;
 
+unsigned int debug_fp_fs = 0;
+unsigned int debug_fp_program = 0;
+int debug_fp_texloc = 0;
+int debug_fp_minvalue = 0;
+int debug_fp_maxvalue = 0;
+int debug_fp_clip = 0;
+
 extern char glsl_debug_vert[];
 extern char glsl_debug_frag[];
+extern char glsl_debug_fp_frag[];
 extern unsigned int glsl_debug_vert_len;
 extern unsigned int glsl_debug_frag_len;
+extern unsigned int glsl_debug_fp_frag_len;
 
 char avoid_debugging = 0;
 
@@ -45,14 +57,20 @@ void initDebug()
     // create shader
     debug_vs = glCreateShader(GL_VERTEX_SHADER);
     debug_fs = glCreateShader(GL_FRAGMENT_SHADER);
+    debug_vs = glCreateShader(GL_VERTEX_SHADER);
+    debug_fp_fs = glCreateShader(GL_FRAGMENT_SHADER);
     int len = glsl_debug_vert_len;
     char* data = glsl_debug_vert;
     glShaderSource(debug_vs, 1, (const char**)&data, &len);
     len = glsl_debug_frag_len;
     data = glsl_debug_frag;
     glShaderSource(debug_fs, 1, (const char**)&data, &len);
+    len = glsl_debug_fp_frag_len;
+    data = glsl_debug_fp_frag;
+    glShaderSource(debug_fp_fs, 1, (const char**)&data, &len);
     glCompileShader(debug_vs);
     glCompileShader(debug_fs);
+    glCompileShader(debug_fp_fs);
     debug_program = glCreateProgram();
     glAttachShader(debug_program, debug_vs);
     glAttachShader(debug_program, debug_fs);
@@ -60,7 +78,30 @@ void initDebug()
     glBindAttribLocation(debug_program, 1, "in_Uvs");
     glLinkProgram(debug_program);
     debug_texloc = glGetUniformLocation(debug_program, "image");
+    debug_fp_program = glCreateProgram();
+    glAttachShader(debug_fp_program, debug_vs);
+    glAttachShader(debug_fp_program, debug_fp_fs);
+    glBindAttribLocation(debug_fp_program, 0, "in_Position");
+    glBindAttribLocation(debug_fp_program, 1, "in_Uvs");
+    glLinkProgram(debug_fp_program);
+    debug_fp_texloc = glGetUniformLocation(debug_fp_program, "image");
+    debug_fp_minvalue = glGetUniformLocation(debug_fp_program, "minvalue");
+    debug_fp_maxvalue = glGetUniformLocation(debug_fp_program, "maxvalue");
+    debug_fp_clip = glGetUniformLocation(debug_fp_program, "clip");
     numDebugTex = 0;
+}
+
+char istypefp(int type)
+{
+    return type == GL_RGB32F ||
+           type == GL_RGBA32F ||
+           type == GL_RG32F ||
+           type == GL_R32F ||
+           type == GL_RGB16F ||
+           type == GL_RGBA16F ||
+           type == GL_RG16F ||
+           type == GL_R16F ||
+           type == GL_R11F_G11F_B10F;
 }
 
 void drawRenderTargets()
@@ -76,11 +117,8 @@ void drawRenderTargets()
         return;
     }
 
-    /*printf("drawing rendertargets numDebugTex:%i\n", numDebugTex);*/
     int lines = ceil(sqrt(numDebugTex));
-    /*printf("x %i y %i\n", lines, lines);*/
     float width = 2.0f / (float)lines;
-    glUseProgram(debug_program);
     glActiveTexture(GL_TEXTURE0);
 
     if(debugmode == DEBUG_RENDERALLSTEPS)
@@ -109,18 +147,33 @@ void drawRenderTargets()
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
-            glUniform1i(debug_texloc, 0);
+
+            if(istypefp(debugTex[i].type))
+            {
+                glUseProgram(debug_fp_program);
+                glUniform1i(debug_fp_texloc, 0);
+                glUniform1i(debug_fp_clip, debug_clip);
+                glUniform1f(debug_fp_minvalue, debug_minvalue);
+                glUniform1f(debug_fp_maxvalue, debug_maxvalue);
+            }
+            else
+            {
+                glUseProgram(debug_program);
+                glUniform1i(debug_texloc, 0);
+            }
+
             glBindTexture(GL_TEXTURE_2D, debugTex[i].texture);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            glUseProgram(0);
         }
     }
     else if(debugmode == DEBUG_RENDERSINGLESTEP)
     {
         float verts[30] =
         {
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
             -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
             -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
             1.0f, 1.0f, 0.0f, 1.0f, 1.0f
@@ -132,9 +185,24 @@ void drawRenderTargets()
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glUniform1i(debug_texloc, 0);
+
+        if(istypefp(debugTex[debug_step % numDebugTex].type))
+        {
+            glUseProgram(debug_fp_program);
+            glUniform1i(debug_fp_texloc, 0);
+            glUniform1i(debug_fp_clip, debug_clip);
+            glUniform1f(debug_fp_minvalue, debug_minvalue);
+            glUniform1f(debug_fp_maxvalue, debug_maxvalue);
+        }
+        else
+        {
+            glUseProgram(debug_program);
+            glUniform1i(debug_texloc, 0);
+        }
+
         glBindTexture(GL_TEXTURE_2D, debugTex[debug_step % numDebugTex].texture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        glUseProgram(0);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);

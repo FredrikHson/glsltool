@@ -123,6 +123,8 @@ void create_js_functions()
     v7_set_method(v7g, global, "setmat4anglemode", js_set_angle_mode);
     v7_set_method(v7g, global, "debugmode", js_set_debug_mode);
     v7_set_method(v7g, global, "debugstep", js_set_debug_step);
+    v7_set_method(v7g, global, "debugrange", js_set_debug_range);
+    v7_set_method(v7g, global, "debugclip", js_set_debug_clip);
 }
 
 void create_js_defines()

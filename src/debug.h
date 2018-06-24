@@ -17,5 +17,8 @@ void cleanupDebug();
 void initDebug();
 
 extern char debugmode;
+extern float debug_maxvalue;
+extern float debug_minvalue;
+extern char debug_clip;
 
 #endif //__DEBUG_H__
