@@ -55,6 +55,8 @@ void cleanupMesh(mesh* m);
 void cleanupShaders();
 void initImages();
 int allocateMesh(const char* filename);
+int getImageWidth(int id);
+int getImageHeight(int id);
 
 void initResourceCleanup();
 void endResourceCleanup();

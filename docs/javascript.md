@@ -8,7 +8,7 @@
 | endpass()  | |
 | imageid loadimage(filename,origin*)  | IMG_TOP, IMG_BOTTOM|
 | meshid loadmesh(filename) | |
-| meshid generateplane(subdivw*,subdivh*,width*,height*) | defaults to 0 0 2 2 | 
+| meshid generateplane(subdivw*,subdivh*,width*,height*) | defaults to 0 0 2 2 |
 | shaderid loadshader(vertfile,fragfile,geomfile,controlfile,evalfile)  | 0 on unused shader files |
 | drawmesh(meshid,submesh*) | will draw all submeshes if none are given |
 | bindattribute(attribute_name,MESH_FLAG) | see MESH_FLAG_* |
@@ -48,9 +48,11 @@
 | abs | |
 | sqrt | |
 | debugmode | see DEBUG_*|
-| debugstep | sets which renderpass to show (step%renderpasses so its fine to just increase this number forever) | 
+| debugstep | sets which renderpass to show (step%renderpasses so its fine to just increase this number forever) |
 | debugrange(min,max) | range for floating point rendertargets |
-| debugclip | 0,1 will do a fract(color) on the texture for overflowing values | 
+| debugclip | 0,1 will do a fract(color) on the texture for overflowing values |
+| int imagewidth(imageid) | |
+| int imageheight(imageid) | |
 
 
 # Objects
@@ -58,7 +60,7 @@
 ```javascript
 vec3={x:0,y:0,z:0};
 mat4={
-    m11:0,m12:0,m13:0,m14,
+m11:0,m12:0,m13:0,m14,
     m21:0,m22:0,m23:0,m24,
     m31:0,m32:0,m33:0,m34,
     m41:0,m42:0,m43:0,m44

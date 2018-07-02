@@ -310,7 +310,7 @@ void bindTexture(const char* name, int id,
                  unsigned int magfilter, unsigned int minfilter,
                  unsigned int clamp_s, unsigned int clamp_t)
 {
-    if(id > numtextures || currentprogram == 0)
+    if(id >= numtextures || currentprogram == 0)
     {
         return;
     }
@@ -324,4 +324,24 @@ void bindTexture(const char* name, int id,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp_t);
     glUniform1i(loc, numboundtextures);
     numboundtextures += 1;
+}
+
+int getImageWidth(int id)
+{
+    if(id >= numtextures)
+    {
+        return 1;
+    }
+
+    return textures[id].width;
+}
+
+int getImageHeight(int id)
+{
+    if(id >= numtextures)
+    {
+        return 1;
+    }
+
+    return textures[id].height;
 }

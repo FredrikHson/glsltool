@@ -194,3 +194,29 @@ enum v7_err js_generate_plane(v7* v7e, v7_val_t* res)
     *res = v7_mk_number(v7e, target);
     return V7_OK;
 }
+
+enum v7_err js_image_width(v7* v7e, v7_val_t* res)
+{
+    if(v7_argc(v7e) != 1)
+    {
+        fprintf(stderr, "invalid number of arguments to imagewidth\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    int id = v7_get_int(v7e, v7_arg(v7e, 0));
+    *res = v7_mk_number(v7e, getImageWidth(id));
+    return V7_OK;
+}
+
+enum v7_err js_image_height(v7* v7e, v7_val_t* res)
+{
+    if(v7_argc(v7e) != 1)
+    {
+        fprintf(stderr, "invalid number of arguments to imageheight\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    int id = v7_get_int(v7e, v7_arg(v7e, 0));
+    *res = v7_mk_number(v7e, getImageHeight(id));
+    return V7_OK;
+}
