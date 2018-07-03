@@ -3,6 +3,7 @@
 #include <IL/ilu.h>
 #include <stdio.h>
 #include <libgen.h>
+#include <string.h>
 #include "options.h"
 #include "script.h"
 #include "resources.h"
@@ -137,8 +138,19 @@ int main(int argc, char* argv[])
     }
 
     glfwSetErrorCallback(error_callback);
+    char* filename = strdup(options.inputfile);
     char title[80] = {0};
-    snprintf(title, 80, "glsltool - %s", basename(options.inputfile));
+
+    if(filename != 0)
+    {
+        snprintf(title, 80, "glsltool - %s", basename(filename));
+        free(filename);
+    }
+    else
+    {
+        snprintf(title, 80, "glsltool");
+    }
+
     window = glfwCreateWindow(options.width, options.height, title, NULL, NULL);
     printf("using inputfile:%s\n", options.inputfile);
 
