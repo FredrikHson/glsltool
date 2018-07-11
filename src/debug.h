@@ -10,7 +10,7 @@ enum debugmodes
 };
 
 void drawRenderTargets();
-void copyTargetToDebug(unsigned int textureid);
+void copyTargetToDebug(unsigned int id);
 char setDebugMode(char mode);
 void setSingleDebugStep(int step);
 void cleanupDebug();

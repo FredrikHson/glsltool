@@ -84,7 +84,7 @@ void watchFile(const char* filename, void (*callback)(const char*))
         }
     }
 
-    strncpy(watchlist[numWatchedFiles].filename, filename, 4096);
+    strncpy(watchlist[numWatchedFiles].filename, filename, 4095);
     watchlist[numWatchedFiles].descriptor = watch;
     watchlist[numWatchedFiles].callback = callback;
     struct stat filestat;
