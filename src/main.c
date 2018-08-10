@@ -151,6 +151,9 @@ int main(int argc, char* argv[])
         snprintf(title, 80, "glsltool");
     }
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     window = glfwCreateWindow(options.width, options.height, title, NULL, NULL);
     printf("using inputfile:%s\n", options.inputfile);
 

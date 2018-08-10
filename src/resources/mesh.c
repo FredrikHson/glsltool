@@ -108,6 +108,13 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         m->flags = 0;
     }
 
+    if(m->vao)
+    {
+        glDeleteVertexArrays(m->numsubmeshes, m->vao);
+        free(m->vao);
+        m->vao = 0;
+    }
+
     if(m->vbo)
     {
         glDeleteBuffers(m->numsubmeshes, m->vbo);
@@ -136,10 +143,12 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
 
     m->numsubmeshes = scene->mNumMeshes;
     m->flags      = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->vao        = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->vbo        = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->indices    = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numindices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numverts   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    glCreateVertexArrays(scene->mNumMeshes, m->vao);
     glGenBuffers(scene->mNumMeshes, m->vbo);
     glGenBuffers(scene->mNumMeshes, m->indices);
 
@@ -410,6 +419,13 @@ void cleanupMesh(mesh* m)
         m->indices = 0;
     }
 
+    if(m->vao)
+    {
+        glDeleteVertexArrays(m->numsubmeshes, m->vao);
+        free(m->vao);
+        m->vao = 0;
+    }
+
     if(m->vbo)
     {
         glDeleteBuffers(m->numsubmeshes, m->vbo);
@@ -468,6 +484,7 @@ void drawSubmesh(int id, int submesh)
     unsigned int numverts = m->numverts[submesh];
     size_t offset = 0;
     size_t stride = sizeof(float) * numverts;
+    glBindVertexArray(m->vao[submesh]);
     glBindBuffer(GL_ARRAY_BUFFER, m->vbo[submesh]);
     unsigned int currattrib = 0;
 

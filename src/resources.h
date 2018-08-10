@@ -21,6 +21,7 @@ typedef struct mesh
     char* name;
     unsigned int numsubmeshes;
     unsigned int* indices;
+    unsigned int* vao;
     unsigned int* vbo;
     unsigned int* flags;
     unsigned int* numindices;

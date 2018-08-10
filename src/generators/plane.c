@@ -67,6 +67,7 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         m->numsubmeshes = 1;
         m->flags        = malloc(sizeof(unsigned int));
         m->vbo          = malloc(sizeof(unsigned int));
+        m->vao          = malloc(sizeof(unsigned int));
         m->indices      = malloc(sizeof(unsigned int));
         m->numindices   = malloc(sizeof(unsigned int));
         m->numverts     = malloc(sizeof(unsigned int));
@@ -77,6 +78,7 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
                       MESH_FLAG_TANGENT |
                       MESH_FLAG_BINORMAL |
                       MESH_FLAG_TEXCOORD0;
+        glCreateVertexArrays(1, m->vao);
         glGenBuffers(1, m->vbo);
         glGenBuffers(1, m->indices);
         glBindBuffer(GL_ARRAY_BUFFER, m->vbo[0]);
