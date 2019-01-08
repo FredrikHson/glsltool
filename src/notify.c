@@ -135,16 +135,16 @@ void watchChanges()
         {
             inotify_event* event = (inotify_event*)&buffer[i];
 
-            for(int i = 0; i < numWatchedFiles; i++)
+            for(int j = 0; j < numWatchedFiles; j++)
             {
-                if(watchlist[i].descriptor == event->wd)
+                if(watchlist[j].descriptor == event->wd)
                 {
-                    printf("watch changed descriptor:%i %s\n", event->wd, watchlist[i].filename);
+                    printf("watch changed descriptor:%i %s\n", event->wd, watchlist[j].filename);
 
-                    if(watchlist[i].callback != 0)
+                    if(watchlist[j].callback != 0)
                     {
                         usleep(50000); /* add a small delay to make sure the file is done writing */
-                        (*watchlist[i].callback)(watchlist[i].filename);
+                        (*watchlist[j].callback)(watchlist[j].filename);
                     }
 
                     break;

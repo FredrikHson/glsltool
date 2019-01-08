@@ -200,43 +200,43 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         float* data = malloc(size * assmesh->mNumVertices);
         size_t offset = 0;
 
-        for(int i = 0; i < assmesh->mNumVertices; i++)
+        for(int j = 0; j < assmesh->mNumVertices; j++)
         {
-            data[offset] = assmesh->mVertices[i].x;
-            data[offset + 1] = assmesh->mVertices[i].y;
-            data[offset + 2] = assmesh->mVertices[i].z;
+            data[offset] = assmesh->mVertices[j].x;
+            data[offset + 1] = assmesh->mVertices[j].y;
+            data[offset + 2] = assmesh->mVertices[j].z;
             offset += 3;
         }
 
         if(assmesh->mNormals)
         {
-            for(int i = 0; i < assmesh->mNumVertices; i++)
+            for(int j = 0; j < assmesh->mNumVertices; j++)
             {
-                data[offset] = assmesh->mNormals[i].x;
-                data[offset + 1] = assmesh->mNormals[i].y;
-                data[offset + 2] = assmesh->mNormals[i].z;
+                data[offset] = assmesh->mNormals[j].x;
+                data[offset + 1] = assmesh->mNormals[j].y;
+                data[offset + 2] = assmesh->mNormals[j].z;
                 offset += 3;
             }
         }
 
         if(assmesh->mTangents)
         {
-            for(int i = 0; i < assmesh->mNumVertices; i++)
+            for(int j = 0; j < assmesh->mNumVertices; j++)
             {
-                data[offset] = assmesh->mTangents[i].x;
-                data[offset + 1] = assmesh->mTangents[i].y;
-                data[offset + 2] = assmesh->mTangents[i].z;
+                data[offset] = assmesh->mTangents[j].x;
+                data[offset + 1] = assmesh->mTangents[j].y;
+                data[offset + 2] = assmesh->mTangents[j].z;
                 offset += 3;
             }
         }
 
         if(assmesh->mBitangents)
         {
-            for(int i = 0; i < assmesh->mNumVertices; i++)
+            for(int j = 0; j < assmesh->mNumVertices; j++)
             {
-                data[offset] = assmesh->mBitangents[i].x;
-                data[offset + 1] = assmesh->mBitangents[i].y;
-                data[offset + 2] = assmesh->mBitangents[i].z;
+                data[offset] = assmesh->mBitangents[j].x;
+                data[offset + 1] = assmesh->mBitangents[j].y;
+                data[offset + 2] = assmesh->mBitangents[j].z;
                 offset += 3;
             }
         }
@@ -245,10 +245,10 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         {
             if(assmesh->mTextureCoords[j])
             {
-                for(int i = 0; i < assmesh->mNumVertices; i++)
+                for(int k = 0; k < assmesh->mNumVertices; k++)
                 {
-                    data[offset] = assmesh->mTextureCoords[j][i].x;
-                    data[offset + 1] = assmesh->mTextureCoords[j][i].y;
+                    data[offset] = assmesh->mTextureCoords[j][k].x;
+                    data[offset + 1] = assmesh->mTextureCoords[j][k].y;
                     offset += 2;
                 }
             }
@@ -258,12 +258,12 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         {
             if(assmesh->mColors[j])
             {
-                for(int i = 0; i < assmesh->mNumVertices; i++)
+                for(int k = 0; k < assmesh->mNumVertices; k++)
                 {
-                    data[offset] = assmesh->mColors[j][i].r;
-                    data[offset + 1] = assmesh->mColors[j][i].g;
-                    data[offset + 2] = assmesh->mColors[j][i].b;
-                    data[offset + 3] = assmesh->mColors[j][i].a;
+                    data[offset] = assmesh->mColors[j][k].r;
+                    data[offset + 1] = assmesh->mColors[j][k].g;
+                    data[offset + 2] = assmesh->mColors[j][k].b;
+                    data[offset + 3] = assmesh->mColors[j][k].a;
                     offset += 4;
                 }
             }
