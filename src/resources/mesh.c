@@ -9,6 +9,7 @@
 #include "notify.h"
 #include "resources.h"
 #include "defines.h"
+#include <time.h>
 
 struct aiColor4D;
 struct aiVector3D;
@@ -77,11 +78,10 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         return -1;
     }
 
-    const struct aiScene* scene = aiImportFile(filename,
-                                  aiProcess_CalcTangentSpace      |
-                                  aiProcess_Triangulate           |
-                                  aiProcess_JoinIdenticalVertices |
-                                  aiProcess_SortByPType);
+    unsigned int flags = aiProcess_CalcTangentSpace |
+                         aiProcess_Triangulate      |
+                         aiProcess_SortByPType;
+    const struct aiScene* scene = aiImportFile(filename, flags);
 
     if(!scene)
     {
