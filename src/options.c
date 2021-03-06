@@ -49,10 +49,8 @@ void print_help(const struct option* opts)
 
 void handle_optional_variable(char* inputstring)
 {
-    fprintf(stderr, "%s\n", inputstring);
     char* name = strtok(inputstring, "=");
     char* value = strtok(0, "");
-    fprintf(stderr, "%s = \"%s\"\n", name, value);
 
     if(options.numoptional_variables == 0)
     {
@@ -141,12 +139,6 @@ int handle_options(int argc, char* argv[])
             default:
                 break;
         }
-    }
-
-    for(int i = 0; i  < options.numoptional_variables; i ++)
-    {
-        fprintf(stderr, "option nr:%i\n", i);
-        fprintf(stderr, "option %s = %s\n", options.variables[i].name, options.variables[i].value);
     }
 
     return 1;

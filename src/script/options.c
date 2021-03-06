@@ -31,7 +31,6 @@ enum v7_err js_get_optional_string(v7* v7e, v7_val_t* res)
             if(strcmp(name, options.variables[i].name) == 0)
             {
                 *res = v7_mk_string(v7e, options.variables[i].value, ~0, 0);
-                fprintf(stderr, "returning string %s\n", options.variables[i].value);
                 return V7_OK;
             }
         }
