@@ -26,6 +26,8 @@ typedef struct mesh
     unsigned int* flags;
     unsigned int* numindices;
     unsigned int* numverts;
+    float bboxmin[3];
+    float bboxmax[3];
 } mesh;
 
 typedef struct shader

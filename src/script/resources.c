@@ -88,6 +88,37 @@ enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
     }
 }
 
+enum v7_err js_get_mesh_bbox(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        int meshid = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(meshid >= nummeshes)
+        {
+            fprintf(stderr, "invalid mesh id\n");
+            return V7_SYNTAX_ERROR;
+        }
+
+        *res = v7_mk_object(v7e);
+        v7_set(v7e, *res, "min_x", 5, v7_mk_number(v7e, meshes[meshid].bboxmin[0]));
+        v7_set(v7e, *res, "min_y", 5, v7_mk_number(v7e, meshes[meshid].bboxmin[1]));
+        v7_set(v7e, *res, "min_z", 5, v7_mk_number(v7e, meshes[meshid].bboxmin[2]));
+        v7_set(v7e, *res, "max_x", 5, v7_mk_number(v7e, meshes[meshid].bboxmax[0]));
+        v7_set(v7e, *res, "max_y", 5, v7_mk_number(v7e, meshes[meshid].bboxmax[1]));
+        v7_set(v7e, *res, "max_z", 5, v7_mk_number(v7e, meshes[meshid].bboxmax[2]));
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to get_mesh_bbox\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);

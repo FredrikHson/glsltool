@@ -11,6 +11,7 @@ enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res);
 enum v7_err js_load_image(v7* v7e, v7_val_t* res);
 enum v7_err js_load_mesh(v7* v7e, v7_val_t* res);
 enum v7_err js_load_shader(v7* v7e, v7_val_t* res);
+enum v7_err js_get_mesh_bbox(v7* v7e, v7_val_t* res);
 enum v7_err js_generate_plane(v7* v7e, v7_val_t* res);
 enum v7_err js_image_width(v7* v7e, v7_val_t* res);
 enum v7_err js_image_height(v7* v7e, v7_val_t* res);

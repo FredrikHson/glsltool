@@ -9,7 +9,7 @@
 #include "notify.h"
 #include "resources.h"
 #include "defines.h"
-#include <time.h>
+#include <float.h>
 
 struct aiColor4D;
 struct aiVector3D;
@@ -148,6 +148,12 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     m->indices    = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numindices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numverts   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->bboxmax[0] = FLT_MIN;
+    m->bboxmax[1] = FLT_MIN;
+    m->bboxmax[2] = FLT_MIN;
+    m->bboxmin[0] = FLT_MAX;
+    m->bboxmin[1] = FLT_MAX;
+    m->bboxmin[2] = FLT_MAX;
     glCreateVertexArrays(scene->mNumMeshes, m->vao);
     glGenBuffers(scene->mNumMeshes, m->vbo);
     glGenBuffers(scene->mNumMeshes, m->indices);
@@ -202,6 +208,35 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
 
         for(int j = 0; j < assmesh->mNumVertices; j++)
         {
+            if(m->bboxmax[0] < assmesh->mVertices[j].x)
+            {
+                m->bboxmax[0] = assmesh->mVertices[j].x;
+            }
+
+            if(m->bboxmax[1] < assmesh->mVertices[j].y)
+            {
+                m->bboxmax[1] = assmesh->mVertices[j].y;
+            }
+
+            if(m->bboxmax[2] < assmesh->mVertices[j].z)
+            {
+                m->bboxmax[2] = assmesh->mVertices[j].z;
+            }
+            if(m->bboxmin[0] > assmesh->mVertices[j].x)
+            {
+                m->bboxmin[0] = assmesh->mVertices[j].x;
+            }
+
+            if(m->bboxmin[1] > assmesh->mVertices[j].y)
+            {
+                m->bboxmin[1] = assmesh->mVertices[j].y;
+            }
+
+            if(m->bboxmin[2] > assmesh->mVertices[j].z)
+            {
+                m->bboxmin[2] = assmesh->mVertices[j].z;
+            }
+
             data[offset] = assmesh->mVertices[j].x;
             data[offset + 1] = assmesh->mVertices[j].y;
             data[offset + 2] = assmesh->mVertices[j].z;

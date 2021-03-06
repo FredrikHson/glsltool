@@ -128,6 +128,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "imagewidth", js_image_width);
     v7_set_method(v7g, global, "imageheight", js_image_height);
     v7_set_method(v7g, global, "get_optional_string", js_get_optional_string);
+    v7_set_method(v7g, global, "get_mesh_bbox", js_get_mesh_bbox);
 }
 
 void create_js_defines()

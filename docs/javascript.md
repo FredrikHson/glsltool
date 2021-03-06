@@ -66,6 +66,7 @@ m11:0,m12:0,m13:0,m14,
     m31:0,m32:0,m33:0,m34,
     m41:0,m42:0,m43:0,m44
 };
+bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
 ```
 
 # Variables
