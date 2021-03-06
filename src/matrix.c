@@ -82,10 +82,10 @@ mat4 mat4setperspective(float fov, float aspect, float near, float far)
     out.m[8]  = 0;
     out.m[9]  = 0;
     out.m[10] = (far + near) / (near - far);
-    out.m[11] = (2 * far * near) / (near - far);
+    out.m[11] = -1;
     out.m[12] = 0;
     out.m[13] = 0;
-    out.m[14] = -1;
+    out.m[14] = (2 * far * near) / (near - far);
     out.m[15] = 0;
     return out;
 }
