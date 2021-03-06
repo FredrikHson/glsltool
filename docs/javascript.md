@@ -53,6 +53,7 @@
 | debugclip | 0,1 will do a fract(color) on the texture for overflowing values |
 | int imagewidth(imageid) | |
 | int imageheight(imageid) | |
+| string get_optional_string(stringid,default) | |
 
 
 # Objects

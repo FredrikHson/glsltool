@@ -211,11 +211,6 @@ int main(int argc, char* argv[])
     destroyFileWatcher();
     glfwDestroyWindow(window);
     glfwTerminate();
-
-    if(options.inputfile)
-    {
-        free(options.inputfile);
-    }
-
+    cleanup_options();
     return 0;
 }

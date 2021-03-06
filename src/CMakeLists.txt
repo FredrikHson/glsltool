@@ -26,6 +26,7 @@ set(COMMON_SRC
     "script.c"
     "script/input.c"
     "script/math.c"
+    "script/options.c"
     "script/render.c"
     "script/resources.c"
     "script/shader.c"

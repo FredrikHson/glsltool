@@ -9,7 +9,7 @@
 
 glsltool_options options =
 {
-    INT_MIN, INT_MIN, 512, 512, "renderpath.js"
+    INT_MIN, INT_MIN, 512, 512, "renderpath.js", 0, 0
 };
 
 void print_help(const struct option* opts)
@@ -19,23 +19,55 @@ void print_help(const struct option* opts)
 
     while(opts[i].name != 0)
     {
-        if(opts[i].has_arg)
+        if(strcmp(opts[i].name, "string") == 0)
         {
-            printf("\t-%c <%s> --%s=<%s>\n",
+            printf("\t-%c \"<stringid=string>\" --%s=\"<stringid=string>\"\n",
                    opts[i].val,
-                   opts[i].name,
-                   opts[i].name,
                    opts[i].name);
         }
         else
         {
-            printf("\t-%c --%s\n",
-                   opts[i].val,
-                   opts[i].name);
+            if(opts[i].has_arg)
+            {
+                printf("\t-%c <%s> --%s=<%s>\n",
+                       opts[i].val,
+                       opts[i].name,
+                       opts[i].name,
+                       opts[i].name);
+            }
+            else
+            {
+                printf("\t-%c --%s\n",
+                       opts[i].val,
+                       opts[i].name);
+            }
         }
 
         i++;
     }
+}
+
+void handle_optional_variable(char* inputstring)
+{
+    fprintf(stderr, "%s\n", inputstring);
+    char* name = strtok(inputstring, "=");
+    char* value = strtok(0, "");
+    fprintf(stderr, "%s = \"%s\"\n", name, value);
+
+    if(options.numoptional_variables == 0)
+    {
+        options.variables = malloc(sizeof(optional_variable));
+    }
+    else
+    {
+        options.variables = realloc(options.variables, sizeof(optional_variable) * (options.numoptional_variables + 1));
+    }
+
+    options.variables[options.numoptional_variables].name = malloc(strlen(name) + 1);
+    options.variables[options.numoptional_variables].value = malloc(strlen(value) + 1);
+    strcpy(options.variables[options.numoptional_variables].name, name);
+    strcpy(options.variables[options.numoptional_variables].value, value);
+    options.numoptional_variables += 1;
 }
 
 int handle_options(int argc, char* argv[])
@@ -48,13 +80,14 @@ int handle_options(int argc, char* argv[])
         { "width", required_argument, 0, 'W' },
         { "height", required_argument, 0, 'H' },
         { "file", required_argument, 0, 'f' },
+        { "string", required_argument, 0, 't'},
         { "help", no_argument, 0, 'h' },
         { 0, 0, 0, 0}
     };
     int c;
     int longIndex = 0;
 
-    while((c = getopt_long(argc, argv, "x:y:W:H:f:h", longOpts, &longIndex)) != -1)
+    while((c = getopt_long(argc, argv, "x:y:W:H:f:t:h", longOpts, &longIndex)) != -1)
     {
         switch(c)
         {
@@ -94,6 +127,12 @@ int handle_options(int argc, char* argv[])
                 break;
             }
 
+            case 't':
+            {
+                handle_optional_variable(optarg);
+                break;
+            }
+
             case 'h':
                 print_help(longOpts);
                 return 0;
@@ -104,5 +143,37 @@ int handle_options(int argc, char* argv[])
         }
     }
 
+    for(int i = 0; i  < options.numoptional_variables; i ++)
+    {
+        fprintf(stderr, "option nr:%i\n", i);
+        fprintf(stderr, "option %s = %s\n", options.variables[i].name, options.variables[i].value);
+    }
+
     return 1;
+}
+
+void cleanup_options()
+{
+    if(options.inputfile)
+    {
+        free(options.inputfile);
+    }
+
+    for(int i = 0; i  < options.numoptional_variables; i ++)
+    {
+        if(options.variables[i].name)
+        {
+            free(options.variables[i].name);
+        }
+
+        if(options.variables[i].value)
+        {
+            free(options.variables[i].value);
+        }
+    }
+
+    if(options.variables)
+    {
+        free(options.variables);
+    }
 }
