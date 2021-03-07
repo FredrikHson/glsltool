@@ -1,6 +1,6 @@
-#build folder
 build
 data
 .clang
 *.trace
 *.png
+.cache
