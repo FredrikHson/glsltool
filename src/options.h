@@ -10,6 +10,7 @@ typedef struct optional_variable
 typedef struct glsltool_options
 {
     int x, y, width, height;
+    char fps;
     char* inputfile;
     optional_variable* variables;
     int numoptional_variables;

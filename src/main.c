@@ -59,14 +59,18 @@ void updateTime() // call once per frame
     static double lastdelta = 0;
     deltaTime = currenttime - lastdelta;
     lastdelta = currenttime;
-    static int framecounter = 0;
-    framecounter++;
 
-    if(currenttime - lasttime > 1.0)
+    if(options.fps)
     {
-        printf("%i fps frametime:%f\n", framecounter, deltaTime);
-        framecounter = 0;
-        lasttime = currenttime;
+        static int framecounter = 0;
+        framecounter++;
+
+        if(currenttime - lasttime > 1.0)
+        {
+            printf("%i fps frametime:%f\n", framecounter, deltaTime);
+            framecounter = 0;
+            lasttime = currenttime;
+        }
     }
 }
 
