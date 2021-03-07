@@ -79,6 +79,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     }
 
     unsigned int flags = aiProcess_CalcTangentSpace |
+                         aiProcess_GenNormals       |
                          aiProcess_Triangulate      |
                          aiProcess_SortByPType;
     const struct aiScene* scene = aiImportFile(filename, flags);
@@ -222,6 +223,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
             {
                 m->bboxmax[2] = assmesh->mVertices[j].z;
             }
+
             if(m->bboxmin[0] > assmesh->mVertices[j].x)
             {
                 m->bboxmin[0] = assmesh->mVertices[j].x;
