@@ -126,7 +126,7 @@ vec3 vec3mat4mul(const vec3* v, const mat4* mat)
     out.x = v->x * mat->m[0] + v->y * mat->m[4] + v->z * mat->m[8] + mat->m[12];
     out.y = v->x * mat->m[1] + v->y * mat->m[5] + v->z * mat->m[9] + mat->m[13];
     out.z = v->x * mat->m[2] + v->y * mat->m[6] + v->z * mat->m[10] + mat->m[14];
-    float w = v->x * mat->m[3] + v->y * mat->m[7] + v->z * mat->m[11] * mat->m[15];
+    float w = v->x * mat->m[3] + v->y * mat->m[7] + v->z * mat->m[11] + mat->m[15];
     out.x /= w;
     out.y /= w;
     out.z /= w;
