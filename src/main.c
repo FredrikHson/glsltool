@@ -129,6 +129,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    glfwSetErrorCallback(error_callback);
+
     if(!glfwInit())
     {
         fprintf(stderr, "Error: initing glfw\n");
@@ -141,7 +143,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    glfwSetErrorCallback(error_callback);
     char* filename = strdup(options.inputfile);
     char title[80] = {0};
 
