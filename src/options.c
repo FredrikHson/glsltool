@@ -9,7 +9,7 @@
 
 glsltool_options options =
 {
-    INT_MIN, INT_MIN, 512, 512, 0, "renderpath.js", 0, 0
+    INT_MIN, INT_MIN, 512, 512, 0, 0, "renderpath.js", 0, 0, 0
 };
 
 void print_help(const struct option* opts)
@@ -80,13 +80,15 @@ int handle_options(int argc, char* argv[])
         { "file", required_argument, 0, 'f' },
         { "string", required_argument, 0, 't'},
         { "printfps", no_argument, 0, 'F'},
+        { "output", no_argument, 0, 'o' },
+        { "transparent", no_argument, 0, 'a'},
         { "help", no_argument, 0, 'h' },
         { 0, 0, 0, 0}
     };
     int c;
     int longIndex = 0;
 
-    while((c = getopt_long(argc, argv, "x:y:W:H:f:t:Fh", longOpts, &longIndex)) != -1)
+    while((c = getopt_long(argc, argv, "x:y:W:H:f:t:o:Fah", longOpts, &longIndex)) != -1)
     {
         switch(c)
         {
@@ -138,6 +140,20 @@ int handle_options(int argc, char* argv[])
                 break;
             }
 
+            case 'o':
+            {
+                options.outputfile = strdup(optarg);
+                fprintf(stderr, "outputfile:%s\n", options.outputfile);
+                fprintf(stderr, "outputfile:%s\n", optarg);
+                break;
+            }
+
+            case 'a':
+            {
+                options.transp = 1;
+                break;
+            }
+
             case 'h':
                 print_help(longOpts);
                 return 0;
@@ -174,5 +190,10 @@ void cleanup_options()
     if(options.variables)
     {
         free(options.variables);
+    }
+
+    if(options.outputfile)
+    {
+        free(options.outputfile);
     }
 }

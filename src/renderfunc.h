@@ -52,4 +52,6 @@ void bindRendertarget(const char* name, int id, int layer,
 void resetTexturebindings();
 void bindFragDataLocation(int shaderid, const char* name, int rtid, int layer);
 
+void saveRenderTarget(int id, int layer, const char* filename);
+
 #endif //__RENDERFUNC_H__

@@ -156,9 +156,20 @@ int main(int argc, char* argv[])
         snprintf(title, 80, "glsltool");
     }
 
+    if(options.transp)
+    {
+        glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    if(options.outputfile != 0)
+    {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    }
+
     window = glfwCreateWindow(options.width, options.height, title, NULL, NULL);
     printf("using inputfile:%s\n", options.inputfile);
 
@@ -205,6 +216,12 @@ int main(int argc, char* argv[])
         glfwPollEvents();
         watchChanges();
         updateTime();
+
+        if(options.outputfile)
+        {
+            saveRenderTarget(-1, 0, options.outputfile);
+            should_quit = 1;
+        }
     }
 
     fprintf(stderr, "after initscript\n");

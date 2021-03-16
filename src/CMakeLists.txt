@@ -23,6 +23,7 @@ set(COMMON_SRC
     "resources/image.c"
     "resources/mesh.c"
     "resources/shader.c"
+    "screenshot.c"
     "script.c"
     "script/input.c"
     "script/math.c"
