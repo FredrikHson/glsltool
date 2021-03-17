@@ -149,9 +149,9 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     m->indices    = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numindices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numverts   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
-    m->bboxmax[0] = FLT_MIN;
-    m->bboxmax[1] = FLT_MIN;
-    m->bboxmax[2] = FLT_MIN;
+    m->bboxmax[0] = -FLT_MAX;
+    m->bboxmax[1] = -FLT_MAX;
+    m->bboxmax[2] = -FLT_MAX;
     m->bboxmin[0] = FLT_MAX;
     m->bboxmin[1] = FLT_MAX;
     m->bboxmin[2] = FLT_MAX;
