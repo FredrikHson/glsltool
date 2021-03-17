@@ -63,6 +63,7 @@ endforeach()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
 
+add_definitions(-DV7_ENABLE_FILE)
 add_library(v7 "../external/v7/v7.c")
 
 
