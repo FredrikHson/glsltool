@@ -12,6 +12,7 @@ typedef struct glsltool_options
     int x, y, width, height;
     char fps;
     char transp;
+    char supersample;
     char* inputfile;
     optional_variable* variables;
     int numoptional_variables;

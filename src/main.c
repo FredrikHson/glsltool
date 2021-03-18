@@ -164,11 +164,21 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES,4);
+
+    if(options.outputfile == 0 && options.supersample)
+    {
+        glfwWindowHint(GLFW_SAMPLES, 4);
+    }
 
     if(options.outputfile != 0)
     {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+        if(options.supersample)
+        {
+            options.width *= 2;
+            options.height *= 2;
+        }
     }
 
     window = glfwCreateWindow(options.width, options.height, title, NULL, NULL);
@@ -220,8 +230,13 @@ int main(int argc, char* argv[])
 
         if(options.outputfile)
         {
-            saveRenderTarget(-1, 0, options.outputfile);
-            should_quit = 1;
+            static int frame = 0;
+
+            if(frame++ > 10)
+            {
+                saveRenderTarget(-1, 0, options.outputfile);
+                should_quit = 1;
+            }
         }
     }
 

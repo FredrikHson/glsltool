@@ -9,7 +9,7 @@
 
 glsltool_options options =
 {
-    INT_MIN, INT_MIN, 512, 512, 0, 0, "renderpath.js", 0, 0, 0
+    INT_MIN, INT_MIN, 512, 512, 0, 0, 0, "renderpath.js", 0, 0, 0
 };
 
 void print_help(const struct option* opts)
@@ -82,13 +82,14 @@ int handle_options(int argc, char* argv[])
         { "printfps", no_argument, 0, 'F'},
         { "output", no_argument, 0, 'o' },
         { "transparent", no_argument, 0, 'a'},
+        { "supersample", no_argument, 0, 's'},
         { "help", no_argument, 0, 'h' },
         { 0, 0, 0, 0}
     };
     int c;
     int longIndex = 0;
 
-    while((c = getopt_long(argc, argv, "x:y:W:H:f:t:o:Fah", longOpts, &longIndex)) != -1)
+    while((c = getopt_long(argc, argv, "x:y:W:H:f:t:o:Fash", longOpts, &longIndex)) != -1)
     {
         switch(c)
         {
@@ -151,6 +152,12 @@ int handle_options(int argc, char* argv[])
             case 'a':
             {
                 options.transp = 1;
+                break;
+            }
+
+            case 's':
+            {
+                options.supersample = 1;
                 break;
             }
 
