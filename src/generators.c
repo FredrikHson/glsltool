@@ -124,7 +124,7 @@ unsigned int allocateGenMesh(gentype t, void* params)
         case GEN_PLANE:
         {
             gen_meshes[out].params = malloc(sizeof(plane_params));
-            memcpy(gen_meshes[out].params, &params, sizeof(plane_params));
+            memcpy(gen_meshes[out].params, params, sizeof(plane_params));
             break;
         }
 
