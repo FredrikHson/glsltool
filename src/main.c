@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
         {
             static int frame = 0;
 
-            if(frame++ > 10)
+            if(frame++ > options.outputframe)
             {
                 saveRenderTarget(-1, 0, options.outputfile);
                 should_quit = 1;

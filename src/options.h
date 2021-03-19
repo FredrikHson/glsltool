@@ -17,6 +17,7 @@ typedef struct glsltool_options
     optional_variable* variables;
     int numoptional_variables;
     char* outputfile;
+    int outputframe;
 } glsltool_options;
 
 int handle_options(int argc, char* argv[]);

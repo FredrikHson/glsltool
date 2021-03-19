@@ -67,6 +67,8 @@ add_definitions(-DV7_ENABLE_FILE)
 add_library(v7 "../external/v7/v7.c")
 
 
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
+set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 add_executable(${CMAKE_PROJECT_NAME} ${COMMON_SRC} ${SHADER_DEPEND})
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
