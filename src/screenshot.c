@@ -35,9 +35,11 @@ void saveRenderTarget(int id, int layer, const char* filename)
     ilGenImages(1, &imageid);
     ilBindImage(imageid);
     unsigned char* imagedata = malloc(w * h * 4);
+    glFinish();
 
     if(id == -1)
     {
+        glReadBuffer(GL_BACK);
         glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, imagedata);
     }
 
