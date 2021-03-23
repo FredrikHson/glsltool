@@ -212,6 +212,7 @@ int main(int argc, char* argv[])
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetKeyCallback(window, key_handler_callback);
+    glfwPollEvents();
     glfwSwapInterval(0);
     glfwSwapBuffers(window);
     #ifndef NDEBUG
