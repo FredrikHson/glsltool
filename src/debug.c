@@ -217,7 +217,7 @@ unsigned int generateNewDebugTexture()
 {
     if(numDebugTex == 0)
     {
-        debugTex = malloc(sizeof(unsigned int));
+        debugTex = malloc(sizeof(debugtex));
     }
     else
     {
