@@ -1,3 +1,4 @@
+#include "opengl.h"
 #include "script.h"
 #include "v7.h"
 #include <stdio.h>
@@ -6,18 +7,16 @@
 
 typedef struct v7 v7;
 extern v7* v7g;
+extern GLFWwindow* window;
 
 enum v7_err js_get_optional_string(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
-
     if(v7_argc(v7e) != 2)
     {
         fprintf(stderr, "invalid number of arguments to get_optional_string\n");
         return V7_SYNTAX_ERROR;
     }
-
-    if(argc == 2)
+    else
     {
         size_t len = 0;
         v7_val_t arg1 = v7_arg(v7e, 0);
@@ -36,6 +35,24 @@ enum v7_err js_get_optional_string(v7* v7e, v7_val_t* res)
         }
 
         *res = v7_mk_string(v7e, def, ~0, 0);
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_set_window_title(v7* v7e, v7_val_t* res)
+{
+    if(v7_argc(v7e) != 1)
+    {
+        fprintf(stderr, "invalid number of arguments to set_window_title\n");
+        return V7_SYNTAX_ERROR;
+    }
+    else
+    {
+        size_t len = 0;
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        const char* newtitle = v7_get_string(v7e, &arg1, &len);
+        glfwSetWindowTitle(window, newtitle);
     }
 
     return V7_OK;

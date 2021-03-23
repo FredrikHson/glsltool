@@ -55,6 +55,7 @@
 | int imageheight(imageid) | |
 | string getoptionalstring(stringid,default) | |
 | bbox getmeshbbox(meshid) | |
+| setwindowtitle(string) | |
 
 
 # Objects

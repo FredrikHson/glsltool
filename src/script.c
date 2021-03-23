@@ -129,6 +129,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "imageheight", js_image_height);
     v7_set_method(v7g, global, "getoptionalstring", js_get_optional_string);
     v7_set_method(v7g, global, "getmeshbbox", js_get_mesh_bbox);
+    v7_set_method(v7g, global, "setwindowtitle", js_set_window_title);
 }
 
 void create_js_defines()
