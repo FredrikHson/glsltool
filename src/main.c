@@ -107,6 +107,18 @@ void handleMouse()
     }
 }
 
+#ifndef NDEBUG
+void GLAPIENTRY OpenGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+    if(severity != GL_DEBUG_SEVERITY_NOTIFICATION)
+    {
+        fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+                (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+                type, severity, message);
+    }
+}
+#endif
+
 void handleKeys()
 {
     for(int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST + 1; i++)
@@ -164,6 +176,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
     if(options.outputfile == 0 && options.supersample)
     {
@@ -201,6 +214,10 @@ int main(int argc, char* argv[])
     glfwSetKeyCallback(window, key_handler_callback);
     glfwSwapInterval(0);
     glfwSwapBuffers(window);
+    #ifndef NDEBUG
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(OpenGLMessageCallback, 0);
+    #endif
     ilInit();
     iluInit();
     initImages();
