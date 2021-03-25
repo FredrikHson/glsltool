@@ -407,10 +407,15 @@ int loadMesh(const char* filename)
 {
     unsigned int out  = allocateMesh(filename);
     mesh* m = &meshes[out];
-    memset(m, 0, sizeof(mesh));
-    m->name = malloc(strlen(filename) + 1);
-    sprintf(m->name, "%s", filename);
-    out = loadMeshfileOntoMesh(filename, out);
+
+    if(m->name == 0)
+    {
+        memset(m, 0, sizeof(mesh));
+        m->name = malloc(strlen(filename) + 1);
+        sprintf(m->name, "%s", filename);
+        out = loadMeshfileOntoMesh(filename, out);
+    }
+
     return out;
 }
 
