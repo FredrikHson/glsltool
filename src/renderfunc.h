@@ -31,7 +31,7 @@ unsigned int CreateRenderTarget(float width,
                                 char relative);
 void resizeTargets();
 
-void clear(float red, float green, float blue, float alpha, char color, char depth);
+void clear(float red, float green, float blue, float alpha, char color, char depth, int attachment);
 void cleanupRender();
 void beginPass(int target, int* width, int* height);
 void endPass();

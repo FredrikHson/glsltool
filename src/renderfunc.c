@@ -133,7 +133,7 @@ void resizeTargets()
     }
 }
 
-void clear(float red, float green, float blue, float alpha, char color, char depth)
+void clear(float red, float green, float blue, float alpha, char color, char depth, int attachment)
 {
     glClearColor(red, green, blue, alpha);
     GLbitfield mask = 0;
@@ -148,7 +148,20 @@ void clear(float red, float green, float blue, float alpha, char color, char dep
         mask |= GL_DEPTH_BUFFER_BIT;
     }
 
-    glClear(mask);
+    if(attachment == -1)
+    {
+        glClear(mask);
+    }
+    else if(attachment < GL_MAX_COLOR_ATTACHMENTS)
+    {
+        float cc[4] = {red, green, blue, alpha};
+        glClearBufferfv(GL_COLOR, attachment, cc);
+
+        if(depth != 0)
+        {
+            glClear(GL_DEPTH_BUFFER_BIT);
+        }
+    }
 }
 
 void cleanupRender()

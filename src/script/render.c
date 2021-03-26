@@ -11,6 +11,7 @@ enum v7_err js_clear(v7* v7e, v7_val_t* res)
     float green = 0;
     float blue  = 0;
     float alpha = 0;
+    int rt = -1;
     int argc = v7_argc(v7e);
 
     if(argc == 3)
@@ -26,6 +27,14 @@ enum v7_err js_clear(v7* v7e, v7_val_t* res)
         blue  = v7_get_double(v7e, v7_arg(v7e, 2));
         alpha = v7_get_double(v7e, v7_arg(v7e, 3));
     }
+    else if(argc == 5)
+    {
+        red   = v7_get_double(v7e, v7_arg(v7e, 0));
+        green = v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
+        rt    = v7_get_int(v7e, v7_arg(v7e, 4));
+    }
     else if(argc == 1)
     {
         red   = v7_get_double(v7e, v7_arg(v7e, 0));
@@ -39,7 +48,7 @@ enum v7_err js_clear(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 
-    clear(red, green, blue, alpha, 1, 1);
+    clear(red, green, blue, alpha, 1, 1, rt);
     return V7_OK;
 }
 
@@ -49,6 +58,7 @@ enum v7_err js_clearcolor(v7* v7e, v7_val_t* res)
     float green = 0;
     float blue  = 0;
     float alpha = 0;
+    int rt = -1;
     int argc = v7_argc(v7e);
 
     if(argc == 3)
@@ -64,6 +74,14 @@ enum v7_err js_clearcolor(v7* v7e, v7_val_t* res)
         blue  = v7_get_double(v7e, v7_arg(v7e, 2));
         alpha = v7_get_double(v7e, v7_arg(v7e, 3));
     }
+    else if(argc == 5)
+    {
+        red   = v7_get_double(v7e, v7_arg(v7e, 0));
+        green = v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
+        rt    = v7_get_int(v7e, v7_arg(v7e, 4));
+    }
     else if(argc == 1)
     {
         red   = v7_get_double(v7e, v7_arg(v7e, 0));
@@ -77,13 +95,20 @@ enum v7_err js_clearcolor(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 
-    clear(red, green, blue, alpha, 1, 0);
+    clear(red, green, blue, alpha, 1, 0, rt);
     return V7_OK;
 }
 
 enum v7_err js_cleardepth(v7* v7e, v7_val_t* res)
 {
-    clear(0, 0, 0, 0, 0, 1);
+    int rt = -1;
+
+    if(v7_argc(v7e) == 1)
+    {
+        rt    = v7_get_int(v7e, v7_arg(v7e, 4));
+    }
+
+    clear(0, 0, 0, 0, 0, 1, rt);
     return V7_OK;
 }
 
