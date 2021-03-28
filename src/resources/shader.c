@@ -514,6 +514,38 @@ void setUniformf(const char* name, float* f, int argc)
     }
 }
 
+void setUniformd(const char* name, double* f, int argc)
+{
+    if(currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+
+    switch(argc)
+    {
+        case 1:
+            glUniform1d(loc, f[0]);
+            break;
+
+        case 2:
+            glUniform2d(loc, f[0], f[1]);
+            break;
+
+        case 3:
+            glUniform3d(loc, f[0], f[1], f[2]);
+            break;
+
+        case 4:
+            glUniform4d(loc, f[0], f[1], f[2], f[3]);
+            break;
+
+        default:
+            break;
+    }
+}
+
 void setUniformi(const char* name, int* f, int argc)
 {
     if(currentprogram == 0)
@@ -577,7 +609,8 @@ void setUniformui(const char* name, unsigned int* f, int argc)
             break;
     }
 }
-void setUniformMat4(const char* name, const mat4* m)
+
+void setUniformMat4f(const char* name, const mat4* m)
 {
     if(currentprogram == 0)
     {
@@ -585,5 +618,23 @@ void setUniformMat4(const char* name, const mat4* m)
     }
 
     int loc = glGetUniformLocation(currentprogram, name);
-    glUniformMatrix4fv(loc, 1, 0, m->m);
+    float mat[16] =
+    {
+        m->m[0], m->m[1], m->m[2], m->m[3],
+        m->m[4], m->m[5], m->m[6], m->m[7],
+        m->m[8], m->m[9], m->m[10], m->m[11],
+        m->m[12], m->m[13], m->m[14], m->m[15]
+    };
+    glUniformMatrix4fv(loc, 1, 0, mat);
+}
+
+void setUniformMat4d(const char* name, const mat4* m)
+{
+    if(currentprogram == 0)
+    {
+        return;
+    }
+
+    int loc = glGetUniformLocation(currentprogram, name);
+    glUniformMatrix4dv(loc, 1, 0, m->m);
 }

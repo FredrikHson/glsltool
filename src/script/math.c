@@ -9,7 +9,7 @@ typedef struct v7 v7;
 extern v7* v7g;
 char anglemode = RADIANS;
 
-float convertangle(float inputangle)
+double convertangle(float inputangle)
 {
     if(anglemode == DEGREES)
     {
@@ -220,7 +220,7 @@ enum v7_err js_vec3_mul(v7* v7e, v7_val_t* res)
         if(v7_is_object(arg1))
         {
             vec3 v1;
-            float scalar;
+            double scalar;
             v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
             v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
             v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
@@ -308,14 +308,14 @@ enum v7_err js_mat4_setscale(v7* v7e, v7_val_t* res)
 
     if(argc == 1)
     {
-        const float scale = v7_get_double(v7e, v7_arg(v7e, 0));
+        const double scale = v7_get_double(v7e, v7_arg(v7e, 0));
         *res = mat4tov7_val(v7e, mat4setscale(scale, scale, scale));
     }
     else if(argc == 3)
     {
-        const float x = v7_get_double(v7e, v7_arg(v7e, 0));
-        const float y = v7_get_double(v7e, v7_arg(v7e, 1));
-        const float z = v7_get_double(v7e, v7_arg(v7e, 2));
+        const double x = v7_get_double(v7e, v7_arg(v7e, 0));
+        const double y = v7_get_double(v7e, v7_arg(v7e, 1));
+        const double z = v7_get_double(v7e, v7_arg(v7e, 2));
         *res = mat4tov7_val(v7e, mat4setscale(x, y, z));
     }
     else
@@ -333,9 +333,9 @@ enum v7_err js_mat4_settranslation(v7* v7e, v7_val_t* res)
 
     if(argc == 3)
     {
-        const float x = v7_get_double(v7e, v7_arg(v7e, 0));
-        const float y = v7_get_double(v7e, v7_arg(v7e, 1));
-        const float z = v7_get_double(v7e, v7_arg(v7e, 2));
+        const double x = v7_get_double(v7e, v7_arg(v7e, 0));
+        const double y = v7_get_double(v7e, v7_arg(v7e, 1));
+        const double z = v7_get_double(v7e, v7_arg(v7e, 2));
         *res = mat4tov7_val(v7e, mat4settranslation(x, y, z));
     }
     else
@@ -353,10 +353,10 @@ enum v7_err js_mat4_setrotation(v7* v7e, v7_val_t* res)
 
     if(argc == 4)
     {
-        const float angle = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
-        const float x = v7_get_double(v7e, v7_arg(v7e, 1));
-        const float y = v7_get_double(v7e, v7_arg(v7e, 2));
-        const float z = v7_get_double(v7e, v7_arg(v7e, 3));
+        const double angle = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
+        const double x = v7_get_double(v7e, v7_arg(v7e, 1));
+        const double y = v7_get_double(v7e, v7_arg(v7e, 2));
+        const double z = v7_get_double(v7e, v7_arg(v7e, 3));
         *res = mat4tov7_val(v7e, mat4setrotr(angle, x, y, z));
     }
     else
@@ -374,10 +374,10 @@ enum v7_err js_mat4_setperspective(v7* v7e, v7_val_t* res)
 
     if(argc == 4)
     {
-        const float fov = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
-        const float aspect = v7_get_double(v7e, v7_arg(v7e, 1));
-        const float near = v7_get_double(v7e, v7_arg(v7e, 2));
-        const float far = v7_get_double(v7e, v7_arg(v7e, 3));
+        const double fov = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
+        const double aspect = v7_get_double(v7e, v7_arg(v7e, 1));
+        const double near = v7_get_double(v7e, v7_arg(v7e, 2));
+        const double far = v7_get_double(v7e, v7_arg(v7e, 3));
         *res = mat4tov7_val(v7e, mat4setperspective(fov, aspect, near, far));
     }
     else
@@ -459,6 +459,48 @@ enum v7_err js_vec3_mat4_mul(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+enum v7_err js_vec4_mat4_mul(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+
+        if(v7_is_object(arg1) && v7_is_object(arg2))
+        {
+            vec4 v1;
+            v1.x = v7_get_double(v7e, v7_get(v7e, arg1, "x", 1));
+            v1.y = v7_get_double(v7e, v7_get(v7e, arg1, "y", 1));
+            v1.z = v7_get_double(v7e, v7_get(v7e, arg1, "z", 1));
+            v1.w = v7_get_double(v7e, v7_get(v7e, arg1, "w", 1));
+            const mat4 m = v7_val_tomat4(v7e, arg2);
+            vec4 mul = vec4mat4mul(&v1, &m);
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, mul.x));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, mul.y));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, mul.z));
+            v7_set(v7e, *res, "w", 1, v7_mk_number(v7e, mul.w));
+        }
+        else
+        {
+            *res = v7_mk_object(v7e);
+            v7_set(v7e, *res, "x", 1, v7_mk_number(v7e, 0));
+            v7_set(v7e, *res, "y", 1, v7_mk_number(v7e, 0));
+            v7_set(v7e, *res, "z", 1, v7_mk_number(v7e, 0));
+            v7_set(v7e, *res, "w", 1, v7_mk_number(v7e, 0));
+            fprintf(stderr, "vec4mat4mul needs 1 vec4 and 1 matrix as arguments\n");
+        }
+    }
+    else
+    {
+        fprintf(stderr, "vec4mat4mul needs 1 vec4 and 1 matrix as arguments\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
 enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -473,7 +515,33 @@ enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
         if(v7_is_object(arg2))
         {
             const mat4 m1 = v7_val_tomat4(v7e, arg2);
-            setUniformMat4(name, &m1);
+            setUniformMat4f(name, &m1);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to setuniformmat4\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_set_uniform_matrix_d(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        v7_val_t arg1 = v7_arg(v7e, 0);
+        v7_val_t arg2 = v7_arg(v7e, 1);
+        size_t len = 0;
+        const char* name = v7_get_string(v7e, &arg1, &len);
+
+        if(v7_is_object(arg2))
+        {
+            const mat4 m1 = v7_val_tomat4(v7e, arg2);
+            setUniformMat4d(name, &m1);
         }
     }
     else

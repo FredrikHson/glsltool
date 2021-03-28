@@ -41,6 +41,7 @@ int bindAttrib(const char* name, int flag);
 void resetAttribs();
 void bindShader(int id);
 void setUniformf(const char* name, float* f, int argc);
+void setUniformd(const char* name, double* f, int argc);
 void setUniformi(const char* name, int* f, int argc);
 void setUniformui(const char* name, unsigned int* f, int argc);
 void bindTexture(const char* name, int id,

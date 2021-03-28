@@ -93,6 +93,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "setuniformi", &js_set_uniformi);
     v7_set_method(v7g, global, "setuniformui", &js_set_uniformui);
     v7_set_method(v7g, global, "setuniformmat4", &js_set_uniform_matrix);
+    v7_set_method(v7g, global, "setuniformmat4d", &js_set_uniform_matrix_d);
     v7_set_method(v7g, global, "depthtest", &js_set_depth);
     v7_set_method(v7g, global, "culling", &js_set_cullface);
     v7_set_method(v7g, global, "vec3dot", &js_vec3_dot);
@@ -110,6 +111,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "mat4transpose", &js_mat4_transpose);
     v7_set_method(v7g, global, "mat4invert", &js_mat4_invert);
     v7_set_method(v7g, global, "vec3mat4mul", &js_vec3_mat4_mul);
+    v7_set_method(v7g, global, "vec4mat4mul", &js_vec4_mat4_mul);
     v7_set_method(v7g, global, "sin", &js_sin);
     v7_set_method(v7g, global, "cos", js_cos);
     v7_set_method(v7g, global, "tan", js_tan);

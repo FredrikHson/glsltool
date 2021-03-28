@@ -17,7 +17,7 @@ mat4 mat4loadidentity()
     return out;
 }
 
-mat4 mat4setscale(float x, float y, float z)
+mat4 mat4setscale(double x, float y, float z)
 {
     mat4 out =
     {
@@ -31,7 +31,7 @@ mat4 mat4setscale(float x, float y, float z)
     return out;
 }
 
-mat4 mat4settranslation(float x, float y, float z)
+mat4 mat4settranslation(double x, float y, float z)
 {
     mat4 out =
     {
@@ -67,10 +67,10 @@ mat4 mat4mul(const mat4* m1, const mat4* m2)
     return out;
 }
 
-mat4 mat4setperspective(float fov, float aspect, float near, float far)
+mat4 mat4setperspective(double fov, float aspect, float near, float far)
 {
     mat4 out;
-    float f = 1.0f / tan(fov / 2.0f);
+    double f = 1.0f / tan(fov / 2.0f);
     out.m[0]  = f / aspect;
     out.m[1]  = 0;
     out.m[2]  = 0;
@@ -90,15 +90,15 @@ mat4 mat4setperspective(float fov, float aspect, float near, float far)
     return out;
 }
 
-mat4 mat4setrotr(float angle, float x, float y, float z)
+mat4 mat4setrotr(double angle, float x, float y, float z)
 {
-    float l = sqrt(x * x + y * y + z * z);
-    float x2 = x / l;
-    float y2 = y / l;
-    float z2 = z / l;
-    float s = sin(angle);
-    float c = cos(angle);
-    float ic = 1.0f - c;
+    double l = sqrt(x * x + y * y + z * z);
+    double x2 = x / l;
+    double y2 = y / l;
+    double z2 = z / l;
+    double s = sin(angle);
+    double c = cos(angle);
+    double ic = 1.0f - c;
     mat4 out;
     out.m[0]  = (ic * x2 * x2) + c;
     out.m[1]  = (ic * x2 * y2) - z2 * s;
@@ -126,10 +126,20 @@ vec3 vec3mat4mul(const vec3* v, const mat4* mat)
     out.x = v->x * mat->m[0] + v->y * mat->m[4] + v->z * mat->m[8] + mat->m[12];
     out.y = v->x * mat->m[1] + v->y * mat->m[5] + v->z * mat->m[9] + mat->m[13];
     out.z = v->x * mat->m[2] + v->y * mat->m[6] + v->z * mat->m[10] + mat->m[14];
-    float w = v->x * mat->m[3] + v->y * mat->m[7] + v->z * mat->m[11] + mat->m[15];
+    double w = v->x * mat->m[3] + v->y * mat->m[7] + v->z * mat->m[11] + mat->m[15];
     out.x /= w;
     out.y /= w;
     out.z /= w;
+    return out;
+}
+
+vec4 vec4mat4mul(const vec4* v, const mat4* mat)
+{
+    vec4 out;
+    out.x = v->x * mat->m[0] + v->y * mat->m[4] + v->z * mat->m[8] + mat->m[12] * v->w;
+    out.y = v->x * mat->m[1] + v->y * mat->m[5] + v->z * mat->m[9] + mat->m[13] * v->w;
+    out.z = v->x * mat->m[2] + v->y * mat->m[6] + v->z * mat->m[10] + mat->m[14] * v->w;
+    out.w = v->x * mat->m[3] + v->y * mat->m[7] + v->z * mat->m[11] + mat->m[15] * v->w;
     return out;
 }
 
@@ -158,7 +168,7 @@ mat4 mat4transpose(const mat4* m)
 mat4 mat4invert(const mat4* m)
 {
     mat4 out;
-    float det;
+    double det;
     out.m[0] = m->m[5]  * m->m[10] * m->m[15] -
                m->m[5]  * m->m[11] * m->m[14] -
                m->m[9]  * m->m[6]  * m->m[15] +

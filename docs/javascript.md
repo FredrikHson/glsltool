@@ -16,9 +16,11 @@
 | bindtexture(samplername,textureid,minfilter*,magfilter*,clamp_s*,clamp_t*);
 | bindrendertarget(samplername,textureid,layer,minfilter*,magfilter*,clamp_s*,clamp_t*);
 | setuniformf(name,x,y*,z*,w*) | |
+| setuniformd(name,x,y*,z*,w*) | |
 | setuniformi(name,x,y*,z*,w*) | |
 | setuniformui(name,x,y*,z*,w*) | |
 | setuniformmat4(name,mat4) | |;
+| setuniformmat4d(name,mat4) | |;
 | depthtest(enable) | 0 1 |
 | culling(cullmode) | see CULL_* flags |
 | float vec3dot(vec3, vec3) | |
@@ -28,6 +30,7 @@
 | vec3 vec3sub(vec3,vec3) | |
 | vec3 vec3mul(vec3,scalar) | |
 | vec3 vec3mat4mul(vec3,mat4) | assumes that w is 1 and will divide by w after multiplying |
+| vec4 vec4mat4mul(vec4,mat4) | |
 | mat4 mat4loadidentity() | |
 | mat4 mat4setscale(x,y*,z*) | 1 or 3 variables|
 | mat4 mat4settranslation(x,y,z) | |
@@ -62,6 +65,7 @@
 
 ```javascript
 vec3={x:0,y:0,z:0};
+vec3={x:0,y:0,z:0,w:0};
 mat4={
 m11:0,m12:0,m13:0,m14,
     m21:0,m22:0,m23:0,m24,
