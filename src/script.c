@@ -97,6 +97,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "depthtest", &js_set_depth);
     v7_set_method(v7g, global, "culling", &js_set_cullface);
     v7_set_method(v7g, global, "blendfunc", &js_blend_func);
+    v7_set_method(v7g, global, "blendfuncseparate", &js_blend_func_separate);
     v7_set_method(v7g, global, "blendequation", &js_blend_equation);
     v7_set_method(v7g, global, "blend", &js_blend);
     v7_set_method(v7g, global, "vec3dot", &js_vec3_dot);

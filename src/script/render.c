@@ -350,6 +350,27 @@ enum v7_err js_blend_func(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+enum v7_err js_blend_func_separate(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 4)
+    {
+        const int sfactor = v7_get_int(v7e, v7_arg(v7e, 0));
+        const int dfactor = v7_get_int(v7e, v7_arg(v7e, 1));
+        const int asfactor = v7_get_int(v7e, v7_arg(v7e, 2));
+        const int adfactor = v7_get_int(v7e, v7_arg(v7e, 3));
+        glBlendFuncSeparate(sfactor, dfactor, asfactor, adfactor);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to blendfunc\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
 enum v7_err js_blend_equation(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);

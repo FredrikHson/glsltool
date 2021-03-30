@@ -24,6 +24,7 @@
 | depthtest(enable) | 0 1 |
 | culling(cullmode) | see CULL_* flags |
 | blendfunc(sfactor,dfactor) | see blend func flags |
+| blendfuncseparate(sfactor,dfactor, asfactor,adfactor) | see blend func flags |
 | blendequation(mode) | see blend equation flags |
 | blend(enable) | 0 1 |
 | float vec3dot(vec3, vec3) | |
