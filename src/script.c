@@ -96,6 +96,9 @@ void create_js_functions()
     v7_set_method(v7g, global, "setuniformmat4d", &js_set_uniform_matrix_d);
     v7_set_method(v7g, global, "depthtest", &js_set_depth);
     v7_set_method(v7g, global, "culling", &js_set_cullface);
+    v7_set_method(v7g, global, "blendfunc", &js_blend_func);
+    v7_set_method(v7g, global, "blendequation", &js_blend_equation);
+    v7_set_method(v7g, global, "blend", &js_blend);
     v7_set_method(v7g, global, "vec3dot", &js_vec3_dot);
     v7_set_method(v7g, global, "vec3normalize", &js_vec3_normalize);
     v7_set_method(v7g, global, "vec3cross", &js_vec3_cross);
@@ -134,6 +137,9 @@ void create_js_functions()
     v7_set_method(v7g, global, "setwindowtitle", js_set_window_title);
 }
 
+/* for easy writing of v7_set global
+'<,'>s/\(.*\)/\="v7_set(v7g, v7_get_global(v7g),\"" . submatch(0) . "\"," . strlen(submatch(0)) . ", v7_mk_number(v7g,". submatch(0) ."));"/g
+*/
 void create_js_defines()
 {
     /* gl data types */
@@ -243,6 +249,26 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "GL_CLAMP_TO_EDGE", 16, v7_mk_number(v7g, GL_CLAMP_TO_EDGE));
     v7_set(v7g, v7_get_global(v7g), "GL_MIRRORED_REPEAT", 18, v7_mk_number(v7g, GL_MIRRORED_REPEAT));
     v7_set(v7g, v7_get_global(v7g), "GL_REPEAT", 9, v7_mk_number(v7g, GL_REPEAT));
+    /* blending */
+    v7_set(v7g, v7_get_global(v7g), "GL_FUNC_ADD", 11, v7_mk_number(v7g, GL_FUNC_ADD));
+    v7_set(v7g, v7_get_global(v7g), "GL_FUNC_SUBTRACT", 16, v7_mk_number(v7g, GL_FUNC_SUBTRACT));
+    v7_set(v7g, v7_get_global(v7g), "GL_FUNC_REVERSE_SUBTRACT", 24, v7_mk_number(v7g, GL_FUNC_REVERSE_SUBTRACT));
+    v7_set(v7g, v7_get_global(v7g), "GL_MIN", 6, v7_mk_number(v7g, GL_MIN));
+    v7_set(v7g, v7_get_global(v7g), "GL_MAX", 6, v7_mk_number(v7g, GL_MAX));
+    v7_set(v7g, v7_get_global(v7g), "GL_ZERO", 7, v7_mk_number(v7g, GL_ZERO));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE", 6, v7_mk_number(v7g, GL_ONE));
+    v7_set(v7g, v7_get_global(v7g), "GL_SRC_COLOR", 12, v7_mk_number(v7g, GL_SRC_COLOR));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_SRC_COLOR", 22, v7_mk_number(v7g, GL_ONE_MINUS_SRC_COLOR));
+    v7_set(v7g, v7_get_global(v7g), "GL_DST_COLOR", 12, v7_mk_number(v7g, GL_DST_COLOR));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_DST_COLOR", 22, v7_mk_number(v7g, GL_ONE_MINUS_DST_COLOR));
+    v7_set(v7g, v7_get_global(v7g), "GL_SRC_ALPHA", 12, v7_mk_number(v7g, GL_SRC_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_SRC_ALPHA", 22, v7_mk_number(v7g, GL_ONE_MINUS_SRC_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_DST_ALPHA", 12, v7_mk_number(v7g, GL_DST_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_DST_ALPHA", 22, v7_mk_number(v7g, GL_ONE_MINUS_DST_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_CONSTANT_COLOR", 17, v7_mk_number(v7g, GL_CONSTANT_COLOR));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_CONSTANT_COLOR", 27, v7_mk_number(v7g, GL_ONE_MINUS_CONSTANT_COLOR));
+    v7_set(v7g, v7_get_global(v7g), "GL_CONSTANT_ALPHA", 17, v7_mk_number(v7g, GL_CONSTANT_ALPHA));
+    v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_CONSTANT_ALPHA", 27, v7_mk_number(v7g, GL_ONE_MINUS_CONSTANT_ALPHA));
     /* texture flags */
     v7_set(v7g, v7_get_global(v7g), "IMG_TOP", 7, v7_mk_number(v7g, IMG_TOP));
     v7_set(v7g, v7_get_global(v7g), "IMG_BOTTOM", 10, v7_mk_number(v7g, IMG_BOTTOM));

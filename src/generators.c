@@ -49,7 +49,8 @@ unsigned char compareparams(gentype t, void* p1, void* p2)
             plane_params* plane1 = (plane_params*)p1;
             plane_params* plane2 = (plane_params*)p2;
 
-            if(plane1->w == plane2->w && plane1->h == plane2->h)
+            if(plane1->w == plane2->w && plane1->h == plane2->h &&
+               plane1->subw == plane2->subw && plane1->subh == plane2->subh)
             {
                 return 1;
             }

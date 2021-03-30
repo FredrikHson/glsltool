@@ -23,6 +23,9 @@
 | setuniformmat4d(name,mat4) | |;
 | depthtest(enable) | 0 1 |
 | culling(cullmode) | see CULL_* flags |
+| blendfunc(sfactor,dfactor) | see blend func flags |
+| blendequation(mode) | see blend equation flags |
+| blend(enable) | 0 1 |
 | float vec3dot(vec3, vec3) | |
 | vec3 vec3normalize(vec3) | |
 | vec3 vec3cross(vec3,vec3) | |
@@ -369,3 +372,24 @@ GL_LINEAR_MIPMAP_LINEAR
 GL_CLAMP_TO_EDGE
 GL_MIRRORED_REPEAT
 GL_REPEAT
+### blending equation
+GL_FUNC_ADD
+GL_FUNC_SUBTRACT
+GL_FUNC_REVERSE_SUBTRACT
+GL_MIN
+GL_MAX
+### blend func
+GL_ZERO
+GL_ONE
+GL_SRC_COLOR
+GL_ONE_MINUS_SRC_COLOR
+GL_DST_COLOR
+GL_ONE_MINUS_DST_COLOR
+GL_SRC_ALPHA
+GL_ONE_MINUS_SRC_ALPHA
+GL_DST_ALPHA
+GL_ONE_MINUS_DST_ALPHA
+GL_CONSTANT_COLOR
+GL_ONE_MINUS_CONSTANT_COLOR
+GL_CONSTANT_ALPHA
+GL_ONE_MINUS_CONSTANT_ALPHA

@@ -19,6 +19,7 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         printf("\n");
         gen_meshes[out].meshid = allocateMesh(0);
         mesh* m = &meshes[gen_meshes[out].meshid];
+        m->cleanup = CLEAN_USED;
         size_t vlen = 14;
         unsigned int numverts = (subw + 2) * (subh + 2);
         float* data = (float*)malloc(numverts * vlen * sizeof(float));
@@ -116,5 +117,6 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         }
     }
 
+    meshes[gen_meshes[out].meshid].cleanup = CLEAN_USED;
     return gen_meshes[out].meshid;
 }

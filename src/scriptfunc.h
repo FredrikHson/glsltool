@@ -30,6 +30,9 @@ enum v7_err js_set_debug_mode(v7* v7e, v7_val_t* res);
 enum v7_err js_set_debug_step(v7* v7e, v7_val_t* res);
 enum v7_err js_set_debug_range(v7* v7e, v7_val_t* res);
 enum v7_err js_set_debug_clip(v7* v7e, v7_val_t* res);
+enum v7_err js_blend(v7* v7e, v7_val_t* res);
+enum v7_err js_blend_func(v7* v7e, v7_val_t* res);
+enum v7_err js_blend_equation(v7* v7e, v7_val_t* res);
 /* shader */
 enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res);
 enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res);

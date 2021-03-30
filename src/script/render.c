@@ -330,3 +330,66 @@ enum v7_err js_set_debug_step(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
+enum v7_err js_blend_func(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 2)
+    {
+        const int sfactor = v7_get_int(v7e, v7_arg(v7e, 0));
+        const int dfactor = v7_get_int(v7e, v7_arg(v7e, 1));
+        glBlendFunc(sfactor, dfactor);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to blendfunc\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_blend_equation(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int mode = v7_get_int(v7e, v7_arg(v7e, 0));
+        glBlendEquation(mode);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to blendequation\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_blend(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int enable = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(enable)
+        {
+            glEnable(GL_BLEND);
+        }
+        else
+        {
+            glDisable(GL_BLEND);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to blend\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
+}

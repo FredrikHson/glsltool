@@ -31,7 +31,7 @@ void endResourceCleanup()
                 }
                 else
                 {
-                    printf("deleting generated mesh\n");
+                    printf("deleting generated mesh %i\n", i);
                 }
 
                 cleanupMesh(m);
