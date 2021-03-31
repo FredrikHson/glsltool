@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <script.h>
 
 int inotify = 0;
 
@@ -145,6 +146,11 @@ void watchChanges()
                     {
                         usleep(50000); /* add a small delay to make sure the file is done writing */
                         (*watchlist[j].callback)(watchlist[j].filename);
+
+                        if(validscript)
+                        {
+                            run_filechange();
+                        }
                     }
 
                     break;
@@ -171,6 +177,11 @@ void watchChanges()
             watchlist[i].descriptor = inotify_add_watch(inotify, watchlist[i].filename, IN_CLOSE_WRITE | IN_MOVE);
             usleep(50000);
             (*watchlist[i].callback)(watchlist[i].filename);
+
+            if(validscript)
+            {
+                run_filechange();
+            }
         }
     }
 }

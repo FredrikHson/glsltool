@@ -83,6 +83,7 @@ bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
 |-|-|
 | loop | called every frame |
 | resize | called on window resize |
+| filechange | called on any filechange |
 # Variables
 | Dynamic variables | comment |
 |-|-|
