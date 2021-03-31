@@ -342,6 +342,26 @@ int initScript(const char* filename)
     return 1;
 }
 
+void run_resize()
+{
+    v7_set(v7g, v7_get_global(v7g), "WINDOW_WIDTH", 12, v7_mk_number(v7g, options.width));
+    v7_set(v7g, v7_get_global(v7g), "WINDOW_HEIGHT", 13, v7_mk_number(v7g, options.height));
+    v7_val_t function;
+    v7_val_t result;
+    function = v7_get(v7g, v7_get_global(v7g), "resize", 6);
+
+    if(v7_is_undefined(function) == 0)
+    {
+        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, V7_UNDEFINED, &result);
+
+        if(rcode != V7_OK)
+        {
+            v7_print_error(stderr, v7g, "Error", result);
+            validscript = 0;
+        }
+    }
+}
+
 void run_loop()
 {
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));

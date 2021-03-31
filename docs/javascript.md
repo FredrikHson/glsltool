@@ -79,6 +79,10 @@ m11:0,m12:0,m13:0,m14,
 bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
 ```
 
+# callback functions 
+|-|-|
+| loop | called every frame |
+| resize | called on window resize |
 # Variables
 | Dynamic variables | comment |
 |-|-|
@@ -139,6 +143,7 @@ bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
 | MOUSE_6 | |
 | MOUSE_7 | |
 | MOUSE_8 | |
+| MOUSE_ANY | any of the mouse buttons |
 | PRESSED | mouse/keyboard button state |
 | PRESSED_NOW | is the button pressed this frame |
 
@@ -264,6 +269,7 @@ bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
 | KEY_RIGHT_ALT | |
 | KEY_RIGHT_SUPER | |
 | KEY_MENU | |
+| KEY_ANY | any keyboard key |
 
 ## OpenGL variables
 

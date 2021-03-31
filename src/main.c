@@ -44,7 +44,13 @@ void window_size_callback(GLFWwindow* window, int width, int height)
     options.height = height;
     avoid_debugging = 1;
     resizeTargets();
+
+    if(validscript)
+    {
+        run_resize();
+    }
 }
+
 void key_handler_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
