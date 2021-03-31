@@ -127,7 +127,11 @@ int handle_options(int argc, char* argv[])
 
                 if(dir != 0)
                 {
-                    chdir(dirname(dir));
+                    if(chdir(dirname(dir)) != 0)
+                    {
+                        fprintf(stderr, "failed to change directory to %s\n", dir);
+                    }
+
                     free(dir);
                 }
 
