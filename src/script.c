@@ -136,6 +136,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "getoptionalstring", js_get_optional_string);
     v7_set_method(v7g, global, "getmeshbbox", js_get_mesh_bbox);
     v7_set_method(v7g, global, "setwindowtitle", js_set_window_title);
+    v7_set_method(v7g, global, "watchfile", js_watchfile);
 }
 
 /* for easy writing of v7_set global
@@ -362,16 +363,17 @@ void run_resize()
     }
 }
 
-void run_filechange()
+void run_filechange(char* filename)
 {
-    fprintf(stderr,"running file change callback\n");
     v7_val_t function;
     v7_val_t result;
     function = v7_get(v7g, v7_get_global(v7g), "filechange", 10);
 
     if(v7_is_undefined(function) == 0)
     {
-        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, V7_UNDEFINED, &result);
+        v7_val_t args = v7_mk_array(v7g);
+        v7_array_push(v7g, args, v7_mk_string(v7g, filename, ~0, 1));
+        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
 
         if(rcode != V7_OK)
         {

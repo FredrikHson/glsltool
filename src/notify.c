@@ -146,11 +146,11 @@ void watchChanges()
                     {
                         usleep(50000); /* add a small delay to make sure the file is done writing */
                         (*watchlist[j].callback)(watchlist[j].filename);
+                    }
 
-                        if(validscript)
-                        {
-                            run_filechange();
-                        }
+                    if(validscript)
+                    {
+                        run_filechange(watchlist[j].filename);
                     }
 
                     break;
@@ -176,11 +176,15 @@ void watchChanges()
             watchlist[i].inode = filestat.st_ino;
             watchlist[i].descriptor = inotify_add_watch(inotify, watchlist[i].filename, IN_CLOSE_WRITE | IN_MOVE);
             usleep(50000);
-            (*watchlist[i].callback)(watchlist[i].filename);
+
+            if(watchlist[i].callback != 0)
+            {
+                (*watchlist[i].callback)(watchlist[i].filename);
+            }
 
             if(validscript)
             {
-                run_filechange();
+                run_filechange(watchlist[i].filename);
             }
         }
     }

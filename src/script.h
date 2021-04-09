@@ -3,7 +3,7 @@
 
 int initScript(const char* filename);
 void run_loop();
-void run_filechange();
+void run_filechange(char* filename);
 void run_resize();
 int shutdownScript();
 void reloadScript(const char* filename);
