@@ -444,6 +444,7 @@ void cleanupMesh(mesh* m)
 
     if(m->name)
     {
+        unwatchFile(m->name);
         free(m->name);
         m->name = 0;
     }
@@ -487,6 +488,7 @@ void cleanupMesh(mesh* m)
         m->numverts = 0;
     }
 }
+
 void cleanupMeshes()
 {
     for(int i = 0; i < nummeshes; i++)
@@ -653,4 +655,18 @@ int bindAttrib(const char* name, int flag)
     }
 
     return 1;
+}
+
+int ismesh(const char* filename)
+{
+    const char* ext = strrchr(filename, '.');
+
+    if(ext == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return aiIsExtensionSupported(ext) == AI_TRUE;
+    }
 }

@@ -154,7 +154,7 @@ enum v7_err js_draw_mesh(v7* v7e, v7_val_t* res)
     }
     else
     {
-        fprintf(stderr, "invalid number of arguments to loadmesh\n");
+        fprintf(stderr, "invalid number of arguments to drawmesh\n");
         return V7_SYNTAX_ERROR;
     }
 

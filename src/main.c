@@ -59,6 +59,7 @@ void key_handler_callback(GLFWwindow* window, int key, int scancode, int action,
         printf("abort abort!\n");
     }
 }
+
 void updateTime() // call once per frame
 {
     currenttime = glfwGetTime();
@@ -124,6 +125,11 @@ void GLAPIENTRY OpenGLMessageCallback(GLenum source, GLenum type, GLuint id, GLe
     }
 }
 #endif
+
+void drop_callback(GLFWwindow* window, int count, const char** paths)
+{
+    run_droppedfiles(paths, count);
+}
 
 void handleKeys()
 {
@@ -215,6 +221,7 @@ int main(int argc, char* argv[])
         glfwSetWindowPos(window, options.x, options.y);
     }
 
+    glfwSetDropCallback(window, drop_callback);
     glfwMakeContextCurrent(window);
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetKeyCallback(window, key_handler_callback);

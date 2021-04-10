@@ -79,6 +79,8 @@ void create_js_functions()
     v7_set_method(v7g, global, "endpass", &js_endPass);
     v7_set_method(v7g, global, "loadimage", &js_load_image);
     v7_set_method(v7g, global, "loadmesh", &js_load_mesh);
+    v7_set_method(v7g, global, "destroymesh", &js_destroy_mesh);
+    v7_set_method(v7g, global, "ismesh", &js_ismesh);
     v7_set_method(v7g, global, "loadshader", &js_load_shader);
     v7_set_method(v7g, global, "generateplane", &js_generate_plane);
     v7_set_method(v7g, global, "drawmesh", &js_draw_mesh);
@@ -373,6 +375,33 @@ void run_filechange(char* filename)
     {
         v7_val_t args = v7_mk_array(v7g);
         v7_array_push(v7g, args, v7_mk_string(v7g, filename, ~0, 1));
+        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
+
+        if(rcode != V7_OK)
+        {
+            v7_print_error(stderr, v7g, "Error", result);
+            validscript = 0;
+        }
+    }
+}
+
+void run_droppedfiles(const char** files, int count)
+{
+    v7_val_t function;
+    v7_val_t result;
+    function = v7_get(v7g, v7_get_global(v7g), "filedrop", 8);
+
+    if(v7_is_undefined(function) == 0)
+    {
+        v7_val_t array = v7_mk_array(v7g);
+        v7_val_t args = v7_mk_array(v7g);
+
+        for(int i = 0; i < count; i++)
+        {
+            v7_array_push(v7g, array, v7_mk_string(v7g, files[i], ~0, 1));
+        }
+
+        v7_array_push(v7g, args, array);
         enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
 
         if(rcode != V7_OK)

@@ -8,6 +8,8 @@
 | endpass()  | |
 | imageid loadimage(filename,origin*)  | IMG_TOP, IMG_BOTTOM|
 | meshid loadmesh(filename) | |
+| bool ismesh(filename) | check if the filename is a mesh handled by assimp or not|
+| destroymesh(meshid) | |
 | meshid generateplane(subdivw*,subdivh*,width*,height*) | defaults to 0 0 2 2 |
 | shaderid loadshader(vertfile,fragfile,geomfile,controlfile,evalfile)  | 0 on unused shader files |
 | drawmesh(meshid,submesh*) | will draw all submeshes if none are given |
@@ -79,12 +81,13 @@ m11:0,m12:0,m13:0,m14,
 bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
 ```
 
-# callback functions 
+# callback functions
 | function | comment |
 |-|-|
 | loop | called every frame |
 | resize | called on window resize |
-| filechange | called on any filechange |
+| filechange(filename) | called on any filechange |
+| filedrop(files[]) | called on dropping files onto the window |
 
 # Variables
 | Dynamic variables | comment |

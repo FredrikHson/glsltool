@@ -60,6 +60,7 @@ void initImages();
 int allocateMesh(const char* filename);
 int getImageWidth(int id);
 int getImageHeight(int id);
+int ismesh(const char* filename);
 
 void initResourceCleanup();
 void endResourceCleanup();

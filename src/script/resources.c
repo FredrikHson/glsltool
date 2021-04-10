@@ -49,6 +49,34 @@ enum v7_err js_load_image(v7* v7e, v7_val_t* res)
     }
 }
 
+enum v7_err js_ismesh(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        size_t len = 0;
+        v7_val_t val = v7_arg(v7e, 0);
+        const char* filename = v7_get_string(v7e, &val, &len);
+
+        if(filename)
+        {
+            *res = v7_mk_boolean(v7e, ismesh(filename));
+            return V7_OK;
+        }
+        else
+        {
+            fprintf(stderr, "first argument to ismesh should be a string\n");
+            return V7_SYNTAX_ERROR;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to ismesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
 enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
 {
     int argc = v7_argc(v7e);
@@ -86,6 +114,29 @@ enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
         fprintf(stderr, "invalid number of arguments to loadmesh\n");
         return V7_SYNTAX_ERROR;
     }
+}
+
+enum v7_err js_destroy_mesh(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        const int meshid = v7_get_int(v7e, v7_arg(v7e, 0));
+
+        if(meshid < nummeshes)
+        {
+            cleanupMesh(&meshes[meshid]);
+            meshes[meshid].cleanup = CLEAN_DELETED;
+        }
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to destroymesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    return V7_OK;
 }
 
 enum v7_err js_get_mesh_bbox(v7* v7e, v7_val_t* res)
