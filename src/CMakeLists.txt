@@ -14,6 +14,7 @@ set(COMMON_SRC
     "debug.c"
     "generators.c"
     "generators/plane.c"
+    "jitterdata.c"
     "main.c"
     "matrix.c"
     "notify.c"

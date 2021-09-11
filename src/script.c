@@ -139,6 +139,10 @@ void create_js_functions()
     v7_set_method(v7g, global, "getmeshbbox", js_get_mesh_bbox);
     v7_set_method(v7g, global, "setwindowtitle", js_set_window_title);
     v7_set_method(v7g, global, "watchfile", js_watchfile);
+    v7_set_method(v7g, global, "getsquarejitterx", js_get_square_jitter_x);
+    v7_set_method(v7g, global, "getsquarejittery", js_get_square_jitter_y);
+    v7_set_method(v7g, global, "getcirclejitterx", js_get_circle_jitter_x);
+    v7_set_method(v7g, global, "getcirclejittery", js_get_circle_jitter_y);
 }
 
 /* for easy writing of v7_set global

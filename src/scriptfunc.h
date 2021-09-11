@@ -36,6 +36,10 @@ enum v7_err js_blend(v7* v7e, v7_val_t* res);
 enum v7_err js_blend_func(v7* v7e, v7_val_t* res);
 enum v7_err js_blend_func_separate(v7* v7e, v7_val_t* res);
 enum v7_err js_blend_equation(v7* v7e, v7_val_t* res);
+enum v7_err js_get_square_jitter_x(v7* v7e, v7_val_t* res);
+enum v7_err js_get_square_jitter_y(v7* v7e, v7_val_t* res);
+enum v7_err js_get_circle_jitter_x(v7* v7e, v7_val_t* res);
+enum v7_err js_get_circle_jitter_y(v7* v7e, v7_val_t* res);
 /* shader */
 enum v7_err js_bind_attrib(v7* v7e, v7_val_t* res);
 enum v7_err js_bind_rendertarget(v7* v7e, v7_val_t* res);

@@ -5,6 +5,10 @@
 #include "defines.h"
 typedef struct v7 v7;
 extern v7* v7g;
+extern int max_jitter_samples;
+extern float jitterdata[];
+extern float jittercircledata[];
+
 enum v7_err js_clear(v7* v7e, v7_val_t* res)
 {
     float red   = 0;
@@ -413,4 +417,72 @@ enum v7_err js_blend(v7* v7e, v7_val_t* res)
     }
 
     return V7_OK;
+}
+
+enum v7_err js_get_square_jitter_x(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        int index = v7_get_int(v7e, v7_arg(v7e, 0));
+        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2]);
+        return V7_OK;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to getjitterx\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
+enum v7_err js_get_square_jitter_y(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        int index = v7_get_int(v7e, v7_arg(v7e, 0));
+        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2 + 1]);
+        return V7_OK;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to getjittery\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
+enum v7_err js_get_circle_jitter_x(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        int index = v7_get_int(v7e, v7_arg(v7e, 0));
+        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2]);
+        return V7_OK;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to getjitterx\n");
+        return V7_SYNTAX_ERROR;
+    }
+}
+
+enum v7_err js_get_circle_jitter_y(v7* v7e, v7_val_t* res)
+{
+    int argc = v7_argc(v7e);
+
+    if(argc == 1)
+    {
+        int index = v7_get_int(v7e, v7_arg(v7e, 0));
+        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2 + 1]);
+        return V7_OK;
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to getjittery\n");
+        return V7_SYNTAX_ERROR;
+    }
 }
