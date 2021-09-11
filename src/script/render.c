@@ -460,7 +460,7 @@ enum v7_err js_get_circle_jitter_x(v7* v7e, v7_val_t* res)
     if(argc == 1)
     {
         int index = v7_get_int(v7e, v7_arg(v7e, 0));
-        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2]);
+        *res = v7_mk_number(v7e, jittercircledata[(index % max_jitter_samples) * 2]);
         return V7_OK;
     }
     else
@@ -477,7 +477,7 @@ enum v7_err js_get_circle_jitter_y(v7* v7e, v7_val_t* res)
     if(argc == 1)
     {
         int index = v7_get_int(v7e, v7_arg(v7e, 0));
-        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2 + 1]);
+        *res = v7_mk_number(v7e, jittercircledata[(index % max_jitter_samples) * 2 + 1]);
         return V7_OK;
     }
     else
