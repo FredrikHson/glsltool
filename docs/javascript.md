@@ -65,11 +65,12 @@
 | string getoptionalstring(stringid,default) | |
 | bbox getmeshbbox(meshid) | |
 | setwindowtitle(string) | |
-| float getsquarejitterx(jitterid) | 
-| float getsquarejittery(jitterid) | 
-| float getcirclejitterx(jitterid) | 
-| float getcirclejittery(jitterid) | 
-
+| float getsquarejitterx(jitterid) | |
+| float getsquarejittery(jitterid) | |
+| float getcirclejitterx(jitterid) | |
+| float getcirclejittery(jitterid) | |
+| string getclipboard() |  |
+| getclipboard(string) |  |
 
 # Objects
 
