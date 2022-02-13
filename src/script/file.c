@@ -1,6 +1,8 @@
 #include "script.h"
 #include "notify.h"
 #include "v7.h"
+#include <string.h>
+#include <strings.h>
 
 typedef struct v7 v7;
 extern v7* v7g;
@@ -13,7 +15,16 @@ enum v7_err js_watchfile(v7* v7e, v7_val_t* res)
         size_t len = 0;
         v7_val_t val = v7_arg(v7e, 0);
         const char* filename = v7_get_string(v7e, &val, &len);
-        watchFile(filename, 0);
+        const char* ext = strrchr(filename, '.');
+
+        if(strcasecmp(".js", ext) == 0)
+        {
+            watchFile(filename, reloadScript);
+        }
+        else
+        {
+            watchFile(filename, 0);
+        }
     }
     else
     {

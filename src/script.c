@@ -13,6 +13,7 @@
 #include <string.h>
 
 typedef struct v7 v7;
+char* entrypointfile = 0;
 unsigned char validscript = 0;
 v7* v7g = 0;
 
@@ -322,12 +323,34 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "DEBUG_RENDERSINGLESTEP", 22, v7_mk_number(v7g, DEBUG_RENDERSINGLESTEP));
 }
 
+void override_require() // add watchfile on the require command
+{
+    if(v7_exec(v7g,
+               "function require(m) { "
+               "  if (m in _modcache) { return _modcache[m]; }"
+               "  var module = {exports:{}};"
+               "  File.eval(m);"
+               "  watchfile(m);"
+               "  return (_modcache[m] = module.exports)"
+               " }",
+               NULL) != V7_OK)
+    {
+    }
+}
+
 int initScript(const char* filename)
 {
+    if(entrypointfile == 0)
+    {
+        entrypointfile = malloc(strlen(filename) + 1);
+        strcpy(entrypointfile, filename);
+    }
+
     initResourceCleanup();
     v7g = v7_create();
     create_js_functions();
     create_js_defines();
+    override_require();
     v7_val_t result;
     enum v7_err rcode = v7_exec_file(v7g, filename, &result);
 
@@ -456,13 +479,19 @@ int shutdownScript()
         free(globals);
     }
 
+    if(entrypointfile)
+    {
+        free(entrypointfile);
+    }
+
     return 1;
 }
 
 void reloadScript(const char* filename)
 {
     int oldnumglobals = numglobals;
-    printf("reloading script: %s\n", filename);
+    printf("reloading script: %s due to change in %s\n", entrypointfile, filename);
+    printf("num globals stored: %zu\n", numglobals);
     char** tmpstorage = malloc(sizeof(char*)*oldnumglobals);
 
     for(int i = 0; i < oldnumglobals; i++)
@@ -480,7 +509,7 @@ void reloadScript(const char* filename)
     cleanupRender();
     cleanupDebug(); // mostly to delete opengl textures
     initDebug();
-    initScript(filename);
+    initScript(entrypointfile);
 
     for(int i = 0; i < oldnumglobals; i++)
     {
