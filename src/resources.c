@@ -18,6 +18,7 @@ void endResourceCleanup()
     for(int i = 0; i < nummeshes; i++)
     {
         mesh* m = &meshes[i];
+        printf("name:%s meshcleanup:%i\n", m->name, m->cleanup);
 
         if(m->cleanup & CLEAN_LATER)
         {

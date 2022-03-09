@@ -7,6 +7,7 @@
 typedef enum gentype
 {
     GEN_PLANE,
+    GEN_MESH,
     GEN_CUBE
 } gentype;
 
@@ -28,5 +29,6 @@ void endGeneratorCleanup();
 unsigned int allocateGenMesh(gentype t, void* params);
 
 int generatePlane(unsigned int subw, unsigned int subh, float w, float h);
+int generateGenericMesh(unsigned int numverts, unsigned int numelements, unsigned int drawmode,unsigned int flags, const char* identifier);
 
 #endif //__GENERATORS_H__

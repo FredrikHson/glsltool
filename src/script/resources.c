@@ -277,6 +277,36 @@ enum v7_err js_generate_plane(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
+enum v7_err js_generate_generic_mesh(v7* v7e, v7_val_t* res)
+{
+    unsigned int numverts = 0;
+    unsigned int numelements = 0;
+    unsigned int drawmode = 0;
+    unsigned int flags = 0;
+    const char* identifier;
+    size_t len = 0;
+
+    if(v7_argc(v7e) == 5)
+    {
+        numverts = v7_get_int(v7e, v7_arg(v7e, 0));
+        numelements = v7_get_int(v7e, v7_arg(v7e, 1));
+        drawmode = v7_get_int(v7e, v7_arg(v7e, 2));
+        flags = v7_get_int(v7e, v7_arg(v7e, 3));
+        v7_val_t val = v7_arg(v7e, 4);
+        identifier = v7_get_string(v7e, &val, &len);
+    }
+    else
+    {
+        fprintf(stderr, "invalid number of arguments to generatemesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    printf("generating mesh verts:%i elements:%i drawmode:%i flags:%i\n", numverts, numelements, drawmode, flags);
+    unsigned int target = generateGenericMesh(numverts, numelements, drawmode, flags, identifier);
+    *res = v7_mk_number(v7e, target);
+    return V7_OK;
+}
+
 enum v7_err js_image_width(v7* v7e, v7_val_t* res)
 {
     if(v7_argc(v7e) != 1)
@@ -300,5 +330,18 @@ enum v7_err js_image_height(v7* v7e, v7_val_t* res)
 
     int id = v7_get_int(v7e, v7_arg(v7e, 0));
     *res = v7_mk_number(v7e, getImageHeight(id));
+    return V7_OK;
+}
+
+
+
+enum v7_err js_set_indices(v7* v7e, v7_val_t* res)
+{
+
+    return V7_OK;
+}
+enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res)
+{
+
     return V7_OK;
 }

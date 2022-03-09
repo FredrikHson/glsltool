@@ -29,6 +29,9 @@ int nummeshes = 0;
 vertattribute* attribs = 0;
 int maxattribs = 0;
 unsigned int numActiveAttribs = 0;
+int editmesh = -1;
+float* editmeshvbodata = 0;
+unsigned int* editmeshindexdata = 0;
 
 void printmeshflags(unsigned int flag)
 {
@@ -69,6 +72,48 @@ void printmeshflags(unsigned int flag)
     }
 
     printf("\n");
+}
+unsigned int sizeOfVert(unsigned int flag)
+{
+    unsigned int size = 0;
+
+    if(flag & MESH_FLAG_POSITION)
+    {
+        size += sizeof(float) * 3;
+    }
+
+    if(flag & MESH_FLAG_NORMAL)
+    {
+        size += sizeof(float) * 3;
+    }
+
+    if(flag & MESH_FLAG_TANGENT)
+    {
+        size += sizeof(float) * 3;
+    }
+
+    if(flag & MESH_FLAG_BINORMAL)
+    {
+        size += sizeof(float) * 3;
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        if(flag & MESH_FLAG_TEXCOORD0 << i)
+        {
+            size += sizeof(float) * 3;
+        }
+    }
+
+    for(int i = 0; i < 8; i++)
+    {
+        if(flag & MESH_FLAG_COLOR0 << i)
+        {
+            size += sizeof(float) * 3;
+        }
+    }
+
+    return size;
 }
 
 int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
@@ -149,6 +194,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     m->indices    = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numindices = malloc(sizeof(unsigned int) * scene->mNumMeshes);
     m->numverts   = malloc(sizeof(unsigned int) * scene->mNumMeshes);
+    m->drawmode   = GL_TRIANGLES;
     m->bboxmax[0] = -FLT_MAX;
     m->bboxmax[1] = -FLT_MAX;
     m->bboxmax[2] = -FLT_MAX;
@@ -583,7 +629,7 @@ void drawSubmesh(int id, int submesh)
     }
     else
     {
-        glDrawElements(GL_TRIANGLES, m->numindices[submesh], GL_UNSIGNED_INT, 0);
+        glDrawElements(m->drawmode, m->numindices[submesh], GL_UNSIGNED_INT, 0);
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -606,6 +652,11 @@ void drawMesh(int id, int submesh)
     if(id >= nummeshes || id < 0)
     {
         return;
+    }
+
+    if(editmesh == id)
+    {
+        commitMesh();
     }
 
     if(submesh == -1)
@@ -669,4 +720,134 @@ int ismesh(const char* filename)
     {
         return aiIsExtensionSupported(ext) == AI_TRUE;
     }
+}
+
+void commitMesh()
+{
+    if(editmesh == -1 || editmesh >= nummeshes)
+    {
+        return;
+    }
+
+    if(editmeshvbodata)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, meshes[editmesh].vbo[0]);
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+        editmeshvbodata = 0;
+    }
+
+    if(editmeshindexdata)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].vao[0]);
+        glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+        editmeshindexdata = 0;
+    }
+
+    // "unset" the editmesh
+    editmesh = -1;
+
+}
+
+void openMesh(int id)
+{
+    if(editmesh != id && editmesh != -1)
+    {
+        commitMesh();
+    }
+
+    if(id >= nummeshes)
+    {
+        fprintf(stderr, "trying to open a mesh that does not exist: id:%i maxid:%i\n", id, nummeshes - 1);
+        return;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, meshes[editmesh].vbo[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].vao[0]);
+    editmeshvbodata = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    editmeshindexdata = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+    editmesh = id;
+}
+
+void setMeshIndices(size_t index, size_t len, const unsigned int* data)
+{
+    if(editmesh == -1 || editmeshindexdata == 0)
+    {
+        fprintf(stderr, "trying to set index without opening a mesh first\n");
+        return;
+    }
+
+    if(index + len > meshes[editmesh].numindices[0])
+    {
+        fprintf(stderr, "trying to set index:%zu but the mesh only have %i\n", index + len, meshes[editmesh].numindices[0]);
+        return;
+    }
+
+    memcpy(editmeshindexdata + (index * sizeof(unsigned int)), data, len * sizeof(unsigned int));
+
+}
+
+size_t flagToOffset(unsigned int flags, unsigned int targetflag, size_t stride)
+{
+    size_t offset = 0;
+    int i = 0;
+
+    for(; i < 4; i++)
+    {
+        if(flags & (1 << i))
+        {
+            if(targetflag & (1 << i))
+            {
+                return offset;
+            }
+
+            offset += stride * 3;
+        }
+    }
+
+    for(; i < 12; i++)
+    {
+        if(flags & (1 << i))
+        {
+            if(targetflag & (1 << i))
+            {
+                return offset;
+            }
+
+            offset += stride * 2;
+        }
+    }
+
+    for(; i < 20; i++)
+    {
+        if(flags & (1 << i))
+        {
+            if(targetflag & (1 << i))
+            {
+                return offset;
+            }
+
+            offset += stride * 3;
+        }
+    }
+
+    return offset;
+}
+
+void setMeshVertexData(size_t index, unsigned int flag, size_t len, const float* data)
+{
+    if(editmesh == -1 || editmeshindexdata == 0)
+    {
+        fprintf(stderr, "trying to set vertexdata without opening a mesh first\n");
+        return;
+    }
+
+    if(index + len > meshes[editmesh].numverts[0])
+    {
+        fprintf(stderr, "trying to set vertexdata:%zu but the mesh only have %i\n", index + len, meshes[editmesh].numverts[0]);
+        return;
+    }
+
+    size_t offset = flagToOffset(meshes[editmesh].flags[0], flag, meshes[editmesh].numverts[0] * sizeof(float));
+
+    memcpy(editmeshvbodata + offset, data, len * sizeof(float));
 }

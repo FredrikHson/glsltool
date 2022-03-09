@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.18)
 
 project(glsltool)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
@@ -6,6 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(OpenSSL REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
@@ -14,6 +15,7 @@ set(COMMON_SRC
     "debug.c"
     "generators.c"
     "generators/plane.c"
+    "generators/generic.c"
     "jitterdata.c"
     "main.c"
     "matrix.c"
@@ -81,6 +83,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     ${IL_LIBRARIES}
     ${ILU_LIBRARIES}
     ${ASSIMP_LIBRARIES}
+    ${OPENSSL_SSL_LIBRARIES}
+    ${OPENSSL_CRYPTO_LIBRARY}
     m
     v7
     )

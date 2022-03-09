@@ -1,6 +1,8 @@
 #ifndef __RESOURCES_H__
 #define __RESOURCES_H__
 
+#include <stddef.h>
+
 #define CLEAN_USED    0
 #define CLEAN_DELETED 1
 #define CLEAN_LATER   2
@@ -28,6 +30,7 @@ typedef struct mesh
     unsigned int* numverts;
     float bboxmin[3];
     float bboxmax[3];
+    unsigned int drawmode;
 } mesh;
 
 typedef struct shader
@@ -61,8 +64,13 @@ int allocateMesh(const char* filename);
 int getImageWidth(int id);
 int getImageHeight(int id);
 int ismesh(const char* filename);
+void commitMesh();
+void openMesh(int id);
+void setMeshIndices(size_t index, size_t len, const unsigned int* data);
+void setMeshVertexData(size_t index, unsigned int flag, size_t len, const float* data);
 
 void initResourceCleanup();
 void endResourceCleanup();
+unsigned int sizeOfVert(unsigned int flags);
 
 #endif //__RESOURCES_H__

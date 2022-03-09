@@ -58,6 +58,21 @@ unsigned char compareparams(gentype t, void* p1, void* p2)
             break;
         }
 
+        case GEN_MESH:
+        {
+            genericmesh_params* genmesh1 = (genericmesh_params*)p1;
+            genericmesh_params* genmesh2 = (genericmesh_params*)p2;
+
+            if(genmesh1->drawmode == genmesh2->drawmode && genmesh1->flags == genmesh2->flags &&
+               genmesh1->numelements == genmesh2->numelements && genmesh1->numverts == genmesh2->numverts &&
+               memcmp(genmesh1->sha256, genmesh2->sha256, SHA256_DIGEST_LENGTH) == 0)
+            {
+                return 1;
+            }
+
+            break;
+        }
+
         default:
         {
             break;
@@ -73,10 +88,13 @@ unsigned int allocateGenMesh(gentype t, void* params)
 
     for(unsigned int i = 0; i < numgen_meshes; i++)
     {
+        fprintf(stderr, "mesh:%i type:%i %i\n", i, t, gen_meshes[i].type);
+
         if(gen_meshes[i].type == t)
         {
             if(compareparams(t, params, gen_meshes[i].params))
             {
+                fprintf(stderr,"reusing mesh:%i\n",gen_meshes[i].meshid);
                 gen_meshes[i].cleanup = CLEAN_USED;
                 return i;
             }
@@ -126,6 +144,13 @@ unsigned int allocateGenMesh(gentype t, void* params)
         {
             gen_meshes[out].params = malloc(sizeof(plane_params));
             memcpy(gen_meshes[out].params, params, sizeof(plane_params));
+            break;
+        }
+
+        case GEN_MESH:
+        {
+            gen_meshes[out].params = malloc(sizeof(genericmesh_params));
+            memcpy(gen_meshes[out].params, params, sizeof(genericmesh_params));
             break;
         }
 
