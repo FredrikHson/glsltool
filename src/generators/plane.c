@@ -19,9 +19,22 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         printf("\n");
         gen_meshes[out].meshid = allocateMesh(0);
         mesh* m = &meshes[gen_meshes[out].meshid];
+        m->numsubmeshes = 1;
+        m->flags        = malloc(sizeof(unsigned int));
+        m->vbo          = malloc(sizeof(unsigned int));
+        m->vao          = malloc(sizeof(unsigned int));
+        m->indices      = malloc(sizeof(unsigned int));
+        m->numindices   = malloc(sizeof(unsigned int));
+        m->numverts     = malloc(sizeof(unsigned int));
+        m->flags[0] = MESH_FLAG_POSITION |
+                      MESH_FLAG_NORMAL |
+                      MESH_FLAG_TANGENT |
+                      MESH_FLAG_BINORMAL |
+                      MESH_FLAG_TEXCOORD0;
         m->cleanup = CLEAN_USED;
-        size_t vlen = 14;
+        size_t vlen = sizeOfVert(m->flags[0]);
         unsigned int numverts = (subw + 2) * (subh + 2);
+        m->numverts[0]   = numverts;
         float* data = (float*)malloc(numverts * vlen * sizeof(float));
         float dw = w / (subw + 1);
         float dh = h / (subh + 1);
@@ -65,20 +78,8 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
             }
         }
 
-        m->numsubmeshes = 1;
-        m->flags        = malloc(sizeof(unsigned int));
-        m->vbo          = malloc(sizeof(unsigned int));
-        m->vao          = malloc(sizeof(unsigned int));
-        m->indices      = malloc(sizeof(unsigned int));
-        m->numindices   = malloc(sizeof(unsigned int));
-        m->numverts     = malloc(sizeof(unsigned int));
-        m->numverts[0]   = numverts;
         m->numindices[0] = (subw + 1) * (subh + 1) * 6;
-        m->flags[0] = MESH_FLAG_POSITION |
-                      MESH_FLAG_NORMAL |
-                      MESH_FLAG_TANGENT |
-                      MESH_FLAG_BINORMAL |
-                      MESH_FLAG_TEXCOORD0;
+        m->drawmode = GL_TRIANGLES;
         glCreateVertexArrays(1, m->vao);
         glGenBuffers(1, m->vbo);
         glGenBuffers(1, m->indices);

@@ -126,6 +126,9 @@ void create_js_functions()
     v7_set_method(v7g, global, "ismesh", &js_ismesh);
     v7_set_method(v7g, global, "loadshader", &js_load_shader);
     v7_set_method(v7g, global, "generateplane", &js_generate_plane);
+    v7_set_method(v7g, global, "generatemesh", &js_generate_generic_mesh);
+    v7_set_method(v7g, global, "setindices", &js_set_indices);
+    v7_set_method(v7g, global, "setvertdata", &js_set_vert_data);
     v7_set_method(v7g, global, "drawmesh", &js_draw_mesh);
     v7_set_method(v7g, global, "bindattribute", &js_bind_attrib);
     v7_set_method(v7g, global, "bindshader", &js_bind_shader);
@@ -323,6 +326,19 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_CONSTANT_COLOR", 27, v7_mk_number(v7g, GL_ONE_MINUS_CONSTANT_COLOR));
     v7_set(v7g, v7_get_global(v7g), "GL_CONSTANT_ALPHA", 17, v7_mk_number(v7g, GL_CONSTANT_ALPHA));
     v7_set(v7g, v7_get_global(v7g), "GL_ONE_MINUS_CONSTANT_ALPHA", 27, v7_mk_number(v7g, GL_ONE_MINUS_CONSTANT_ALPHA));
+    /* draw modes */
+    v7_set(v7g, v7_get_global(v7g), "GL_POINTS", 9, v7_mk_number(v7g, GL_POINTS));
+    v7_set(v7g, v7_get_global(v7g), "GL_LINE_STRIP", 13, v7_mk_number(v7g, GL_LINE_STRIP));
+    v7_set(v7g, v7_get_global(v7g), "GL_LINE_LOOP", 12, v7_mk_number(v7g, GL_LINE_LOOP));
+    v7_set(v7g, v7_get_global(v7g), "GL_LINES", 8, v7_mk_number(v7g, GL_LINES));
+    v7_set(v7g, v7_get_global(v7g), "GL_LINE_STRIP_ADJACENCY", 23, v7_mk_number(v7g, GL_LINE_STRIP_ADJACENCY));
+    v7_set(v7g, v7_get_global(v7g), "GL_LINES_ADJACENCY", 18, v7_mk_number(v7g, GL_LINES_ADJACENCY));
+    v7_set(v7g, v7_get_global(v7g), "GL_TRIANGLE_STRIP", 17, v7_mk_number(v7g, GL_TRIANGLE_STRIP));
+    v7_set(v7g, v7_get_global(v7g), "GL_TRIANGLE_FAN", 15, v7_mk_number(v7g, GL_TRIANGLE_FAN));
+    v7_set(v7g, v7_get_global(v7g), "GL_TRIANGLES", 12, v7_mk_number(v7g, GL_TRIANGLES));
+    v7_set(v7g, v7_get_global(v7g), "GL_TRIANGLE_STRIP_ADJACENCY", 27, v7_mk_number(v7g, GL_TRIANGLE_STRIP_ADJACENCY));
+    v7_set(v7g, v7_get_global(v7g), "GL_TRIANGLES_ADJACENCY", 22, v7_mk_number(v7g, GL_TRIANGLES_ADJACENCY));
+    v7_set(v7g, v7_get_global(v7g), "GL_PATCHES", 10, v7_mk_number(v7g, GL_PATCHES));
     /* texture flags */
     v7_set(v7g, v7_get_global(v7g), "IMG_TOP", 7, v7_mk_number(v7g, IMG_TOP));
     v7_set(v7g, v7_get_global(v7g), "IMG_BOTTOM", 10, v7_mk_number(v7g, IMG_BOTTOM));
