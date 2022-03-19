@@ -336,5 +336,7 @@ int main(int argc, char* argv[])
     glfwDestroyWindow(window);
     glfwTerminate();
     cleanup_options();
+
+    fprintf(stderr, "shutting down\n");
     return 0;
 }

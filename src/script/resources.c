@@ -3,6 +3,7 @@
 #include "renderfunc.h"
 #include "resources.h"
 #include "generators.h"
+#include <stdlib.h>
 
 typedef struct v7 v7;
 enum v7_err js_load_image(v7* v7e, v7_val_t* res)
@@ -279,21 +280,20 @@ enum v7_err js_generate_plane(v7* v7e, v7_val_t* res)
 
 enum v7_err js_generate_generic_mesh(v7* v7e, v7_val_t* res)
 {
-    unsigned int numverts = 0;
-    unsigned int numelements = 0;
-    unsigned int drawmode = 0;
-    unsigned int flags = 0;
-    const char* identifier;
-    size_t len = 0;
 
     if(v7_argc(v7e) == 5)
     {
-        numverts = v7_get_int(v7e, v7_arg(v7e, 0));
-        numelements = v7_get_int(v7e, v7_arg(v7e, 1));
-        drawmode = v7_get_int(v7e, v7_arg(v7e, 2));
-        flags = v7_get_int(v7e, v7_arg(v7e, 3));
+        unsigned int numverts = v7_get_int(v7e, v7_arg(v7e, 0));
+        unsigned int numelements = v7_get_int(v7e, v7_arg(v7e, 1));
+        unsigned int drawmode = v7_get_int(v7e, v7_arg(v7e, 2));
+        unsigned int flags = v7_get_int(v7e, v7_arg(v7e, 3));
         v7_val_t val = v7_arg(v7e, 4);
-        identifier = v7_get_string(v7e, &val, &len);
+        size_t len = 0;
+        const char* identifier = v7_get_string(v7e, &val, &len);
+        printf("generating mesh verts:%i elements:%i drawmode:%i flags:%i\n", numverts, numelements, drawmode, flags);
+        unsigned int target = generateGenericMesh(numverts, numelements, drawmode, flags, identifier);
+        *res = v7_mk_number(v7e, target);
+        return V7_OK;
     }
     else
     {
@@ -301,10 +301,6 @@ enum v7_err js_generate_generic_mesh(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 
-    printf("generating mesh verts:%i elements:%i drawmode:%i flags:%i\n", numverts, numelements, drawmode, flags);
-    unsigned int target = generateGenericMesh(numverts, numelements, drawmode, flags, identifier);
-    *res = v7_mk_number(v7e, target);
-    return V7_OK;
 }
 
 enum v7_err js_image_width(v7* v7e, v7_val_t* res)
@@ -334,14 +330,137 @@ enum v7_err js_image_height(v7* v7e, v7_val_t* res)
 }
 
 
+extern int editmesh;
+extern float* editmeshvbodata;
+extern unsigned int* editmeshindexdata;
 
 enum v7_err js_set_indices(v7* v7e, v7_val_t* res)
 {
+    if(v7_argc(v7e) != 2)
+    {
+        fprintf(stderr, "invalid number of arguments to setindices\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    v7_val_t arg1 = v7_arg(v7e, 0);
+    v7_val_t arg2 = v7_arg(v7e, 1);
+    size_t index = v7_get_int(v7e, arg1);
+    fprintf(stderr, "running setindices start index:%zu\n", index);
+
+    if(editmesh == -1 || editmeshindexdata == 0)
+    {
+        fprintf(stderr, "trying to set indices without opening a mesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    if(!v7_is_array(v7e, arg2))
+    {
+        if(index > meshes[editmesh].numindices[0])
+        {
+            fprintf(stderr, "trying to set index:%zu but the mesh only have %i\n", index, meshes[editmesh].numindices[0]);
+            return V7_OK;
+        }
+
+        fprintf(stderr, "setindices called with one value\n");
+        unsigned int singlevalue = v7_get_int(v7e, arg2);
+        setMeshIndex(index, singlevalue);
+        return V7_OK;
+
+    }
+    else
+    {
+        size_t len = v7_array_length(v7e, arg2);
+        fprintf(stderr, "setindices called with %zu values\n", len);
+
+        if(index + len > meshes[editmesh].numindices[0])
+        {
+            fprintf(stderr, "trying to set index:%zu to %zu but the mesh only have %i\n", index, index + len, meshes[editmesh].numindices[0]);
+            return V7_OK;
+        }
+
+        for(int i = 0; i < len; i++)
+        {
+            v7_val_t value = v7_array_get(v7e, arg2, i);
+            unsigned int singlevalue = v7_get_int(v7e, value);
+            setMeshIndex(index + i, singlevalue);
+        }
+
+
+    }
 
     return V7_OK;
 }
 enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res)
 {
+    if(v7_argc(v7e) != 2)
+    {
+        fprintf(stderr, "invalid number of arguments to setvertdata\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    v7_val_t arg1 = v7_arg(v7e, 0);
+    v7_val_t arg2 = v7_arg(v7e, 1);
+    size_t index = v7_get_int(v7e, arg1);
+    fprintf(stderr, "running setindices start index:%zu\n", index);
+
+    if(editmesh == -1 || editmeshindexdata == 0)
+    {
+        fprintf(stderr, "trying to set vertex data without opening a mesh\n");
+        return V7_OK;
+    }
+
+    if(!v7_is_array(v7e, arg2))
+    {
+        if(index > meshes[editmesh].numindices[0])
+        {
+            fprintf(stderr, "trying to set index:%zu but the mesh only have %i\n", index, meshes[editmesh].numindices[0]);
+            return V7_OK;
+        }
+
+        fprintf(stderr, "setindices called with one value\n");
+        unsigned int singlevalue = v7_get_int(v7e, arg2);
+        setMeshIndex(index, singlevalue);
+        return V7_OK;
+
+    }
+    else
+    {
+        size_t len = v7_array_length(v7e, arg2);
+        fprintf(stderr, "setindices called with %zu values\n", len);
+
+        if(index + len > meshes[editmesh].numindices[0])
+        {
+            fprintf(stderr, "trying to set index:%zu to %zu but the mesh only have %i\n", index, index + len, meshes[editmesh].numindices[0]);
+            return V7_OK;
+        }
+
+        for(int i = 0; i < len; i++)
+        {
+            v7_val_t value = v7_array_get(v7e, arg2, i);
+            unsigned int singlevalue = v7_get_int(v7e, value);
+            setMeshIndex(index + i, singlevalue);
+        }
+
+
+    }
+
+    return V7_OK;
+}
+
+enum v7_err js_open_mesh(v7* v7e, v7_val_t* res)
+{
+    if(v7_argc(v7e) != 1)
+    {
+        fprintf(stderr, "invalid number of arguments to openmesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    unsigned int id = v7_get_int(v7e, v7_arg(v7e, 0));
+    fprintf(stderr, "numeshes:%i\n", nummeshes);
+    fprintf(stderr, "mesh stuff:%s\n", meshes[id].name);
+    fprintf(stderr, "mesh stuff:%p\n", (void*)meshes[id].vao);
+    fprintf(stderr, "running openmesh id:%u\n", id);
+    openMesh(id);
 
     return V7_OK;
 }

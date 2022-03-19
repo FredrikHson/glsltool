@@ -96,6 +96,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "loadshader", &js_load_shader);
     v7_set_method(v7g, global, "generateplane", &js_generate_plane);
     v7_set_method(v7g, global, "generatemesh", &js_generate_generic_mesh);
+    v7_set_method(v7g, global, "openmesh", &js_open_mesh);
     v7_set_method(v7g, global, "setindices", &js_set_indices);
     v7_set_method(v7g, global, "setvertdata", &js_set_vert_data);
     v7_set_method(v7g, global, "drawmesh", &js_draw_mesh);

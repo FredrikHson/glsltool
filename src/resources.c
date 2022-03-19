@@ -15,10 +15,12 @@ void initResourceCleanup()
 
 void endResourceCleanup()
 {
+    /*printf("Running resource cleanup\n");*/
+
     for(int i = 0; i < nummeshes; i++)
     {
         mesh* m = &meshes[i];
-        printf("name:%s meshcleanup:%i\n", m->name, m->cleanup);
+        /*printf("name:%s meshcleanup:%s\n", m->name, m->cleanup == CLEAN_DELETED ? "DELETED" : m->cleanup == CLEAN_USED ? "USED" : "LATER");*/
 
         if(m->cleanup & CLEAN_LATER)
         {
@@ -32,7 +34,7 @@ void endResourceCleanup()
                 }
                 else
                 {
-                    printf("deleting generated mesh %i\n", i);
+                    printf("deleting nameless mesh %i\n", i);
                 }
 
                 cleanupMesh(m);

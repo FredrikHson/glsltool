@@ -19,6 +19,8 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         printf("\n");
         gen_meshes[out].meshid = allocateMesh(0);
         mesh* m = &meshes[gen_meshes[out].meshid];
+        m->name = malloc(6);
+        sprintf(m->name, "Plane");
         m->numsubmeshes = 1;
         m->flags        = malloc(sizeof(unsigned int));
         m->vbo          = malloc(sizeof(unsigned int));

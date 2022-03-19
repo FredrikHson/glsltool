@@ -64,9 +64,9 @@ int allocateMesh(const char* filename);
 int getImageWidth(int id);
 int getImageHeight(int id);
 int ismesh(const char* filename);
-void commitMesh();
+void closeMesh();
 void openMesh(int id);
-void setMeshIndices(size_t index, size_t len, const unsigned int* data);
+void setMeshIndex(size_t index, const unsigned int data);
 void setMeshVertexData(size_t index, unsigned int flag, size_t len, const float* data);
 
 void initResourceCleanup();
