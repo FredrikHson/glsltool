@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <setjmp.h>
 
 typedef struct v7 v7;
 char* entrypointfile = 0;
@@ -21,6 +22,16 @@ char** globals = 0;
 size_t numglobals = 0;
 extern double deltaTime;
 extern double currenttime;
+extern int should_quit;
+
+void setsighandler(int enable);
+extern sigjmp_buf before;
+
+enum v7_err override_exit(v7* v7e, v7_val_t* res)
+{
+    should_quit = 1;
+    return V7_OK;
+}
 
 enum v7_err js_register_global(v7* v7e, v7_val_t* res)
 {
@@ -146,6 +157,7 @@ void create_js_functions()
     v7_set_method(v7g, global, "getsquarejittery", js_get_square_jitter_y);
     v7_set_method(v7g, global, "getcirclejitterx", js_get_circle_jitter_x);
     v7_set_method(v7g, global, "getcirclejittery", js_get_circle_jitter_y);
+    v7_set_method(v7g, global, "exit", override_exit);
 }
 
 /* for easy writing of v7_set global
@@ -489,6 +501,7 @@ int shutdownScript()
 
 void reloadScript(const char* filename)
 {
+    setsighandler(1);
     int oldnumglobals = numglobals;
     printf("reloading script: %s due to change in %s\n", entrypointfile, filename);
     printf("num globals stored: %zu\n", numglobals);
@@ -509,20 +522,29 @@ void reloadScript(const char* filename)
     cleanupRender();
     cleanupDebug(); // mostly to delete opengl textures
     initDebug();
-    initScript(entrypointfile);
 
-    for(int i = 0; i < oldnumglobals; i++)
+    if(setjmp(before) == 0)
     {
-        if(tmpstorage[i] != 0)
-        {
-            v7_val_t oldvalues;
-            enum v7_err err = v7_parse_json(v7g, tmpstorage[i], &oldvalues);
+        initScript(entrypointfile);
 
-            if(err == V7_OK)
+        for(int i = 0; i < oldnumglobals; i++)
+        {
+            if(tmpstorage[i] != 0)
             {
-                v7_set(v7g, v7_get_global(v7g), globals[i], ~0, oldvalues);
+                v7_val_t oldvalues;
+                enum v7_err err = v7_parse_json(v7g, tmpstorage[i], &oldvalues);
+
+                if(err == V7_OK)
+                {
+                    v7_set(v7g, v7_get_global(v7g), globals[i], ~0, oldvalues);
+                }
             }
         }
+
+    }
+    else
+    {
+        validscript = 0;
     }
 
     if(tmpstorage)
@@ -534,4 +556,6 @@ void reloadScript(const char* filename)
 
         free(tmpstorage);
     }
+
+    setsighandler(0);
 }

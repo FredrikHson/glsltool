@@ -13,6 +13,9 @@
 #include "defines.h"
 #include "renderfunc.h"
 #include "debug.h"
+#include <sanitizer/lsan_interface.h>
+#include <setjmp.h>
+#include <signal.h>
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -32,6 +35,16 @@ char keyboard[GLFW_KEY_LAST + 1] = {0};
 char keyboardlast[GLFW_KEY_LAST + 1] = {0};
 
 extern char avoid_debugging;
+
+sigjmp_buf before = {0};
+
+
+static void sighandler(int sig, siginfo_t* info, void* ucontext)
+{
+    fprintf(stderr, "error: script failure\n");
+    longjmp(before, 1);
+}
+
 
 void error_callback(int error, const char* description)
 {
@@ -140,6 +153,25 @@ void handleKeys()
     }
 }
 
+void setsighandler(int enable)
+{
+    struct sigaction sa = {0};
+    sigemptyset(&sa.sa_mask);
+
+    if(enable)
+    {
+        sa.sa_flags = SA_NODEFER;
+        sa.sa_sigaction = sighandler;
+        sigaction(SIGABRT, &sa, 0);
+    }
+    else
+    {
+        sa.sa_sigaction = 0;
+        sa.sa_handler = SIG_DFL;
+        sigaction(SIGABRT, &sa, 0);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     if(!handle_options(argc, argv))
@@ -237,7 +269,19 @@ int main(int argc, char* argv[])
     initImages();
     initDebug();
     watchFile(options.inputfile, reloadScript);
-    initScript(options.inputfile);
+    setsighandler(1);
+
+    if(setjmp(before) == 0)
+    {
+        initScript(options.inputfile);
+    }
+    else
+    {
+        validscript = 0;
+    }
+
+    setsighandler(0);
+
 
     while(!glfwWindowShouldClose(window) && !should_quit)
     {
@@ -246,7 +290,18 @@ int main(int argc, char* argv[])
 
         if(validscript)
         {
-            run_loop();
+            setsighandler(1);
+
+            if(setjmp(before) == 0)
+            {
+                run_loop();
+            }
+            else
+            {
+                validscript = 0;
+            }
+
+            setsighandler(0);
         }
         else
         {
