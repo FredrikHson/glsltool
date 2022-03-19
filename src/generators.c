@@ -88,13 +88,13 @@ unsigned int allocateGenMesh(gentype t, void* params)
 
     for(unsigned int i = 0; i < numgen_meshes; i++)
     {
-        fprintf(stderr, "mesh:%i type:%i %i\n", i, t, gen_meshes[i].type);
+        /*fprintf(stderr, "mesh:%i type:%i %i\n", i, t, gen_meshes[i].type);*/
 
         if(gen_meshes[i].type == t)
         {
             if(compareparams(t, params, gen_meshes[i].params))
             {
-                fprintf(stderr,"reusing mesh:%i\n",gen_meshes[i].meshid);
+                /*fprintf(stderr,"reusing mesh:%i\n",gen_meshes[i].meshid);*/
                 gen_meshes[i].cleanup = CLEAN_USED;
                 return i;
             }

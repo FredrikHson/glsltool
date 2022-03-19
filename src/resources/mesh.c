@@ -444,8 +444,14 @@ int allocateMesh(const char* filename)
         }
     }
 
-    meshes[out].name = 0;
     meshes[out].cleanup = CLEAN_USED;
+    meshes[out].flags = 0;
+    meshes[out].indices = 0;
+    meshes[out].name = 0;
+    meshes[out].numindices = 0;
+    meshes[out].numverts = 0;
+    meshes[out].vao = 0;
+    meshes[out].vbo = 0;
     return out;
 }
 
@@ -486,6 +492,14 @@ void cleanupMesh(mesh* m)
     if(m == 0)
     {
         return;
+    }
+
+    if(editmesh != -1 && editmesh < nummeshes)
+    {
+        if(m == &meshes[editmesh])
+        {
+            closeMesh(); // really just closes the mesh
+        }
     }
 
     if(m->name)
@@ -656,7 +670,7 @@ void drawMesh(int id, int submesh)
 
     if(editmesh == id)
     {
-        commitMesh();
+        closeMesh();
     }
 
     if(submesh == -1)
@@ -722,7 +736,7 @@ int ismesh(const char* filename)
     }
 }
 
-void commitMesh()
+void closeMesh()
 {
     if(editmesh == -1 || editmesh >= nummeshes)
     {
@@ -738,7 +752,7 @@ void commitMesh()
 
     if(editmeshindexdata)
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].vao[0]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].indices[0]);
         glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
         editmeshindexdata = 0;
     }
@@ -752,7 +766,12 @@ void openMesh(int id)
 {
     if(editmesh != id && editmesh != -1)
     {
-        commitMesh();
+        closeMesh();
+    }
+
+    if(editmesh == id)
+    {
+        return;
     }
 
     if(id >= nummeshes)
@@ -761,29 +780,20 @@ void openMesh(int id)
         return;
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, meshes[editmesh].vbo[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].vao[0]);
-    editmeshvbodata = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-    editmeshindexdata = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
     editmesh = id;
+    fprintf(stderr, "binding GL_ARRAY_BUFFER:%i\n", meshes[editmesh].vbo[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, meshes[editmesh].vbo[0]);
+    fprintf(stderr, "binding GL_ELEMENT_ARRAY_BUFFER:%i\n", meshes[editmesh].indices[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].indices[0]);
+    fprintf(stderr, "mapping GL_ARRAY_BUFFER:%i\n", meshes[editmesh].vbo[0]);
+    editmeshvbodata = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    fprintf(stderr, "mapping GL_ELEMENT_ARRAY_BUFFER:%i\n", meshes[editmesh].indices[0]);
+    editmeshindexdata = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
 }
 
-void setMeshIndices(size_t index, size_t len, const unsigned int* data)
+void setMeshIndex(size_t index, const unsigned int data)
 {
-    if(editmesh == -1 || editmeshindexdata == 0)
-    {
-        fprintf(stderr, "trying to set index without opening a mesh first\n");
-        return;
-    }
-
-    if(index + len > meshes[editmesh].numindices[0])
-    {
-        fprintf(stderr, "trying to set index:%zu but the mesh only have %i\n", index + len, meshes[editmesh].numindices[0]);
-        return;
-    }
-
-    memcpy(editmeshindexdata + (index * sizeof(unsigned int)), data, len * sizeof(unsigned int));
-
+    editmeshindexdata[index] = data;
 }
 
 size_t flagToOffset(unsigned int flags, unsigned int targetflag, size_t stride)
@@ -830,7 +840,7 @@ size_t flagToOffset(unsigned int flags, unsigned int targetflag, size_t stride)
         }
     }
 
-    return offset;
+    return ~0;
 }
 
 void setMeshVertexData(size_t index, unsigned int flag, size_t len, const float* data)

@@ -18,6 +18,7 @@ enum v7_err js_generate_plane(v7* v7e, v7_val_t* res);
 enum v7_err js_generate_generic_mesh(v7* v7e, v7_val_t* res);
 enum v7_err js_set_indices(v7* v7e, v7_val_t* res);
 enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res);
+enum v7_err js_open_mesh(v7* v7e, v7_val_t* res);
 enum v7_err js_image_width(v7* v7e, v7_val_t* res);
 enum v7_err js_image_height(v7* v7e, v7_val_t* res);
 /* render */
