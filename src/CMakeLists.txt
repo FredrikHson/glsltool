@@ -69,6 +69,8 @@ add_definitions(-DV7_ENABLE_FILE)
 add_definitions(-DV7_BUILD_PROFILE=3)
 add_definitions(-DV7_LARGE_AST)
 add_library(v7 "../external/v7/v7.c")
+target_compile_options(v7 PRIVATE "-O3")
+target_compile_definitions(v7 PRIVATE "NDEBUG")
 
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")

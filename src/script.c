@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
+#include <signal.h>
 
 typedef struct v7 v7;
 char* entrypointfile = 0;
@@ -25,7 +26,37 @@ extern double currenttime;
 extern int should_quit;
 
 void setsighandler(int enable);
-extern sigjmp_buf before;
+sigjmp_buf before = {0};
+
+static void sighandler(int sig, siginfo_t* info, void* ucontext)
+{
+    fprintf(stderr, "error: script failure\n");
+    v7_destroy(v7g);
+    v7g = 0;
+    cleanupRender();
+    cleanupDebug();
+    validscript = 0;
+    longjmp(before, 1);
+}
+
+void setsighandler(int enable)
+{
+    struct sigaction sa = {0};
+    sigemptyset(&sa.sa_mask);
+
+    if(enable)
+    {
+        sa.sa_flags = SA_NODEFER;
+        sa.sa_sigaction = sighandler;
+        sigaction(SIGABRT, &sa, 0); // v7 uses assert when a c function returns V7_SYNTAX_ERROR
+    }
+    else
+    {
+        sa.sa_sigaction = 0;
+        sa.sa_handler = SIG_DFL;
+        sigaction(SIGABRT, &sa, 0);
+    }
+}
 
 enum v7_err override_exit(v7* v7e, v7_val_t* res)
 {
@@ -359,12 +390,32 @@ int initScript(const char* filename)
     }
 
     initResourceCleanup();
+
+    if(v7g == 0)
+    {
+        v7_destroy(v7g);
+        v7g = 0;
+
+    }
+
     v7g = v7_create();
     create_js_functions();
     create_js_defines();
     override_require();
     v7_val_t result;
-    enum v7_err rcode = v7_exec_file(v7g, filename, &result);
+    enum v7_err rcode = 0;
+    setsighandler(1);
+
+    if(setjmp(before) == 0)
+    {
+        rcode = v7_exec_file(v7g, filename, &result);
+    }
+    else
+    {
+        return 1;
+    }
+
+    setsighandler(0);
 
     if(rcode != V7_OK)
     {
@@ -396,7 +447,19 @@ void run_resize()
 
     if(v7_is_undefined(function) == 0)
     {
-        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, V7_UNDEFINED, &result);
+        enum v7_err rcode = 0;
+        setsighandler(1);
+
+        if(setjmp(before) == 0)
+        {
+            rcode = v7_apply(v7g, function, V7_UNDEFINED, V7_UNDEFINED, &result);
+        }
+        else
+        {
+            return;
+        }
+
+        setsighandler(0);
 
         if(rcode != V7_OK)
         {
@@ -416,7 +479,19 @@ void run_filechange(char* filename)
     {
         v7_val_t args = v7_mk_array(v7g);
         v7_array_push(v7g, args, v7_mk_string(v7g, filename, ~0, 1));
-        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
+        enum v7_err rcode = 0;
+        setsighandler(1);
+
+        if(setjmp(before) == 0)
+        {
+            rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
+        }
+        else
+        {
+            return;
+        }
+
+        setsighandler(0);
 
         if(rcode != V7_OK)
         {
@@ -443,7 +518,19 @@ void run_droppedfiles(const char** files, int count)
         }
 
         v7_array_push(v7g, args, array);
-        enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
+        enum v7_err rcode = 0;
+        setsighandler(1);
+
+        if(setjmp(before) == 0)
+        {
+            rcode = v7_apply(v7g, function, V7_UNDEFINED, args, &result);
+        }
+        else
+        {
+            return;
+        }
+
+        setsighandler(0);
 
         if(rcode != V7_OK)
         {
@@ -462,8 +549,20 @@ void run_loop()
     updateinput();
     v7_val_t function;
     v7_val_t result;
+    enum v7_err rcode = 0;
     function = v7_get(v7g, v7_get_global(v7g), "loop", 4);
-    enum v7_err rcode = v7_apply(v7g, function, V7_UNDEFINED, V7_UNDEFINED, &result);
+    setsighandler(1);
+
+    if(setjmp(before) == 0)
+    {
+        rcode = v7_apply(v7g, function, V7_UNDEFINED, V7_UNDEFINED, &result);
+    }
+    else
+    {
+        return;
+    }
+
+    setsighandler(0);
 
     if(rcode != V7_OK)
     {
@@ -479,6 +578,7 @@ void run_loop()
 int shutdownScript()
 {
     v7_destroy(v7g);
+    v7g = 0;
     cleanupRender();
 
     if(globals)
@@ -501,7 +601,6 @@ int shutdownScript()
 
 void reloadScript(const char* filename)
 {
-    setsighandler(1);
     int oldnumglobals = numglobals;
     printf("reloading script: %s due to change in %s\n", entrypointfile, filename);
     printf("num globals stored: %zu\n", numglobals);
@@ -519,32 +618,25 @@ void reloadScript(const char* filename)
     }
 
     v7_destroy(v7g);
+    v7g = 0;
     cleanupRender();
     cleanupDebug(); // mostly to delete opengl textures
     initDebug();
 
-    if(setjmp(before) == 0)
+    initScript(entrypointfile);
+
+    for(int i = 0; i < oldnumglobals; i++)
     {
-        initScript(entrypointfile);
-
-        for(int i = 0; i < oldnumglobals; i++)
+        if(tmpstorage[i] != 0)
         {
-            if(tmpstorage[i] != 0)
-            {
-                v7_val_t oldvalues;
-                enum v7_err err = v7_parse_json(v7g, tmpstorage[i], &oldvalues);
+            v7_val_t oldvalues;
+            enum v7_err err = v7_parse_json(v7g, tmpstorage[i], &oldvalues);
 
-                if(err == V7_OK)
-                {
-                    v7_set(v7g, v7_get_global(v7g), globals[i], ~0, oldvalues);
-                }
+            if(err == V7_OK)
+            {
+                v7_set(v7g, v7_get_global(v7g), globals[i], ~0, oldvalues);
             }
         }
-
-    }
-    else
-    {
-        validscript = 0;
     }
 
     if(tmpstorage)
@@ -557,5 +649,4 @@ void reloadScript(const char* filename)
         free(tmpstorage);
     }
 
-    setsighandler(0);
 }
