@@ -21,6 +21,7 @@
 #define MESH_FLAG_COLOR5    (1<<17)
 #define MESH_FLAG_COLOR6    (1<<18)
 #define MESH_FLAG_COLOR7    (1<<19)
+#define MESH_FLAG_LAST      MESH_FLAG_COLOR7
 #define CULL_NONE 0
 #define CULL_FRONT 1
 #define CULL_BACK 2

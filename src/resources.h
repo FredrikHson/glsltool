@@ -67,7 +67,7 @@ int ismesh(const char* filename);
 void closeMesh();
 void openMesh(int id);
 void setMeshIndex(size_t index, const unsigned int data);
-void setMeshVertexData(size_t index, unsigned int flag, size_t len, const float* data);
+void setMeshVertexData(size_t index, float data);
 
 void initResourceCleanup();
 void endResourceCleanup();

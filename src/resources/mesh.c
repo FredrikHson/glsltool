@@ -781,13 +781,9 @@ void openMesh(int id)
     }
 
     editmesh = id;
-    fprintf(stderr, "binding GL_ARRAY_BUFFER:%i\n", meshes[editmesh].vbo[0]);
     glBindBuffer(GL_ARRAY_BUFFER, meshes[editmesh].vbo[0]);
-    fprintf(stderr, "binding GL_ELEMENT_ARRAY_BUFFER:%i\n", meshes[editmesh].indices[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[editmesh].indices[0]);
-    fprintf(stderr, "mapping GL_ARRAY_BUFFER:%i\n", meshes[editmesh].vbo[0]);
     editmeshvbodata = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-    fprintf(stderr, "mapping GL_ELEMENT_ARRAY_BUFFER:%i\n", meshes[editmesh].indices[0]);
     editmeshindexdata = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
 }
 
@@ -843,21 +839,44 @@ size_t flagToOffset(unsigned int flags, unsigned int targetflag, size_t stride)
     return ~0;
 }
 
-void setMeshVertexData(size_t index, unsigned int flag, size_t len, const float* data)
+size_t flagToSize(unsigned int flag)
 {
-    if(editmesh == -1 || editmeshindexdata == 0)
+    switch(flag)
     {
-        fprintf(stderr, "trying to set vertexdata without opening a mesh first\n");
-        return;
+        case MESH_FLAG_POSITION:
+        case MESH_FLAG_NORMAL:
+        case MESH_FLAG_TANGENT:
+        case MESH_FLAG_BINORMAL:
+            return 3;
+            break;
+
+        case MESH_FLAG_TEXCOORD0:
+        case MESH_FLAG_TEXCOORD1:
+        case MESH_FLAG_TEXCOORD2:
+        case MESH_FLAG_TEXCOORD3:
+        case MESH_FLAG_TEXCOORD4:
+        case MESH_FLAG_TEXCOORD5:
+        case MESH_FLAG_TEXCOORD6:
+        case MESH_FLAG_TEXCOORD7:
+            return 2;
+            break;
+
+        case MESH_FLAG_COLOR0:
+        case MESH_FLAG_COLOR1:
+        case MESH_FLAG_COLOR2:
+        case MESH_FLAG_COLOR3:
+        case MESH_FLAG_COLOR4:
+        case MESH_FLAG_COLOR5:
+        case MESH_FLAG_COLOR6:
+        case MESH_FLAG_COLOR7:
+            return 3;
+            break;
     }
 
-    if(index + len > meshes[editmesh].numverts[0])
-    {
-        fprintf(stderr, "trying to set vertexdata:%zu but the mesh only have %i\n", index + len, meshes[editmesh].numverts[0]);
-        return;
-    }
+    return 0;
+}
 
-    size_t offset = flagToOffset(meshes[editmesh].flags[0], flag, meshes[editmesh].numverts[0] * sizeof(float));
-
-    memcpy(editmeshvbodata + offset, data, len * sizeof(float));
+void setMeshVertexData(size_t index, float data)
+{
+    editmeshvbodata[index] = data;
 }

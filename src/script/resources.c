@@ -3,6 +3,7 @@
 #include "renderfunc.h"
 #include "resources.h"
 #include "generators.h"
+#include "defines.h"
 #include <stdlib.h>
 
 typedef struct v7 v7;
@@ -345,7 +346,6 @@ enum v7_err js_set_indices(v7* v7e, v7_val_t* res)
     v7_val_t arg1 = v7_arg(v7e, 0);
     v7_val_t arg2 = v7_arg(v7e, 1);
     size_t index = v7_get_int(v7e, arg1);
-    fprintf(stderr, "running setindices start index:%zu\n", index);
 
     if(editmesh == -1 || editmeshindexdata == 0)
     {
@@ -358,10 +358,9 @@ enum v7_err js_set_indices(v7* v7e, v7_val_t* res)
         if(index > meshes[editmesh].numindices[0])
         {
             fprintf(stderr, "trying to set index:%zu but the mesh only have %i\n", index, meshes[editmesh].numindices[0]);
-            return V7_OK;
+            return V7_SYNTAX_ERROR;
         }
 
-        fprintf(stderr, "setindices called with one value\n");
         unsigned int singlevalue = v7_get_int(v7e, arg2);
         setMeshIndex(index, singlevalue);
         return V7_OK;
@@ -370,12 +369,11 @@ enum v7_err js_set_indices(v7* v7e, v7_val_t* res)
     else
     {
         size_t len = v7_array_length(v7e, arg2);
-        fprintf(stderr, "setindices called with %zu values\n", len);
 
         if(index + len > meshes[editmesh].numindices[0])
         {
             fprintf(stderr, "trying to set index:%zu to %zu but the mesh only have %i\n", index, index + len, meshes[editmesh].numindices[0]);
-            return V7_OK;
+            return V7_SYNTAX_ERROR;
         }
 
         for(int i = 0; i < len; i++)
@@ -390,9 +388,13 @@ enum v7_err js_set_indices(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
+size_t flagToSize(unsigned int flag);
+size_t flagToOffset(unsigned int flags, unsigned int targetflag, size_t stride);
+
 enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res)
 {
-    if(v7_argc(v7e) != 2)
+    if(v7_argc(v7e) != 3)
     {
         fprintf(stderr, "invalid number of arguments to setvertdata\n");
         return V7_SYNTAX_ERROR;
@@ -400,45 +402,65 @@ enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res)
 
     v7_val_t arg1 = v7_arg(v7e, 0);
     v7_val_t arg2 = v7_arg(v7e, 1);
-    size_t index = v7_get_int(v7e, arg1);
-    fprintf(stderr, "running setindices start index:%zu\n", index);
+    v7_val_t arg3 = v7_arg(v7e, 2);
+    size_t index = v7_get_int(v7e, arg2);
+    unsigned int flag = v7_get_int(v7e, arg1);
+
+    if(flag == 0)
+    {
+        fprintf(stderr, "setvertdata called with no flags\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    if(flag > MESH_FLAG_LAST)
+    {
+        fprintf(stderr, "setvertdata called with unknown flag\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    if((flag & (flag - 1)) != 0)
+    {
+        fprintf(stderr, "setvertdata called with multiple flags\n");
+        return V7_SYNTAX_ERROR;
+    }
 
     if(editmesh == -1 || editmeshindexdata == 0)
     {
         fprintf(stderr, "trying to set vertex data without opening a mesh\n");
-        return V7_OK;
+        return V7_SYNTAX_ERROR;
     }
 
-    if(!v7_is_array(v7e, arg2))
+    size_t offset = flagToOffset(meshes[editmesh].flags[0], flag, meshes[editmesh].numverts[0]);
+    size_t vlen = flagToSize(flag);
+
+    if(!v7_is_array(v7e, arg3))
     {
-        if(index > meshes[editmesh].numindices[0])
+        if(index > meshes[editmesh].numverts[0] * vlen)
         {
             fprintf(stderr, "trying to set index:%zu but the mesh only have %i\n", index, meshes[editmesh].numindices[0]);
-            return V7_OK;
+            return V7_SYNTAX_ERROR;
         }
 
-        fprintf(stderr, "setindices called with one value\n");
-        unsigned int singlevalue = v7_get_int(v7e, arg2);
-        setMeshIndex(index, singlevalue);
+        float singlevalue = v7_get_double(v7e, arg3);
+        setMeshVertexData(offset + index, singlevalue);
         return V7_OK;
 
     }
     else
     {
-        size_t len = v7_array_length(v7e, arg2);
-        fprintf(stderr, "setindices called with %zu values\n", len);
+        size_t len = v7_array_length(v7e, arg3);
 
-        if(index + len > meshes[editmesh].numindices[0])
+        if(index + len > meshes[editmesh].numverts[0] * vlen)
         {
-            fprintf(stderr, "trying to set index:%zu to %zu but the mesh only have %i\n", index, index + len, meshes[editmesh].numindices[0]);
-            return V7_OK;
+            fprintf(stderr, "trying to set index:%zu to %zu but the mesh only have %i\n", index, index + len, meshes[editmesh].numverts[0]);
+            return V7_SYNTAX_ERROR;
         }
 
         for(int i = 0; i < len; i++)
         {
-            v7_val_t value = v7_array_get(v7e, arg2, i);
-            unsigned int singlevalue = v7_get_int(v7e, value);
-            setMeshIndex(index + i, singlevalue);
+            v7_val_t value = v7_array_get(v7e, arg3, i);
+            float singlevalue = v7_get_double(v7e, value);
+            setMeshVertexData(offset + index + i, singlevalue);
         }
 
 
@@ -456,10 +478,6 @@ enum v7_err js_open_mesh(v7* v7e, v7_val_t* res)
     }
 
     unsigned int id = v7_get_int(v7e, v7_arg(v7e, 0));
-    fprintf(stderr, "numeshes:%i\n", nummeshes);
-    fprintf(stderr, "mesh stuff:%s\n", meshes[id].name);
-    fprintf(stderr, "mesh stuff:%p\n", (void*)meshes[id].vao);
-    fprintf(stderr, "running openmesh id:%u\n", id);
     openMesh(id);
 
     return V7_OK;

@@ -2,47 +2,51 @@
 
 | Function *optional | comment|
 |-|-|
-| rendertargetid createrendertarget(width,height,layers,components,glformat,relative*)   | components 1-4 or GL_R, G_RGB... if relative is set width and height are float numbers where 1.0 = window size |
-| clear(r*,g*,b*,a*,colorattachment*) | can be 0 1 3 or 4 variables set or even 5 if you want to clear multilayer targets with different options|
+| rendertargetid createrendertarget(width, height, layers, components, glformat, relative*)   | components 1-4 or GL_R, G_RGB... if relative is set width and height are float numbers where 1.0 = window size |
+| clear(r*, g*, b*, a*, colorattachment*) | can be 0 1 3 or 4 variables set or even 5 if you want to clear multilayer targets with different options|
 | beginpass(rendertargetid*) | no render target set will result rendering to the backbuffer |
 | endpass()  | |
-| imageid loadimage(filename,origin*)  | IMG_TOP, IMG_BOTTOM|
+| imageid loadimage(filename, origin*)  | IMG_TOP, IMG_BOTTOM|
 | meshid loadmesh(filename) | |
 | bool ismesh(filename) | check if the filename is a mesh handled by assimp or not|
 | destroymesh(meshid) | |
-| meshid generateplane(subdivw*,subdivh*,width*,height*) | defaults to 0 0 2 2 |
-| shaderid loadshader(vertfile,fragfile,geomfile,controlfile,evalfile)  | 0 on unused shader files |
-| drawmesh(meshid,submesh*) | will draw all submeshes if none are given |
-| bindattribute(attribute_name,MESH_FLAG) | see MESH_FLAG_* |
+| meshid generateplane(subdivw*, subdivh*, width*, height*) | defaults to 0 0 2 2 |
+| meshid generatemesh(numverts, numindices, drawmode, meshflag, identifier) | see MESH_FLAGS and draw modes, identifier used to reuse the buffer between reloads |
+| openmesh(meshid) | needs to be called before manipulating any verts in a mesh |
+| setindices(startingoffset, data) | |
+| setvertdata(meshflag , startingoffset, data) | |
+| shaderid loadshader(vertfile, fragfile, geomfile, controlfile, evalfile)  | 0 on unused shader files |
+| drawmesh(meshid, submesh*) | will draw all submeshes if none are given |
+| bindattribute(attribute_name, MESH_FLAG) | see MESH_FLAG_* |
 | bindshader(shaderid) | -1 unbinds all shaders |
-| bindtexture(samplername,textureid,minfilter*,magfilter*,clamp_s*,clamp_t*);
-| bindrendertarget(samplername,textureid,layer,minfilter*,magfilter*,clamp_s*,clamp_t*);
-| setuniformf(name,x,y*,z*,w*) | |
-| setuniformd(name,x,y*,z*,w*) | |
-| setuniformi(name,x,y*,z*,w*) | |
-| setuniformui(name,x,y*,z*,w*) | |
-| setuniformmat4(name,mat4) | |;
-| setuniformmat4d(name,mat4) | |;
+| bindtexture(samplername, textureid, minfilter*, magfilter*, clamp_s*, clamp_t*);
+| bindrendertarget(samplername, textureid, layer, minfilter*, magfilter*, clamp_s*, clamp_t*);
+| setuniformf(name, x, y*, z*, w*) | |
+| setuniformd(name, x, y*, z*, w*) | |
+| setuniformi(name, x, y*, z*, w*) | |
+| setuniformui(name, x, y*, z*, w*) | |
+| setuniformmat4(name, mat4) | |
+| setuniformmat4d(name, mat4) | |
 | depthtest(enable) | 0 1 |
 | culling(cullmode) | see CULL_* flags |
-| blendfunc(sfactor,dfactor) | see blend func flags |
-| blendfuncseparate(sfactor,dfactor, asfactor,adfactor) | see blend func flags |
+| blendfunc(sfactor, dfactor) | see blend func flags |
+| blendfuncseparate(sfactor, dfactor, asfactor, adfactor) | see blend func flags |
 | blendequation(mode) | see blend equation flags |
 | blend(enable) | 0 1 |
 | float vec3dot(vec3, vec3) | |
 | vec3 vec3normalize(vec3) | |
-| vec3 vec3cross(vec3,vec3) | |
-| vec3 vec3add(vec3,vec3) | |
-| vec3 vec3sub(vec3,vec3) | |
-| vec3 vec3mul(vec3,scalar) | |
-| vec3 vec3mat4mul(vec3,mat4) | assumes that w is 1 and will divide by w after multiplying |
-| vec4 vec4mat4mul(vec4,mat4) | |
+| vec3 vec3cross(vec3, vec3) | |
+| vec3 vec3add(vec3, vec3) | |
+| vec3 vec3sub(vec3, vec3) | |
+| vec3 vec3mul(vec3, scalar) | |
+| vec3 vec3mat4mul(vec3, mat4) | assumes that w is 1 and will divide by w after multiplying |
+| vec4 vec4mat4mul(vec4, mat4) | |
 | mat4 mat4loadidentity() | |
-| mat4 mat4setscale(x,y*,z*) | 1 or 3 variables|
-| mat4 mat4settranslation(x,y,z) | |
-| mat4 mat4setrotation(angle,x,y,z) | |
-| mat4 mat4setperspective(fov,aspect,near,far) | |
-| mat4 mat4mul(mat4,mat4) | |
+| mat4 mat4setscale(x, y*, z*) | 1 or 3 variables|
+| mat4 mat4settranslation(x, y, z) | |
+| mat4 mat4setrotation(angle, x, y, z) | |
+| mat4 mat4setperspective(fov, aspect, near, far) | |
+| mat4 mat4mul(mat4, mat4) | |
 | mat4 mat4transpose(mat4) | |
 | mat4 mat4invert(mat4) | |
 | setmat4anglemode(mode) | RADIANS or DEGREES |
@@ -58,11 +62,11 @@
 | sqrt | |
 | debugmode | see DEBUG_*|
 | debugstep | sets which renderpass to show (step%renderpasses so its fine to just increase this number forever) |
-| debugrange(min,max) | range for floating point rendertargets |
-| debugclip | 0,1 will do a fract(color) on the texture for overflowing values |
+| debugrange(min, max) | range for floating point rendertargets |
+| debugclip | 0, 1 will do a fract(color) on the texture for overflowing values |
 | int imagewidth(imageid) | |
 | int imageheight(imageid) | |
-| string getoptionalstring(stringid,default) | |
+| string getoptionalstring(stringid, default) | |
 | bbox getmeshbbox(meshid) | |
 | setwindowtitle(string) | |
 | float getsquarejitterx(jitterid) | |
@@ -75,15 +79,15 @@
 # Objects
 
 ```javascript
-vec3={x:0,y:0,z:0};
-vec3={x:0,y:0,z:0,w:0};
+vec3={x:0, y:0, z:0};
+vec3={x:0, y:0, z:0, w:0};
 mat4={
-m11:0,m12:0,m13:0,m14,
-    m21:0,m22:0,m23:0,m24,
-    m31:0,m32:0,m33:0,m34,
-    m41:0,m42:0,m43:0,m44
+m11:0, m12:0, m13:0, m14, 
+m21:0, m22:0, m23:0, m24, 
+m31:0, m32:0, m33:0, m34, 
+m41:0, m42:0, m43:0, m44
 };
-bbox={min_x:0,min_y:0,min_z:0,max_x:0,max_y:0,max_z:0};
+bbox={min_x:0, min_y:0, min_z:0, max_x:0, max_y:0, max_z:0};
 ```
 
 # callback functions
@@ -424,9 +428,3 @@ GL_TRIANGLES
 GL_TRIANGLE_STRIP_ADJACENCY
 GL_TRIANGLES_ADJACENCY
 GL_PATCHES
-
-
-
-generatemesh numverts numelements drawmode flags identifier
-setindices
-setvertdata
