@@ -198,46 +198,67 @@ int loadImage(const char* filename, char origin)
 
     for(int i = 0; i < numtextures; i++)
     {
-        if(strcmp(filename, textures[i].name) == 0)
+
+        if(textures[i].name != 0)
         {
-            if(textures[i].origin != origin)
+            if(strcmp(filename, textures[i].name) == 0)
             {
-                textures[i].origin = origin;
-                reloadImage(filename);
+                if(textures[i].origin != origin)
+                {
+                    textures[i].origin = origin;
+                    reloadImage(filename);
+                    return i;
+                }
+
+                printf("already loaded image %s id:%i\n", filename, i);
                 return i;
             }
-
-            printf("already loaded image %s id:%i\n", filename, i);
-            return i;
         }
     }
 
-    if(numtextures == 0)
-    {
-        textures = malloc(sizeof(image));
-    }
-    else
-    {
-        void* newtextures = realloc(textures, sizeof(image) * (numtextures + 1));
+    int reuse = 0;
 
-        if(newtextures == 0)
+    for(int i = 0; i < numtextures; i++)
+    {
+        if(textures[i].name == 0)
         {
-            fprintf(stderr, "out of memory while creating texture %s\n", filename);
-            exit(1);
+            out = i;
+            reuse = 1;
+            break;
+        }
+    }
+
+    if(!reuse)
+    {
+        if(numtextures == 0)
+        {
+            textures = malloc(sizeof(image));
         }
         else
         {
-            textures = newtextures;
+            void* newtextures = realloc(textures, sizeof(image) * (numtextures + 1));
+
+            if(newtextures == 0)
+            {
+                fprintf(stderr, "out of memory while creating texture %s\n", filename);
+                exit(1);
+            }
+            else
+            {
+                textures = newtextures;
+            }
         }
+
+        out  = numtextures;
+        numtextures += 1;
     }
 
-    out  = numtextures;
-    numtextures += 1;
     image* img = &textures[out];
     img->name = malloc(strlen(filename) + 1);
     img->origin = origin;
     glGenTextures(1, &img->glImage);
     out = loadImageOntoTexture(filename, out);
+    img->cleanup = CLEAN_USED;
     sprintf(img->name, "%s", filename);
     watchFile(filename, &reloadImage);
     return out;
@@ -255,19 +276,25 @@ void reloadImage(const char* filename)
         }
     }
 }
-
-void cleanupImages()
+void cleanupImage(image* img)
 {
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    if(img->name)
+    {
+        free(img->name);
+        img->name = 0;
+    }
+
+    glDeleteTextures(1, &img->glImage);
+    img->cleanup = CLEAN_DELETED;
+}
+
+void cleanupImages()
+{
     for(int i = 0; i < numtextures; i++)
     {
-        if(textures[i].name)
-        {
-            free(textures[i].name);
-        }
-
-        glDeleteTextures(1, &textures[i].glImage);
+        cleanupImage(&textures[i]);
     }
 
     if(textures)

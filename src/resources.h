@@ -3,12 +3,13 @@
 
 #include <stddef.h>
 
-#define CLEAN_USED    0
-#define CLEAN_DELETED 1
-#define CLEAN_LATER   2
+#define CLEAN_USED    1
+#define CLEAN_DELETED 2
+#define CLEAN_LATER   4
 
 typedef struct image
 {
+    char cleanup;
     char* name;
     unsigned int glImage;
     int width;
@@ -35,6 +36,7 @@ typedef struct mesh
 
 typedef struct shader
 {
+    char cleanup;
     char* controlname;
     char* evalname;
     char* fragname;
@@ -49,12 +51,20 @@ typedef struct shader
     char working;
 } shader;
 
+typedef struct sound
+{
+    char cleanup;
+    char* name;
+    ma_sound sound;
+} sound;
+
 int loadImage(const char* filename, char origin);
 int loadMesh(const char* filename);
 int loadShader(const char* vertex, const char* pixel, const char* geometry, const char* tesscontrol, const char* tesseval);
 void reloadImage(const char* filename);
 void reloadMesh(const char* filename);
 void reloadShader(const char* filename);
+void cleanupImage(image* img);
 void cleanupImages();
 void cleanupMeshes();
 void cleanupMesh(mesh* m);

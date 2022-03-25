@@ -4,6 +4,8 @@
 
 extern mesh* meshes;
 extern int nummeshes;
+extern image* textures;
+extern int numtextures;
 
 void initResourceCleanup()
 {
@@ -11,16 +13,18 @@ void initResourceCleanup()
     {
         meshes[i].cleanup |= CLEAN_LATER;
     }
+
+    for(int i = 0; i < numtextures; i++)
+    {
+        textures[i].cleanup |= CLEAN_LATER;
+    }
 }
 
 void endResourceCleanup()
 {
-    /*printf("Running resource cleanup\n");*/
-
     for(int i = 0; i < nummeshes; i++)
     {
         mesh* m = &meshes[i];
-        /*printf("name:%s meshcleanup:%s\n", m->name, m->cleanup == CLEAN_DELETED ? "DELETED" : m->cleanup == CLEAN_USED ? "USED" : "LATER");*/
 
         if(m->cleanup & CLEAN_LATER)
         {
@@ -41,4 +45,19 @@ void endResourceCleanup()
             }
         }
     }
+
+    for(int i = 0; i < numtextures; i++)
+    {
+        image* img = &textures[i];
+
+        if(img->cleanup & CLEAN_LATER)
+        {
+            if(!(img->cleanup & CLEAN_DELETED))
+            {
+                printf("deleting %s\n", textures[i].name);
+                cleanupImage(img);
+            }
+        }
+    }
+
 }

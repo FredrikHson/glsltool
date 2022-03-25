@@ -1,3 +1,6 @@
 [submodule "external/v7"]
 	path = external/v7
 	url = https://github.com/FredrikHson/v7.git
+[submodule "external/miniaudio"]
+	path = external/miniaudio
+	url = git@github.com:mackron/miniaudio.git
