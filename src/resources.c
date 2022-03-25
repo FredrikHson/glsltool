@@ -71,7 +71,6 @@ void endResourceCleanup()
     {
         shader* shad = &shaders[i];
 
-
         if(shad->cleanup & CLEAN_LATER)
         {
             if(!(shad->cleanup & CLEAN_DELETED))

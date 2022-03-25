@@ -10,6 +10,8 @@ find_package(OpenSSL REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 pkg_search_module(ASSIMP REQUIRED assimp)
 find_package(DevIL REQUIRED)
+set (THREADS_PREFER_PTHREAD_FLAG ON)
+find_package (Threads REQUIRED)
 
 set(COMMON_SRC
     "debug.c"
@@ -26,6 +28,7 @@ set(COMMON_SRC
     "resources/image.c"
     "resources/mesh.c"
     "resources/shader.c"
+    "resources/sound.c"
     "screenshot.c"
     "script.c"
     "script/file.c"
@@ -36,6 +39,7 @@ set(COMMON_SRC
     "script/resources.c"
     "script/shader.c"
     "vector.c"
+    "audio.c"
     )
 
 include_directories(
@@ -45,6 +49,7 @@ include_directories(
     ${ASSIMP_INCLUDE_DIRS}
     ${IL_INCLUDE_DIR}
     ../external/v7
+    ../external/miniaudio/extras/miniaudio_split
     )
 
 set(SHADERS
@@ -73,6 +78,9 @@ add_definitions(-DV7_LARGE_AST)
 add_library(v7 "../external/v7/v7.c")
 target_compile_options(v7 PRIVATE "-O3")
 target_compile_definitions(v7 PRIVATE "NDEBUG")
+add_library(miniaudio "../external/miniaudio/extras/miniaudio_split/miniaudio.c")
+target_compile_options(miniaudio PRIVATE "-O3")
+target_compile_definitions(miniaudio PRIVATE "NDEBUG")
 
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
@@ -87,7 +95,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     ${ASSIMP_LIBRARIES}
     ${OPENSSL_SSL_LIBRARIES}
     ${OPENSSL_CRYPTO_LIBRARY}
+    miniaudio
     m
+    dl
+    Threads::Threads
     v7
     )
 

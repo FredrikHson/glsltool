@@ -482,3 +482,17 @@ enum v7_err js_open_mesh(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
+enum v7_err js_play_sound(v7* v7e, v7_val_t* res)
+{
+    if(v7_argc(v7e) != 1)
+    {
+        fprintf(stderr, "invalid number of arguments to openmesh\n");
+        return V7_SYNTAX_ERROR;
+    }
+
+    unsigned int id = v7_get_int(v7e, v7_arg(v7e, 0));
+    openMesh(id);
+
+    return V7_OK;
+}

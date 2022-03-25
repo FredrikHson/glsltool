@@ -13,6 +13,7 @@
 #include "defines.h"
 #include "renderfunc.h"
 #include "debug.h"
+#include "audio.h"
 #include <sanitizer/lsan_interface.h>
 
 GLFWwindow* window = 0;
@@ -239,6 +240,7 @@ int main(int argc, char* argv[])
     iluInit();
     initImages();
     initDebug();
+    initAudio();
     watchFile(options.inputfile, reloadScript);
     initScript(options.inputfile);
 
@@ -276,6 +278,7 @@ int main(int argc, char* argv[])
 
     fprintf(stderr, "after initscript\n");
     shutdownScript();
+    shutdownAudio();
     cleanupImages();
     cleanupMeshes();
     cleanupShaders();

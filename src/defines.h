@@ -33,4 +33,6 @@
 #define IMG_TOP 0
 #define IMG_BOTTOM 1
 
+#define MAX_AUDIOGROUPS 8
+
 #endif //__DEFINES_H__

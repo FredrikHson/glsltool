@@ -2,6 +2,7 @@
 #define __RESOURCES_H__
 
 #include <stddef.h>
+#include <miniaudio.h>
 
 #define CLEAN_USED    0
 #define CLEAN_DELETED 1
