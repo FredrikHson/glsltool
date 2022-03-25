@@ -132,27 +132,48 @@ shader* allocateNewShader(const char* vertex,
         }
     }
 
-    if(numshaders == 0)
-    {
-        shaders = malloc(sizeof(shader));
-    }
-    else
-    {
-        void* newshaders = realloc(shaders, sizeof(shader) * (numshaders + 1));
+    int reuse = 0;
+    shader* s = 0;
 
-        if(newshaders == 0)
+
+    for(int i = 0; i < numshaders; i++)
+    {
+        if(shaders[i].cleanup & CLEAN_DELETED)
         {
-            fprintf(stderr, "out of memory while creating new shaders\n");
-            exit(1);
+            reuse = 1;
+            s = &shaders[i];
+            *id = i;
+            break;
+        }
+    }
+
+    if(!reuse)
+    {
+
+        if(numshaders == 0)
+        {
+            shaders = malloc(sizeof(shader));
         }
         else
         {
-            shaders = newshaders;
+            void* newshaders = realloc(shaders, sizeof(shader) * (numshaders + 1));
+
+            if(newshaders == 0)
+            {
+                fprintf(stderr, "out of memory while creating new shaders\n");
+                exit(1);
+            }
+            else
+            {
+                shaders = newshaders;
+            }
         }
+
+        s = &shaders[numshaders];
+        *id = numshaders;
+        numshaders++;
     }
 
-    shader* s = &shaders[numshaders];
-    *id = numshaders;
     s->vertname = strdupnull(vertex);
     s->fragname = strdupnull(pixel);
     s->geomname = strdupnull(geometry);
@@ -164,7 +185,7 @@ shader* allocateNewShader(const char* vertex,
     s->frag = 0;
     s->geom = 0;
     s->vert = 0;
-    numshaders++;
+    s->cleanup = CLEAN_USED;
     return s;
 }
 
@@ -384,51 +405,64 @@ void reloadShader(const char* filename)
     }
 }
 
-void cleanupShaders(int shader)
+void cleanupShader(shader* s)
+{
+
+    if(s->vertname)
+    {
+        free(s->vertname);
+        s->vertname = 0;
+        glDetachShader(s->program, s->vert);
+        glDeleteShader(s->vert);
+    }
+
+    if(s->fragname)
+    {
+        free(s->fragname);
+        s->fragname = 0;
+        glDetachShader(s->program, s->frag);
+        glDeleteShader(s->frag);
+    }
+
+    if(s->evalname)
+    {
+        free(s->evalname);
+        s->evalname = 0;
+        glDetachShader(s->program, s->eval);
+        glDeleteShader(s->eval);
+    }
+
+    if(s->controlname)
+    {
+        free(s->controlname);
+        s->control = 0;
+        glDetachShader(s->program, s->control);
+        glDeleteShader(s->control);
+    }
+
+    if(s->geomname)
+    {
+        free(s->geomname);
+        s->geomname = 0;
+        glDetachShader(s->program, s->geom);
+        glDeleteShader(s->geom);
+    }
+
+    if(s->program)
+    {
+        glDeleteProgram(s->program);
+    }
+
+    s->cleanup = CLEAN_DELETED;
+}
+
+void cleanupShaders()
 {
     if(shaders)
     {
         for(int i = 0; i < numshaders; i++)
         {
-            if(shaders[i].vertname)
-            {
-                free(shaders[i].vertname);
-                glDetachShader(shaders[i].program, shaders[i].vert);
-                glDeleteShader(shaders[i].vert);
-            }
-
-            if(shaders[i].fragname)
-            {
-                free(shaders[i].fragname);
-                glDetachShader(shaders[i].program, shaders[i].frag);
-                glDeleteShader(shaders[i].frag);
-            }
-
-            if(shaders[i].evalname)
-            {
-                free(shaders[i].evalname);
-                glDetachShader(shaders[i].program, shaders[i].eval);
-                glDeleteShader(shaders[i].eval);
-            }
-
-            if(shaders[i].controlname)
-            {
-                free(shaders[i].controlname);
-                glDetachShader(shaders[i].program, shaders[i].control);
-                glDeleteShader(shaders[i].control);
-            }
-
-            if(shaders[i].geomname)
-            {
-                free(shaders[i].geomname);
-                glDetachShader(shaders[i].program, shaders[i].geom);
-                glDeleteShader(shaders[i].geom);
-            }
-
-            if(shaders[i].program)
-            {
-                glDeleteProgram(shaders[i].program);
-            }
+            cleanupShader(&shaders[i]);
         }
 
         free(shaders);

@@ -189,6 +189,7 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     tex->channels = channels;
     tex->width    = width;
     tex->height   = height;
+    tex->cleanup  = CLEAN_USED;
     return texture;
 }
 

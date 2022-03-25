@@ -6,6 +6,8 @@ extern mesh* meshes;
 extern int nummeshes;
 extern image* textures;
 extern int numtextures;
+extern shader* shaders;
+extern int numshaders;
 
 void initResourceCleanup()
 {
@@ -17,6 +19,11 @@ void initResourceCleanup()
     for(int i = 0; i < numtextures; i++)
     {
         textures[i].cleanup |= CLEAN_LATER;
+    }
+
+    for(int i = 0; i < numshaders; i++)
+    {
+        shaders[i].cleanup |= CLEAN_LATER;
     }
 }
 
@@ -56,6 +63,21 @@ void endResourceCleanup()
             {
                 printf("deleting %s\n", textures[i].name);
                 cleanupImage(img);
+            }
+        }
+    }
+
+    for(int i = 0; i < numshaders; i++)
+    {
+        shader* shad = &shaders[i];
+
+
+        if(shad->cleanup & CLEAN_LATER)
+        {
+            if(!(shad->cleanup & CLEAN_DELETED))
+            {
+                printf("deleting shader %s %s %s %s %s\n", shad->vertname, shad->fragname, shad->geomname, shad->controlname, shad->evalname);
+                cleanupShader(shad);
             }
         }
     }

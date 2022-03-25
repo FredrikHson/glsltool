@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-#define CLEAN_USED    1
-#define CLEAN_DELETED 2
-#define CLEAN_LATER   4
+#define CLEAN_USED    0
+#define CLEAN_DELETED 1
+#define CLEAN_LATER   2
 
 typedef struct image
 {
@@ -69,6 +69,7 @@ void cleanupImages();
 void cleanupMeshes();
 void cleanupMesh(mesh* m);
 void cleanupShaders();
+void cleanupShader(shader* s);
 void initImages();
 int allocateMesh(const char* filename);
 int getImageWidth(int id);
