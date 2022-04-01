@@ -62,6 +62,7 @@ typedef struct sound
 int loadImage(const char* filename, char origin);
 int loadMesh(const char* filename);
 int loadShader(const char* vertex, const char* pixel, const char* geometry, const char* tesscontrol, const char* tesseval);
+int loadSound(const char* filename);
 void reloadImage(const char* filename);
 void reloadMesh(const char* filename);
 void reloadShader(const char* filename);

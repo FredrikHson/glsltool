@@ -1,9 +1,16 @@
 #include <miniaudio.h>
+#include "resources.h"
 #include "audio.h"
 #include "defines.h"
+#include <stdio.h>
 
 ma_engine audio_engine;
 ma_sound_group audio_groups[MAX_AUDIOGROUPS];
+extern sound* sounds;
+extern int numsounds;
+
+#define MAX_CONCURRENT_SOUNDS 65536
+ma_sound audioringbuffer[MAX_CONCURRENT_SOUNDS] = {0};
 
 int initAudio()
 {
@@ -28,4 +35,41 @@ void shutdownAudio()
     ma_engine_uninit(&audio_engine);
 }
 
-/*void play_sound(const char* filename,*/
+int play_sound(int id, int group, float volume, int looping)
+{
+    if(id >= numsounds || id == -1)
+    {
+        return MAX_AUDIOGROUPS;
+    }
+
+    if(sounds[id].cleanup != CLEAN_USED)
+    {
+        return MAX_AUDIOGROUPS;
+    }
+
+    int index = 0;
+
+    for(index = 0; index < MAX_CONCURRENT_SOUNDS; index++)
+    {
+        if(ma_sound_at_end(&audioringbuffer[index]) == 1)
+        {
+            break;
+        }
+
+        if(audioringbuffer[index].pDataSource == 0)
+        {
+            break;
+        }
+    }
+
+    ma_sound_init_copy(&audio_engine, &sounds[id].sound, 0, &audio_groups[group], &audioringbuffer[index]);
+
+    if(looping)
+    {
+        ma_sound_set_looping(&audioringbuffer[index], 1);
+    }
+
+    ma_sound_set_volume(&audioringbuffer[index], volume);
+    ma_sound_start(&audioringbuffer[index]);
+    return index;
+}

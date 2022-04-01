@@ -193,6 +193,8 @@ void create_js_functions()
     v7_set_method(v7g, global, "getcirclejitterx", js_get_circle_jitter_x);
     v7_set_method(v7g, global, "getcirclejittery", js_get_circle_jitter_y);
     v7_set_method(v7g, global, "exit", override_exit);
+    v7_set_method(v7g, global, "playsound", js_play_sound);
+    v7_set_method(v7g, global, "loadsound", js_load_sound);
 }
 
 /* for easy writing of v7_set global
