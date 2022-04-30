@@ -128,6 +128,7 @@ shader* allocateNewShader(const char* vertex,
         )
         {
             *id = i;
+            s->cleanup = CLEAN_USED;
             return s;
         }
     }
