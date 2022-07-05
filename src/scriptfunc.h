@@ -102,5 +102,8 @@ enum v7_err js_watchfile(v7* v7e, v7_val_t* res);
 /* audio */
 enum v7_err js_play_sound(v7* v7e, v7_val_t* res);
 enum v7_err js_load_sound(v7* v7e, v7_val_t* res);
+enum v7_err js_set_global_volume(v7* v7e, v7_val_t* res);
+enum v7_err js_set_group_volume(v7* v7e, v7_val_t* res);
+enum v7_err js_stop_all_sounds(v7* v7e, v7_val_t* res);
 
 #endif //__SCRIPTFUNC_H__

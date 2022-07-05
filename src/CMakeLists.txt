@@ -14,10 +14,11 @@ set (THREADS_PREFER_PTHREAD_FLAG ON)
 find_package (Threads REQUIRED)
 
 set(COMMON_SRC
+    "audio.c"
     "debug.c"
     "generators.c"
-    "generators/plane.c"
     "generators/generic.c"
+    "generators/plane.c"
     "jitterdata.c"
     "main.c"
     "matrix.c"
@@ -31,6 +32,7 @@ set(COMMON_SRC
     "resources/sound.c"
     "screenshot.c"
     "script.c"
+    "script/audio.c"
     "script/file.c"
     "script/input.c"
     "script/math.c"
@@ -39,7 +41,6 @@ set(COMMON_SRC
     "script/resources.c"
     "script/shader.c"
     "vector.c"
-    "audio.c"
     )
 
 include_directories(

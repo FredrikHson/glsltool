@@ -11,6 +11,7 @@ extern int numsounds;
 
 #define MAX_CONCURRENT_SOUNDS 65536
 ma_sound audioringbuffer[MAX_CONCURRENT_SOUNDS] = {0};
+int audioringbuffer_group[MAX_CONCURRENT_SOUNDS] = {0};
 
 int initAudio()
 {
@@ -51,13 +52,9 @@ int play_sound(int id, int group, float volume, int looping)
 
     for(index = 0; index < MAX_CONCURRENT_SOUNDS; index++)
     {
-        if(ma_sound_at_end(&audioringbuffer[index]) == 1)
+        if(ma_sound_is_playing(&audioringbuffer[index]) == 0)
         {
-            break;
-        }
-
-        if(audioringbuffer[index].pDataSource == 0)
-        {
+            ma_sound_uninit(&audioringbuffer[index]);
             break;
         }
     }
@@ -71,5 +68,50 @@ int play_sound(int id, int group, float volume, int looping)
 
     ma_sound_set_volume(&audioringbuffer[index], volume);
     ma_sound_start(&audioringbuffer[index]);
+    audioringbuffer_group[index] = group;
     return index;
+}
+
+void set_global_volume(float volume)
+{
+    printf("setting volume to:%f\n", volume);
+    ma_engine_set_volume(&audio_engine, volume);
+}
+
+void set_group_volume(int group, float volume)
+{
+    if(group < MAX_AUDIOGROUPS)
+    {
+        ma_sound_group_set_volume(&audio_groups[group], volume);
+    }
+}
+
+void stop_all_sounds()
+{
+    for(int index = 0; index < MAX_CONCURRENT_SOUNDS; index++)
+    {
+        if(ma_sound_is_playing(&audioringbuffer[index]))
+        {
+            ma_sound_stop(&audioringbuffer[index]);
+        }
+    }
+}
+
+void stop_group_sounds(int group)
+{
+    if(group < MAX_AUDIOGROUPS)
+    {
+        for(int index = 0; index < MAX_CONCURRENT_SOUNDS; index++)
+        {
+            if(audioringbuffer_group[index] == group)
+            {
+                if(ma_sound_is_playing(&audioringbuffer[index]))
+                {
+                    ma_sound_stop(&audioringbuffer[index]);
+                }
+
+            }
+
+        }
+    }
 }

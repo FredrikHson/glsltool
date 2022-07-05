@@ -195,6 +195,9 @@ void create_js_functions()
     v7_set_method(v7g, global, "exit", override_exit);
     v7_set_method(v7g, global, "playsound", js_play_sound);
     v7_set_method(v7g, global, "loadsound", js_load_sound);
+    v7_set_method(v7g, global, "setglobalvolume", js_set_global_volume);
+    v7_set_method(v7g, global, "setgroupvolume", js_set_group_volume);
+    v7_set_method(v7g, global, "stopallsounds", js_stop_all_sounds);
 }
 
 /* for easy writing of v7_set global
