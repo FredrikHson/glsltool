@@ -21,7 +21,7 @@ typedef struct glsltool_options
 } glsltool_options;
 
 int handle_options(int argc, char* argv[]);
-void cleanup_options();
+void cleanup_options(void);
 
 extern glsltool_options options;
 

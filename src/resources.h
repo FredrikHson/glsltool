@@ -51,13 +51,6 @@ typedef struct shader
     char working;
 } shader;
 
-typedef struct sound
-{
-    char cleanup;
-    char* name;
-    ma_sound sound;
-} sound;
-
 int loadImage(const char* filename, char origin);
 int loadMesh(const char* filename);
 int loadShader(const char* vertex, const char* pixel, const char* geometry, const char* tesscontrol, const char* tesseval);
@@ -65,23 +58,23 @@ void reloadImage(const char* filename);
 void reloadMesh(const char* filename);
 void reloadShader(const char* filename);
 void cleanupImage(image* img);
-void cleanupImages();
-void cleanupMeshes();
+void cleanupImages(void);
+void cleanupMeshes(void);
 void cleanupMesh(mesh* m);
-void cleanupShaders();
+void cleanupShaders(void);
 void cleanupShader(shader* s);
-void initImages();
+void initImages(void);
 int allocateMesh(const char* filename);
 int getImageWidth(int id);
 int getImageHeight(int id);
 int ismesh(const char* filename);
-void closeMesh();
+void closeMesh(void);
 void openMesh(int id);
 void setMeshIndex(size_t index, const unsigned int data);
 void setMeshVertexData(size_t index, float data);
 
-void initResourceCleanup();
-void endResourceCleanup();
+void initResourceCleanup(void);
+void endResourceCleanup(void);
 unsigned int sizeOfVert(unsigned int flags);
 
 #endif //__RESOURCES_H__

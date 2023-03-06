@@ -9,7 +9,7 @@ extern int numtextures;
 extern shader* shaders;
 extern int numshaders;
 
-void initResourceCleanup()
+void initResourceCleanup(void)
 {
     for(int i = 0; i < nummeshes; i++)
     {
@@ -27,7 +27,7 @@ void initResourceCleanup()
     }
 }
 
-void endResourceCleanup()
+void endResourceCleanup(void)
 {
     for(int i = 0; i < nummeshes; i++)
     {

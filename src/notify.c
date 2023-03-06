@@ -24,7 +24,7 @@ typedef struct notify_file
 notify_file* watchlist = 0;
 size_t numWatchedFiles = 0;
 
-int initFileWatcher()
+int initFileWatcher(void)
 {
     inotify = inotify_init1(IN_NONBLOCK);
 
@@ -35,7 +35,7 @@ int initFileWatcher()
 
     return 1;
 }
-void destroyFileWatcher()
+void destroyFileWatcher(void)
 {
     for(int i = 0; i < numWatchedFiles; i++)
     {
@@ -117,7 +117,7 @@ void unwatchFile(const char* filename)
         }
     }
 }
-void watchChanges()
+void watchChanges(void)
 {
     char buffer[BUF_LEN] = {0};
 

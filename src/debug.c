@@ -50,7 +50,7 @@ extern unsigned int glsl_debug_fp_frag_len;
 
 char avoid_debugging = 0;
 
-void initDebug()
+void initDebug(void)
 {
     glGenBuffers(1, &debug_vbo);
     glGenVertexArrays(1, &debug_vao);
@@ -104,7 +104,7 @@ char istypefp(int type)
            type == GL_R11F_G11F_B10F;
 }
 
-void drawRenderTargets()
+void drawRenderTargets(void)
 {
     if(avoid_debugging == 1)
     {
@@ -213,7 +213,7 @@ void drawRenderTargets()
     glfwSwapBuffers(window);
 }
 
-unsigned int generateNewDebugTexture()
+unsigned int generateNewDebugTexture(void)
 {
     if(numDebugTex == 0)
     {
@@ -244,7 +244,7 @@ unsigned int generateNewDebugTexture()
     return out;
 }
 
-void cleanupDebug()
+void cleanupDebug(void)
 {
     if(debugTex != 0)
     {

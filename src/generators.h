@@ -24,8 +24,8 @@ extern unsigned int numgen_meshes;
 extern mesh* meshes;
 extern int nummeshes;
 
-void startGeneratorCleanup();
-void endGeneratorCleanup();
+void startGeneratorCleanup(void);
+void endGeneratorCleanup(void);
 unsigned int allocateGenMesh(gentype t, void* params);
 
 int generatePlane(unsigned int subw, unsigned int subh, float w, float h);

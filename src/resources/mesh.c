@@ -549,7 +549,7 @@ void cleanupMesh(mesh* m)
     }
 }
 
-void cleanupMeshes()
+void cleanupMeshes(void)
 {
     for(int i = 0; i < nummeshes; i++)
     {
@@ -685,7 +685,7 @@ void drawMesh(int id, int submesh)
         drawSubmesh(id, submesh);
     }
 }
-void resetAttribs()
+void resetAttribs(void)
 {
     numActiveAttribs = 0;
 }
@@ -736,7 +736,7 @@ int ismesh(const char* filename)
     }
 }
 
-void closeMesh()
+void closeMesh(void)
 {
     if(editmesh == -1 || editmesh >= nummeshes)
     {

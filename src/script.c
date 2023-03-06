@@ -109,7 +109,7 @@ enum v7_err js_register_global(v7* v7e, v7_val_t* res)
     return V7_OK;
 }
 
-void create_js_functions()
+void create_js_functions(void)
 {
     v7_val_t global = v7_get_global(v7g);
     v7_set_method(v7g, global, "registerglobal", &js_register_global);
@@ -198,7 +198,7 @@ void create_js_functions()
 /* for easy writing of v7_set global
 '<,'>s/\(.*\)/\="v7_set(v7g, v7_get_global(v7g),\"" . submatch(0) . "\"," . strlen(submatch(0)) . ", v7_mk_number(v7g,". submatch(0) ."));"/g
 */
-void create_js_defines()
+void create_js_defines(void)
 {
     /* gl data types */
     v7_set(v7g, v7_get_global(v7g), "GL_UNSIGNED_BYTE", 16, v7_mk_number(v7g, GL_UNSIGNED_BYTE));
@@ -383,7 +383,7 @@ void create_js_defines()
     v7_set(v7g, v7_get_global(v7g), "DEBUG_RENDERSINGLESTEP", 22, v7_mk_number(v7g, DEBUG_RENDERSINGLESTEP));
 }
 
-void override_require() // add watchfile on the require command
+void override_require(void) // add watchfile on the require command
 {
     if(v7_exec(v7g,
                "function require(m) { "
@@ -454,7 +454,7 @@ int initScript(const char* filename)
     return 1;
 }
 
-void run_resize()
+void run_resize(void)
 {
     v7_set(v7g, v7_get_global(v7g), "WINDOW_WIDTH", 12, v7_mk_number(v7g, options.width));
     v7_set(v7g, v7_get_global(v7g), "WINDOW_HEIGHT", 13, v7_mk_number(v7g, options.height));
@@ -557,7 +557,7 @@ void run_droppedfiles(const char** files, int count)
     }
 }
 
-void run_loop()
+void run_loop(void)
 {
     v7_set(v7g, v7_get_global(v7g), "TIME", 4, v7_mk_number(v7g, currenttime));
     v7_set(v7g, v7_get_global(v7g), "DELTA_TIME", 10, v7_mk_number(v7g, deltaTime));
@@ -592,7 +592,7 @@ void run_loop()
     }
 }
 
-int shutdownScript()
+int shutdownScript(void)
 {
     v7_destroy(v7g);
     v7g = 0;

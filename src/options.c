@@ -183,7 +183,7 @@ int handle_options(int argc, char* argv[])
     return 1;
 }
 
-void cleanup_options()
+void cleanup_options(void)
 {
     if(options.inputfile)
     {

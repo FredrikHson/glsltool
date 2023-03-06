@@ -6,7 +6,7 @@ typedef struct mat4
     double m[16];
 } mat4;
 
-mat4 mat4loadidentity();
+mat4 mat4loadidentity(void);
 mat4 mat4setscale(double x, float y, float z);
 mat4 mat4settranslation(double x, float y, float z);
 mat4 mat4mul(const mat4* m1, const mat4* m2);

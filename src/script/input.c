@@ -36,7 +36,7 @@ char getstate(char last, char now)
     return state;
 }
 
-void updateinput()
+void updateinput(void)
 {
     v7_set(v7g, v7_get_global(v7g), "MOUSE_X", 7, v7_mk_number(v7g, xpos));
     v7_set(v7g, v7_get_global(v7g), "MOUSE_Y", 7, v7_mk_number(v7g, ypos));

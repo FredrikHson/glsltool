@@ -29,16 +29,16 @@ unsigned int CreateRenderTarget(float width,
                                 unsigned int format,
                                 unsigned int type,
                                 char relative);
-void resizeTargets();
+void resizeTargets(void);
 
 void clear(float red, float green, float blue, float alpha, char color, char depth, int attachment);
-void cleanupRender();
+void cleanupRender(void);
 void beginPass(int target, int* width, int* height);
-void endPass();
+void endPass(void);
 
 void drawMesh(int id, int submesh);
 int bindAttrib(const char* name, int flag);
-void resetAttribs();
+void resetAttribs(void);
 void bindShader(int id);
 void setUniformf(const char* name, float* f, int argc);
 void setUniformd(const char* name, double* f, int argc);
@@ -50,7 +50,7 @@ void bindTexture(const char* name, int id,
 void bindRendertarget(const char* name, int id, int layer,
                       unsigned int magfilter, unsigned int minfilter,
                       unsigned int clamp_s, unsigned int clamp_t);
-void resetTexturebindings();
+void resetTexturebindings(void);
 void bindFragDataLocation(int shaderid, const char* name, int rtid, int layer);
 
 void saveRenderTarget(int id, int layer, const char* filename);

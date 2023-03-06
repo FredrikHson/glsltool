@@ -88,7 +88,7 @@ enum v7_err js_abs(v7* v7e, v7_val_t* res);
 enum v7_err js_sqrt(v7* v7e, v7_val_t* res);
 enum v7_err js_set_angle_mode(v7* v7e, v7_val_t* res);
 /* update variables functions */
-void updateinput();
+void updateinput(void);
 enum v7_err js_register_global(v7* v7e, v7_val_t* res);
 /* for getting variables from the commandline */
 enum v7_err js_get_optional_string(v7* v7e, v7_val_t* res);

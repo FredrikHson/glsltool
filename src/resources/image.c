@@ -291,7 +291,7 @@ void cleanupImage(image* img)
     img->cleanup = CLEAN_DELETED;
 }
 
-void cleanupImages()
+void cleanupImages(void)
 {
     for(int i = 0; i < numtextures; i++)
     {
@@ -307,7 +307,7 @@ void cleanupImages()
     textures = 0;
 }
 
-void initImages()
+void initImages(void)
 {
     /*TODO: should i handle vertex and fragment textures differently?*/
     /*for now just set the max bound textures to how many textures the fragment shader can handle*/
@@ -323,7 +323,7 @@ void initImages()
     numboundtextures = 0;
 }
 
-void resetTexturebindings()
+void resetTexturebindings(void)
 {
     for(int i = 0; i < numboundtextures; i++)
     {

@@ -63,7 +63,7 @@ void key_handler_callback(GLFWwindow* window, int key, int scancode, int action,
     }
 }
 
-void updateTime() // call once per frame
+void updateTime(void) // call once per frame
 {
     currenttime = glfwGetTime();
     static double lastdelta = 0;
@@ -84,7 +84,7 @@ void updateTime() // call once per frame
     }
 }
 
-void handleMouse()
+void handleMouse(void)
 {
     lastxpos = xpos;
     lastypos = ypos;
@@ -134,7 +134,7 @@ void drop_callback(GLFWwindow* window, int count, const char** paths)
     run_droppedfiles(paths, count);
 }
 
-void handleKeys()
+void handleKeys(void)
 {
     for(int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST + 1; i++)
     {

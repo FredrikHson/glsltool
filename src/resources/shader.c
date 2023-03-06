@@ -457,7 +457,7 @@ void cleanupShader(shader* s)
     s->cleanup = CLEAN_DELETED;
 }
 
-void cleanupShaders()
+void cleanupShaders(void)
 {
     if(shaders)
     {

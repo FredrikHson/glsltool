@@ -9,12 +9,12 @@ enum debugmodes
     DEBUG_LAST
 };
 
-void drawRenderTargets();
+void drawRenderTargets(void);
 void copyTargetToDebug(unsigned int id);
 char setDebugMode(char mode);
 void setSingleDebugStep(int step);
-void cleanupDebug();
-void initDebug();
+void cleanupDebug(void);
+void initDebug(void);
 
 extern char debugmode;
 extern float debug_maxvalue;

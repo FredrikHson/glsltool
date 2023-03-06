@@ -110,7 +110,7 @@ unsigned int CreateRenderTarget(float width,
     return out;
 }
 
-void resizeTargets()
+void resizeTargets(void)
 {
     for(int i = 0; i < numrendertargets; i++)
     {
@@ -164,7 +164,7 @@ void clear(float red, float green, float blue, float alpha, char color, char dep
     }
 }
 
-void cleanupRender()
+void cleanupRender(void)
 {
     for(int i = 0; i < numrendertargets; i++)
     {
@@ -223,7 +223,7 @@ void beginPass(int target, int* width, int* height)
 
     glViewport(0, 0, *width, *height);
 }
-void endPass()
+void endPass(void)
 {
     /*
      * https://stackoverflow.com/questions/15306899/is-it-possible-to-copy-data-from-one-framebuffer-to-another-in-opengl

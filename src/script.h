@@ -2,11 +2,11 @@
 #define __SCRIPT_H__
 
 int initScript(const char* filename);
-void run_loop();
+void run_loop(void);
 void run_filechange(char* filename);
 void run_droppedfiles(const char** filename, int count);
-void run_resize();
-int shutdownScript();
+void run_resize(void);
+int shutdownScript(void);
 void reloadScript(const char* filename);
 extern unsigned char validscript;
 

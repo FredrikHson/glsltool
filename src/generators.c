@@ -8,7 +8,7 @@
 generatedmesh* gen_meshes = 0;
 unsigned int numgen_meshes = 0;
 
-void startGeneratorCleanup()
+void startGeneratorCleanup(void)
 {
     for(int i = 0; i < numgen_meshes; i++)
     {
@@ -16,7 +16,7 @@ void startGeneratorCleanup()
     }
 }
 
-void endGeneratorCleanup()
+void endGeneratorCleanup(void)
 {
     for(int i = 0; i < numgen_meshes; i++)
     {

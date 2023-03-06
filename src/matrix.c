@@ -3,7 +3,7 @@
 #include <math.h>
 
 
-mat4 mat4loadidentity()
+mat4 mat4loadidentity(void)
 {
     mat4 out =
     {
