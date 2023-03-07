@@ -180,6 +180,7 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     void* data = malloc(width * height * bpp);
     ilCopyPixels(0, 0, 0, width, height, 1, format, type, data);
     glBindTexture(GL_TEXTURE_2D, tex->glImage);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glInternalFormat, glType, data);
     glBindTexture(GL_TEXTURE_2D, 0);
     glGenerateTextureMipmap(tex->glImage);
