@@ -1,9 +1,9 @@
-#include "generators.h"
+#include "defines.h"
 #include "generatorparams.h"
+#include "generators.h"
+#include "opengl.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "opengl.h"
-#include "defines.h"
 
 int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
 {
@@ -35,23 +35,23 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
                       MESH_FLAG_TEXCOORD0;
         m->cleanup = CLEAN_USED;
         size_t vlen = sizeOfVert(m->flags[0]);
-        unsigned int numverts = (subw + 2) * (subh + 2);
+        int numverts = (int)((subw + 2) * (subh + 2));
         m->numverts[0]   = numverts;
         float* data = (float*)malloc(numverts * vlen * sizeof(float));
-        float dw = w / (subw + 1);
-        float dh = h / (subh + 1);
-        size_t noffset = numverts * 3;
-        size_t toffset = noffset + numverts * 3;
-        size_t boffset = toffset + numverts * 3;
-        size_t uoffset = boffset + numverts * 3;
+        float dw = (float)w / (float)(subw + 1);
+        float dh = (float)h / (float)(subh + 1);
+        size_t noffset = (size_t)numverts * 3;
+        size_t toffset = (size_t)noffset + (size_t)numverts * 3;
+        size_t boffset = (size_t)toffset + (size_t)numverts * 3;
+        size_t uoffset = (size_t)boffset + (size_t)numverts * 3;
         size_t offset3 = 0;
         size_t offset2 = 0;
 
-        for(float i = 0; i < subh + 2; i += 1.0f)
+        for(float i = 0; i < (float)subh + 2.0f; i += 1.0f)
         {
             float y = (dh * i)  - h / 2.0f;
 
-            for(float j = 0; j < subw + 2; j += 1.0f)
+            for(float j = 0; j < (float)subw + 2.0f; j += 1.0f)
             {
                 float x = (dw * j) - (w / 2.0f);
                 float u = j / (float)(subw + 1);
@@ -80,13 +80,13 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
             }
         }
 
-        m->numindices[0] = (subw + 1) * (subh + 1) * 6;
+        m->numindices[0] = (int)((subw + 1) * (subh + 1) * 6);
         m->drawmode = GL_TRIANGLES;
         glCreateVertexArrays(1, m->vao);
         glGenBuffers(1, m->vbo);
         glGenBuffers(1, m->indices);
         glBindBuffer(GL_ARRAY_BUFFER, m->vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, vlen * sizeof(float)* numverts, data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (int)(vlen * sizeof(float)* numverts), data, GL_STATIC_DRAW);
         unsigned int* idata = malloc(sizeof(unsigned int) * m->numindices[0]);
         unsigned int* id = idata;
 
@@ -107,7 +107,7 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
         }
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices[0]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m->numindices[0], idata, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int)(sizeof(unsigned int) * m->numindices[0]), idata, GL_STATIC_DRAW);
 
         if(idata != 0)
         {
@@ -121,5 +121,5 @@ int generatePlane(unsigned int subw, unsigned int subh, float w, float h)
     }
 
     meshes[gen_meshes[out].meshid].cleanup = CLEAN_USED;
-    return gen_meshes[out].meshid;
+    return (int)gen_meshes[out].meshid;
 }

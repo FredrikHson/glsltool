@@ -1,18 +1,18 @@
+#include "defines.h"
+#include "notify.h"
+#include "opengl.h"
+#include "resources.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include "opengl.h"
-#include "notify.h"
-#include "resources.h"
-#include "defines.h"
 
 image* textures = 0;
 int numtextures = 0;
 
 int maxboundtextures = 0;
-unsigned int numboundtextures = 0;
+int numboundtextures = 0;
 
 extern unsigned int currentprogram;
 
@@ -177,7 +177,7 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     printf("\n");
     fflush(stdout);
     image* tex = &textures[texture];
-    void* data = malloc(width * height * bpp);
+    void* data = malloc((unsigned long)width * (unsigned long)height * (unsigned long)bpp);
     ilCopyPixels(0, 0, 0, width, height, 1, format, type, data);
     glBindTexture(GL_TEXTURE_2D, tex->glImage);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -191,12 +191,12 @@ int loadImageOntoTexture(const char* filename, unsigned int texture)
     tex->width    = width;
     tex->height   = height;
     tex->cleanup  = CLEAN_USED;
-    return texture;
+    return (int)texture;
 }
 
 int loadImage(const char* filename, char origin)
 {
-    unsigned int out  = 0;
+    int out  = 0;
 
     for(int i = 0; i < numtextures; i++)
     {
@@ -336,8 +336,8 @@ void resetTexturebindings(void)
 }
 
 void bindTexture(const char* name, int id,
-                 unsigned int magfilter, unsigned int minfilter,
-                 unsigned int clamp_s, unsigned int clamp_t)
+                 int magfilter, int minfilter,
+                 int clamp_s, int clamp_t)
 {
     if(id >= numtextures || currentprogram == 0)
     {

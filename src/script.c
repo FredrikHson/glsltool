@@ -1,18 +1,16 @@
 #include "defines.h"
+#include "debug.h"
 #include "opengl.h"
 #include "options.h"
 #include "renderfunc.h"
+#include "resources.h"
 #include "script.h"
 #include "scriptfunc.h"
-#include "resources.h"
-#include "debug.h"
-#include "v7.h"
-#include <math.h>
+#include <setjmp.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <setjmp.h>
-#include <signal.h>
 
 typedef struct v7 v7;
 char* entrypointfile = 0;
@@ -66,7 +64,7 @@ enum v7_err override_exit(v7* v7e, v7_val_t* res)
 
 enum v7_err js_register_global(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -84,11 +82,11 @@ enum v7_err js_register_global(v7* v7e, v7_val_t* res)
 
         if(numglobals == 0)
         {
-            globals = malloc(sizeof(char*));
+            globals = (char**)malloc(sizeof(char*));
         }
         else
         {
-            void* newglobals = realloc(globals, sizeof(char*) * (numglobals + 1));
+            void* newglobals = realloc((void*)globals, sizeof(char*) * (numglobals + 1));
 
             if(newglobals == 0)
             {
@@ -97,7 +95,7 @@ enum v7_err js_register_global(v7* v7e, v7_val_t* res)
             }
             else
             {
-                globals = newglobals;
+                globals = (char**)newglobals;
             }
         }
 
@@ -605,7 +603,7 @@ int shutdownScript(void)
             free(globals[i]);
         }
 
-        free(globals);
+        free((void*)globals);
     }
 
     if(entrypointfile)
@@ -618,10 +616,10 @@ int shutdownScript(void)
 
 void reloadScript(const char* filename)
 {
-    int oldnumglobals = numglobals;
+    size_t oldnumglobals = numglobals;
     printf("reloading script: %s due to change in %s\n", entrypointfile, filename);
     printf("num globals stored: %zu\n", numglobals);
-    char** tmpstorage = malloc(sizeof(char*)*oldnumglobals);
+    char** tmpstorage = (char**)malloc(sizeof(char*)*oldnumglobals);
 
     for(int i = 0; i < oldnumglobals; i++)
     {
@@ -663,7 +661,7 @@ void reloadScript(const char* filename)
             free(tmpstorage[i]);
         }
 
-        free(tmpstorage);
+        free((void*)tmpstorage);
     }
 
 }

@@ -1,10 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include "debug.h"
 #include "opengl.h"
 #include "options.h"
 #include "renderfunc.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 char debugmode = DEBUG_OFF;
 float debug_maxvalue = 1.0f;
@@ -15,10 +15,10 @@ unsigned int currentstep = 0; // internal current texture number
 
 typedef struct debugtex
 {
-    unsigned int width;
-    unsigned int height;
+    int width;
+    int height;
     unsigned int format;
-    unsigned int type;
+    int type;
     unsigned int texture;
 } debugtex;
 
@@ -59,13 +59,13 @@ void initDebug(void)
     debug_fs = glCreateShader(GL_FRAGMENT_SHADER);
     debug_vs = glCreateShader(GL_VERTEX_SHADER);
     debug_fp_fs = glCreateShader(GL_FRAGMENT_SHADER);
-    int len = glsl_debug_vert_len;
+    int len = (int)glsl_debug_vert_len;
     char* data = glsl_debug_vert;
     glShaderSource(debug_vs, 1, (const char**)&data, &len);
-    len = glsl_debug_frag_len;
+    len = (int)glsl_debug_frag_len;
     data = glsl_debug_frag;
     glShaderSource(debug_fs, 1, (const char**)&data, &len);
-    len = glsl_debug_fp_frag_len;
+    len = (int)glsl_debug_fp_frag_len;
     data = glsl_debug_fp_frag;
     glShaderSource(debug_fp_fs, 1, (const char**)&data, &len);
     glCompileShader(debug_vs);
@@ -91,17 +91,17 @@ void initDebug(void)
     numDebugTex = 0;
 }
 
-char istypefp(int type)
+char istypefp(unsigned int type)
 {
-    return type == GL_RGB32F ||
-           type == GL_RGBA32F ||
-           type == GL_RG32F ||
-           type == GL_R32F ||
-           type == GL_RGB16F ||
-           type == GL_RGBA16F ||
-           type == GL_RG16F ||
-           type == GL_R16F ||
-           type == GL_R11F_G11F_B10F;
+    return (char)(type == GL_RGB32F ||
+                  type == GL_RGBA32F ||
+                  type == GL_RG32F ||
+                  type == GL_R32F ||
+                  type == GL_RGB16F ||
+                  type == GL_RGBA16F ||
+                  type == GL_RG16F ||
+                  type == GL_R16F ||
+                  type == GL_R11F_G11F_B10F);
 }
 
 void drawRenderTargets(void)
@@ -126,7 +126,7 @@ void drawRenderTargets(void)
         for(int i = 0; i < currentstep && i < numDebugTex; i++)
         {
             float x = (float)(i % lines);
-            float y = (float)lines - (float)(i / lines);
+            float y = (float)(lines - (int)(i / lines));
             float x1 = width * x - 1.0f;
             float y1 = width * y - 1.0f;
             float x2 = width * x + width - 1.0f;
@@ -294,18 +294,18 @@ void copyTargetToDebug(unsigned int id)
     else
     {
         rendertarget* rt = &rendertargets[id];
-        unsigned int targetx = 0;
-        unsigned int targety = 0;
+        int targetx = 0;
+        int targety = 0;
 
         if(rt->relative)
         {
-            targetx = (unsigned int)(rt->width * (float)options.width);
-            targety = (unsigned int)(rt->height * (float)options.height);
+            targetx = (int)(rt->width * options.width);
+            targety = (int)(rt->height * options.height);
         }
         else
         {
-            targetx = (unsigned int)rt->width;
-            targety = (unsigned int)rt->height;
+            targetx = (int)rt->width;
+            targety = (int)rt->height;
         }
 
         for(int i = 0; i < rt->layers; i++)

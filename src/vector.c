@@ -1,5 +1,5 @@
-#include <math.h>
 #include "vector.h"
+#include <math.h>
 
 double vec3dot(const vec3 v1, const vec3 v2)
 {

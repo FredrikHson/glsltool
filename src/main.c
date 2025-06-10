@@ -1,19 +1,18 @@
+#include "debug.h"
+#include "notify.h"
 #include "opengl.h"
+#include "options.h"
+#include "renderfunc.h"
+#include "resources.h"
+#include "script.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
-#include <stdio.h>
 #include <libgen.h>
-#include <string.h>
-#include "options.h"
-#include "script.h"
-#include "resources.h"
-#include <unistd.h>
-#include "notify.h"
-#include <stdlib.h>
-#include "defines.h"
-#include "renderfunc.h"
-#include "debug.h"
 #include <sanitizer/lsan_interface.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 GLFWwindow* window = 0;
 int should_quit = 0;
@@ -139,7 +138,7 @@ void handleKeys(void)
     for(int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST + 1; i++)
     {
         keyboardlast[i] = keyboard[i];
-        keyboard[i] = glfwGetKey(window, i) == GLFW_PRESS;
+        keyboard[i] = (char)(glfwGetKey(window, i) == GLFW_PRESS);
     }
 }
 

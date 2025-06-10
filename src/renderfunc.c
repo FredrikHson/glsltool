@@ -1,10 +1,10 @@
+#include "debug.h"
 #include "opengl.h"
+#include "options.h"
 #include "renderfunc.h"
 #include "resources.h"
-#include "debug.h"
-#include <stdlib.h>
 #include <stdio.h>
-#include "options.h"
+#include <stdlib.h>
 
 rendertarget* rendertargets = 0;
 unsigned int numrendertargets = 0;
@@ -14,11 +14,11 @@ extern unsigned int numboundtextures;
 extern unsigned int currentprogram;
 extern char avoid_debugging;
 
-unsigned int CreateRenderTarget(float width,
-                                float height,
+unsigned int CreateRenderTarget(int width,
+                                int height,
                                 unsigned int layers,
                                 unsigned int format,
-                                unsigned int type,
+                                int type,
                                 char relative)
 {
     if(numrendertargets == 0)
@@ -44,8 +44,8 @@ unsigned int CreateRenderTarget(float width,
     numrendertargets += 1;
     rendertarget* target = &rendertargets[out];
     printf("creating a buffer:\n");
-    printf("    width:  %f\n", width);
-    printf("    height: %f\n", height);
+    printf("    width:  %i\n", width);
+    printf("    height: %i\n", height);
     printf("    relative:%i\n", relative);
 
     if(layers <= 32)
@@ -71,22 +71,22 @@ unsigned int CreateRenderTarget(float width,
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
     glGenFramebuffers(1, &target->buffer);
     glBindFramebuffer(GL_FRAMEBUFFER, target->buffer);
-    glGenTextures(layers, target->textures);
+    glGenTextures((int)layers, target->textures);
     GLint oldTextureBinding = 0;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldTextureBinding);
     GLenum DrawBuffers[32] = {0};
-    unsigned int targetx;
-    unsigned int targety;
+    int targetx;
+    int targety;
 
     if(relative == 0)
     {
-        targetx = (unsigned int)width;
-        targety = (unsigned int)height;
+        targetx = (int)width;
+        targety = (int)height;
     }
     else
     {
-        targetx = (unsigned int)(width * (float)options.width);
-        targety = (unsigned int)(height * (float)options.height);
+        targetx = (int)(width * options.width);
+        targety = (int)(height * options.height);
         printf("    relative width:  %u\n", targetx);
         printf("    relative height: %u\n", targety);
     }
@@ -99,7 +99,7 @@ unsigned int CreateRenderTarget(float width,
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, target->textures[i], 0);
     }
 
-    glDrawBuffers(layers, DrawBuffers);
+    glDrawBuffers((int)layers, DrawBuffers);
     glGenRenderbuffers(1, &target->depth);
     glBindRenderbuffer(GL_RENDERBUFFER, target->depth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, targetx, targety);
@@ -118,8 +118,8 @@ void resizeTargets(void)
 
         if(t->relative)
         {
-            unsigned int targetx = (unsigned int)(t->width * (float)options.width);
-            unsigned int targety = (unsigned int)(t->height * (float)options.height);
+            int targetx = (int)(t->width * options.width);
+            int targety = (int)(t->height * options.height);
 
             for(int j = 0; j < t->layers; j++)
             {
@@ -169,7 +169,7 @@ void cleanupRender(void)
     for(int i = 0; i < numrendertargets; i++)
     {
         rendertarget* target = &rendertargets[i];
-        glDeleteTextures(target->layers, target->textures);
+        glDeleteTextures((int)target->layers, target->textures);
 
         if(target->textures)
         {
@@ -211,8 +211,8 @@ void beginPass(int target, int* width, int* height)
 
         if(rendertargets[target].relative)
         {
-            *height = (int)(rendertargets[target].height * (float)options.height);
-            *width = (int)(rendertargets[target].width * (float)options.width);
+            *height = (int)(rendertargets[target].height * options.height);
+            *width = (int)(rendertargets[target].width * options.width);
         }
         else
         {
@@ -256,8 +256,8 @@ void endPass(void)
 }
 
 void bindRendertarget(const char* name, int id, int layer,
-                      unsigned int magfilter, unsigned int minfilter,
-                      unsigned int clamp_s, unsigned int clamp_t)
+                      int magfilter, int minfilter,
+                      int clamp_s, int clamp_t)
 {
     if(id >= numrendertargets || currentprogram == 0)
     {
@@ -270,13 +270,13 @@ void bindRendertarget(const char* name, int id, int layer,
     }
 
     int loc = glGetUniformLocation(currentprogram, name);
-    glActiveTexture(GL_TEXTURE0 + numboundtextures);
+    glActiveTexture(GL_TEXTURE0 + (int)numboundtextures);
     glBindTexture(GL_TEXTURE_2D, rendertargets[id].textures[layer]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minfilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp_s);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp_t);
-    glUniform1i(loc, numboundtextures);
+    glUniform1i(loc, (int)numboundtextures);
     numboundtextures += 1;
 }
 

@@ -27,8 +27,8 @@ typedef struct mesh
     unsigned int* vao;
     unsigned int* vbo;
     unsigned int* flags;
-    unsigned int* numindices;
-    unsigned int* numverts;
+    int* numindices;
+    int* numverts;
     float bboxmin[3];
     float bboxmax[3];
     unsigned int drawmode;

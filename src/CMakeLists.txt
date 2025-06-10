@@ -73,12 +73,15 @@ add_definitions(-DV7_LARGE_AST)
 add_library(v7 "../external/v7/v7.c")
 target_compile_options(v7 PRIVATE "-O3")
 target_compile_definitions(v7 PRIVATE "NDEBUG")
+set_target_properties(v7 PROPERTIES CMAKE_C_CLANG_TIDY "")
 
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 add_executable(${CMAKE_PROJECT_NAME} ${COMMON_SRC} ${SHADER_DEPEND})
-
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,performance-*,-performance-no-int-to-ptr,portability-*,bugprone-*,llvm-include-order,-bugprone-easily-swappable-parameters")
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 target_link_libraries(${CMAKE_PROJECT_NAME}
     ${GLFW_LIBRARIES}
     ${OPENGL_LIBRARIES}

@@ -1,15 +1,15 @@
+#include "defines.h"
+#include "notify.h"
+#include "opengl.h"
+#include "resources.h"
+#include <assimp/cimport.h>
+#include <assimp/mesh.h>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <float.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include "opengl.h"
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/mesh.h>
-#include "notify.h"
-#include "resources.h"
-#include "defines.h"
-#include <float.h>
 
 struct aiColor4D;
 struct aiVector3D;
@@ -73,6 +73,7 @@ void printmeshflags(unsigned int flag)
 
     printf("\n");
 }
+
 unsigned int sizeOfVert(unsigned int flag)
 {
     unsigned int size = 0;
@@ -126,6 +127,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     unsigned int flags = aiProcess_CalcTangentSpace |
                          aiProcess_GenNormals       |
                          aiProcess_Triangulate      |
+                         aiProcess_ImproveCacheLocality |
                          aiProcess_SortByPType;
     const struct aiScene* scene = aiImportFile(filename, flags);
 
@@ -156,21 +158,21 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
 
     if(m->vao)
     {
-        glDeleteVertexArrays(m->numsubmeshes, m->vao);
+        glDeleteVertexArrays((int)m->numsubmeshes, m->vao);
         free(m->vao);
         m->vao = 0;
     }
 
     if(m->vbo)
     {
-        glDeleteBuffers(m->numsubmeshes, m->vbo);
+        glDeleteBuffers((int)m->numsubmeshes, m->vbo);
         free(m->vbo);
         m->vbo = 0;
     }
 
     if(m->indices)
     {
-        glDeleteBuffers(m->numsubmeshes, m->indices);
+        glDeleteBuffers((int)m->numsubmeshes, m->indices);
         free(m->indices);
         m->indices = 0;
     }
@@ -201,9 +203,9 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     m->bboxmin[0] = FLT_MAX;
     m->bboxmin[1] = FLT_MAX;
     m->bboxmin[2] = FLT_MAX;
-    glCreateVertexArrays(scene->mNumMeshes, m->vao);
-    glGenBuffers(scene->mNumMeshes, m->vbo);
-    glGenBuffers(scene->mNumMeshes, m->indices);
+    glCreateVertexArrays((int)scene->mNumMeshes, m->vao);
+    glGenBuffers((int)scene->mNumMeshes, m->vbo);
+    glGenBuffers((int)scene->mNumMeshes, m->indices);
 
     for(int i = 0; i < scene->mNumMeshes; i++)
     {
@@ -247,7 +249,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
             }
         }
 
-        m->numverts[i] = assmesh->mNumVertices;
+        m->numverts[i] = (int)assmesh->mNumVertices;
         printf("m->flags[%i]=0x%X size=%zu numverts=%i\n", i, m->flags[i], size, assmesh->mNumVertices);
         printmeshflags(m->flags[i]);
         float* data = malloc(size * assmesh->mNumVertices);
@@ -353,12 +355,12 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, m->vbo[i]);
-        glBufferData(GL_ARRAY_BUFFER, size * assmesh->mNumVertices, data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (long)(size * assmesh->mNumVertices), data, GL_STATIC_DRAW);
         // assume triangles
-        m->numindices[i] = assmesh->mNumFaces * 3;
+        m->numindices[i] = (int)assmesh->mNumFaces * 3;
         unsigned int* indexdata = malloc(sizeof(unsigned int) * assmesh->mNumFaces * 3);
 
-        for(int j = 0; j < assmesh->mNumFaces; j++)
+        for(size_t j = 0; j < assmesh->mNumFaces; j++)
         {
             size_t o = j * 3;
             indexdata[o] = assmesh->mFaces[j].mIndices[0];
@@ -367,7 +369,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
         }
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices[i]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*assmesh->mNumFaces * 3, indexdata, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int)(sizeof(unsigned int)*assmesh->mNumFaces * 3), indexdata, GL_STATIC_DRAW);
 
         if(data)
         {
@@ -384,7 +386,7 @@ int loadMeshfileOntoMesh(const char* filename, unsigned int meshid)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     watchFile(filename, &reloadMesh);
     aiReleaseImport(scene);
-    return meshid;
+    return (int)meshid;
 }
 
 int allocateMesh(const char* filename)
@@ -452,12 +454,18 @@ int allocateMesh(const char* filename)
     meshes[out].numverts = 0;
     meshes[out].vao = 0;
     meshes[out].vbo = 0;
-    return out;
+    return (int)out;
 }
 
 int loadMesh(const char* filename)
 {
-    unsigned int out  = allocateMesh(filename);
+    int out  = allocateMesh(filename);
+
+    if(out < 0)
+    {
+        return -1;
+    }
+
     mesh* m = &meshes[out];
 
     if(m->name == 0)
@@ -517,21 +525,21 @@ void cleanupMesh(mesh* m)
 
     if(m->indices)
     {
-        glDeleteBuffers(m->numsubmeshes, m->indices);
+        glDeleteBuffers((int)m->numsubmeshes, m->indices);
         free(m->indices);
         m->indices = 0;
     }
 
     if(m->vao)
     {
-        glDeleteVertexArrays(m->numsubmeshes, m->vao);
+        glDeleteVertexArrays((int)m->numsubmeshes, m->vao);
         free(m->vao);
         m->vao = 0;
     }
 
     if(m->vbo)
     {
-        glDeleteBuffers(m->numsubmeshes, m->vbo);
+        glDeleteBuffers((int)m->numsubmeshes, m->vbo);
         free(m->vbo);
         m->vbo = 0;
     }
@@ -685,6 +693,7 @@ void drawMesh(int id, int submesh)
         drawSubmesh(id, submesh);
     }
 }
+
 void resetAttribs(void)
 {
     numActiveAttribs = 0;
@@ -764,6 +773,11 @@ void closeMesh(void)
 
 void openMesh(int id)
 {
+    if(id < 0)
+    {
+        return;
+    }
+
     if(editmesh != id && editmesh != -1)
     {
         closeMesh();
@@ -871,9 +885,11 @@ size_t flagToSize(unsigned int flag)
         case MESH_FLAG_COLOR7:
             return 3;
             break;
+
+        default:
+            return 0;
     }
 
-    return 0;
 }
 
 void setMeshVertexData(size_t index, float data)

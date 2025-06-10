@@ -1,6 +1,6 @@
+#include "generatorparams.h"
 #include "generators.h"
 #include "resources.h"
-#include "generatorparams.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,15 +1,15 @@
+#include "defines.h"
+#include "generators.h"
 #include "opengl.h"
-#include "v7.h"
 #include "renderfunc.h"
 #include "resources.h"
-#include "generators.h"
-#include "defines.h"
+#include "v7.h"
 #include <stdlib.h>
 
 typedef struct v7 v7;
 enum v7_err js_load_image(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
     *res = v7_mk_number(v7e, 0);
 
     if(argc >= 1)
@@ -21,7 +21,7 @@ enum v7_err js_load_image(v7* v7e, v7_val_t* res)
 
         if(argc == 2)
         {
-            origin = v7_get_int(v7e, v7_arg(v7e, 1));
+            origin = (char)v7_get_int(v7e, v7_arg(v7e, 1));
         }
 
         if(filename)
@@ -53,7 +53,7 @@ enum v7_err js_load_image(v7* v7e, v7_val_t* res)
 
 enum v7_err js_ismesh(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -81,7 +81,7 @@ enum v7_err js_ismesh(v7* v7e, v7_val_t* res)
 
 enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -120,7 +120,7 @@ enum v7_err js_load_mesh(v7* v7e, v7_val_t* res)
 
 enum v7_err js_destroy_mesh(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -143,7 +143,7 @@ enum v7_err js_destroy_mesh(v7* v7e, v7_val_t* res)
 
 enum v7_err js_get_mesh_bbox(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -174,7 +174,7 @@ enum v7_err js_get_mesh_bbox(v7* v7e, v7_val_t* res)
 
 enum v7_err js_load_shader(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 5)
     {
@@ -228,8 +228,8 @@ enum v7_err js_create_rendertarget(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 
-    float width  = v7_get_double(v7e, v7_arg(v7e, 0));
-    float height = v7_get_double(v7e, v7_arg(v7e, 1));
+    int width  = v7_get_int(v7e, v7_arg(v7e, 0));
+    int height = v7_get_int(v7e, v7_arg(v7e, 1));
     int layers   = v7_get_int(v7e, v7_arg(v7e, 2));
     int colors   = v7_get_int(v7e, v7_arg(v7e, 3));
     int type     = v7_get_int(v7e, v7_arg(v7e, 4));
@@ -264,13 +264,13 @@ enum v7_err js_generate_plane(v7* v7e, v7_val_t* res)
 
     if(v7_argc(v7e) > 2)
     {
-        w = v7_get_double(v7e, v7_arg(v7e, 2));
+        w = (float)v7_get_double(v7e, v7_arg(v7e, 2));
         h = w;
     }
 
     if(v7_argc(v7e) > 3)
     {
-        h = v7_get_double(v7e, v7_arg(v7e, 3));
+        h = (float)v7_get_double(v7e, v7_arg(v7e, 3));
     }
 
     printf("generating plane %i %i %f %f\n", subw, subh, w, h);
@@ -284,15 +284,15 @@ enum v7_err js_generate_generic_mesh(v7* v7e, v7_val_t* res)
 
     if(v7_argc(v7e) == 5)
     {
-        unsigned int numverts = v7_get_int(v7e, v7_arg(v7e, 0));
-        unsigned int numelements = v7_get_int(v7e, v7_arg(v7e, 1));
+        int numverts = v7_get_int(v7e, v7_arg(v7e, 0));
+        int numelements = v7_get_int(v7e, v7_arg(v7e, 1));
         unsigned int drawmode = v7_get_int(v7e, v7_arg(v7e, 2));
         unsigned int flags = v7_get_int(v7e, v7_arg(v7e, 3));
         v7_val_t val = v7_arg(v7e, 4);
         size_t len = 0;
         const char* identifier = v7_get_string(v7e, &val, &len);
         printf("generating mesh verts:%i elements:%i drawmode:%i flags:%i\n", numverts, numelements, drawmode, flags);
-        unsigned int target = generateGenericMesh(numverts, numelements, drawmode, flags, identifier);
+        int target = generateGenericMesh(numverts, numelements, drawmode, flags, identifier);
         *res = v7_mk_number(v7e, target);
         return V7_OK;
     }
@@ -441,7 +441,7 @@ enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res)
             return V7_SYNTAX_ERROR;
         }
 
-        float singlevalue = v7_get_double(v7e, arg3);
+        float singlevalue = (float)v7_get_double(v7e, arg3);
         setMeshVertexData(offset + index, singlevalue);
         return V7_OK;
 
@@ -459,7 +459,7 @@ enum v7_err js_set_vert_data(v7* v7e, v7_val_t* res)
         for(int i = 0; i < len; i++)
         {
             v7_val_t value = v7_array_get(v7e, arg3, i);
-            float singlevalue = v7_get_double(v7e, value);
+            float singlevalue = (float)v7_get_double(v7e, value);
             setMeshVertexData(offset + index + i, singlevalue);
         }
 
@@ -477,7 +477,7 @@ enum v7_err js_open_mesh(v7* v7e, v7_val_t* res)
         return V7_SYNTAX_ERROR;
     }
 
-    unsigned int id = v7_get_int(v7e, v7_arg(v7e, 0));
+    int id = v7_get_int(v7e, v7_arg(v7e, 0));
     openMesh(id);
 
     return V7_OK;

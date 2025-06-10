@@ -1,11 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "opengl.h"
-#include "notify.h"
-#include "resources.h"
-#include "renderfunc.h"
 #include "matrix.h"
+#include "notify.h"
+#include "renderfunc.h"
+#include "resources.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 shader* shaders;
 unsigned int numshaders = 0;
@@ -20,7 +20,7 @@ size_t getFilesize(FILE* f)
         return 0;
     }
 
-    size_t pos = ftell(f);
+    long pos = ftell(f);
     fseek(f, 0, SEEK_END);
     size_t len = ftell(f);
     fseek(f, pos, SEEK_SET);
@@ -37,7 +37,7 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
         return 0;
     }
 
-    int len = getFilesize(f);
+    int len = (int)getFilesize(f);
     char* data = malloc(len + 1);
 
     if(data == 0)
@@ -113,7 +113,7 @@ shader* allocateNewShader(const char* vertex,
                           const char* geometry,
                           const char* tesscontrol,
                           const char* tesseval,
-                          size_t* id)
+                          int* id)
 {
     for(int i = 0; i < numshaders; i++)
     {
@@ -171,7 +171,7 @@ shader* allocateNewShader(const char* vertex,
         }
 
         s = &shaders[numshaders];
-        *id = numshaders;
+        *id = (int)numshaders;
         numshaders++;
     }
 
@@ -196,7 +196,7 @@ int loadShader(const char* vertex,
                const char* tesscontrol,
                const char* tesseval)
 {
-    size_t out = 0;
+    int out = 0;
     shader* s = allocateNewShader(vertex, pixel, geometry, tesscontrol, tesseval, &out);
     s->working = 1;
     char error = 0;
@@ -517,7 +517,7 @@ void bindShader(int id)
     }
 }
 
-void setUniformf(const char* name, float* f, int argc)
+void setUniformf(const char* name, float* f, unsigned long argc)
 {
     if(currentprogram == 0)
     {
@@ -549,7 +549,7 @@ void setUniformf(const char* name, float* f, int argc)
     }
 }
 
-void setUniformd(const char* name, double* f, int argc)
+void setUniformd(const char* name, double* f, unsigned long argc)
 {
     if(currentprogram == 0)
     {
@@ -581,7 +581,7 @@ void setUniformd(const char* name, double* f, int argc)
     }
 }
 
-void setUniformi(const char* name, int* f, int argc)
+void setUniformi(const char* name, int* f, unsigned long argc)
 {
     if(currentprogram == 0)
     {
@@ -613,7 +613,7 @@ void setUniformi(const char* name, int* f, int argc)
     }
 }
 
-void setUniformui(const char* name, unsigned int* f, int argc)
+void setUniformui(const char* name, unsigned int* f, unsigned long argc)
 {
     if(currentprogram == 0)
     {
@@ -655,10 +655,10 @@ void setUniformMat4f(const char* name, const mat4* m)
     int loc = glGetUniformLocation(currentprogram, name);
     float mat[16] =
     {
-        m->m[0], m->m[1], m->m[2], m->m[3],
-        m->m[4], m->m[5], m->m[6], m->m[7],
-        m->m[8], m->m[9], m->m[10], m->m[11],
-        m->m[12], m->m[13], m->m[14], m->m[15]
+        (float)m->m[0], (float)m->m[1], (float)m->m[2], (float)m->m[3],
+        (float)m->m[4], (float)m->m[5], (float)m->m[6], (float)m->m[7],
+        (float)m->m[8], (float)m->m[9], (float)m->m[10],(float) m->m[11],
+        (float)m->m[12],(float)m->m[13],(float)m->m[14],(float) m->m[15]
     };
     glUniformMatrix4fv(loc, 1, 0, mat);
 }

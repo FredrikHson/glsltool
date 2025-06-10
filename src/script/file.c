@@ -8,7 +8,7 @@ typedef struct v7 v7;
 extern v7* v7g;
 enum v7_err js_watchfile(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {

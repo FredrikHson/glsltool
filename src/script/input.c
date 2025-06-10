@@ -1,9 +1,8 @@
-#include "script.h"
-#include "v7.h"
-#include <stdio.h>
-#include "opengl.h"
 #include "defines.h"
 #include "keys.h"
+#include "opengl.h"
+#include "v7.h"
+#include <stdio.h>
 
 extern double xpos;
 extern double ypos;
@@ -50,7 +49,7 @@ void updateinput(void)
         char buttondef[8] = {0};
         snprintf(buttondef, 8, "MOUSE_%i", i + 1);
         char state = getstate(lastmousebuttons[i], mousebuttons[i]);
-        anybuttonstate |= state;
+        anybuttonstate = (char)(anybuttonstate | state);
         v7_set(v7g, v7_get_global(v7g), buttondef, 7, v7_mk_number(v7g, state));
     }
 
@@ -60,7 +59,7 @@ void updateinput(void)
     {
         int id = keys[i].glfwid;
         char state = getstate(keyboardlast[id], keyboard[id]);
-        anykeystate |= state;
+        anykeystate = (char)(anybuttonstate | state);
         v7_set(v7g, v7_get_global(v7g), keys[i].name, ~0, v7_mk_number(v7g, state));
     }
 

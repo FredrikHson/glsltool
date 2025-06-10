@@ -2,7 +2,6 @@
 #define __GENERATORS_H__
 
 #include "resources.h"
-#include "vector.h"
 
 typedef enum gentype
 {
@@ -29,6 +28,6 @@ void endGeneratorCleanup(void);
 unsigned int allocateGenMesh(gentype t, void* params);
 
 int generatePlane(unsigned int subw, unsigned int subh, float w, float h);
-int generateGenericMesh(unsigned int numverts, unsigned int numelements, unsigned int drawmode,unsigned int flags, const char* identifier);
+int generateGenericMesh(int numverts, int numelements, unsigned int drawmode,unsigned int flags, const char* identifier);
 
 #endif //__GENERATORS_H__

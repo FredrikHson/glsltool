@@ -1,11 +1,11 @@
 #include "notify.h"
-#include <sys/inotify.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include "script.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <script.h>
+#include <sys/inotify.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int inotify = 0;
 
@@ -16,7 +16,7 @@ typedef struct inotify_event inotify_event;
 typedef struct notify_file
 {
     int descriptor;
-    int inode;
+    __ino_t inode;
     char filename[4096];
     void (*callback)(const char*);
 } notify_file;
@@ -35,6 +35,7 @@ int initFileWatcher(void)
 
     return 1;
 }
+
 void destroyFileWatcher(void)
 {
     for(int i = 0; i < numWatchedFiles; i++)
@@ -93,6 +94,7 @@ void watchFile(const char* filename, void (*callback)(const char*))
     watchlist[numWatchedFiles].inode = filestat.st_ino;
     numWatchedFiles += 1;
 }
+
 void unwatchFile(const char* filename)
 {
     for(int i = 0; i < numWatchedFiles; i++)
@@ -117,14 +119,15 @@ void unwatchFile(const char* filename)
         }
     }
 }
+
 void watchChanges(void)
 {
     char buffer[BUF_LEN] = {0};
 
     do
     {
-        int length = 0;
-        int i = 0;
+        ssize_t length = 0;
+        unsigned long i = 0;
         length = read(inotify, buffer, BUF_LEN);
 
         if(length <= 0) // war never changes

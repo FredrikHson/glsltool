@@ -92,7 +92,7 @@ mat4 mat4setperspective(double fov, float aspect, float near, float far)
 
 mat4 mat4setrotr(double angle, float x, float y, float z)
 {
-    double l = sqrt(x * x + y * y + z * z);
+    double l = sqrtf(x * x + y * y + z * z);
     double x2 = x / l;
     double y2 = y / l;
     double z2 = z / l;

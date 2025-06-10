@@ -1,11 +1,11 @@
 #include "options.h"
 #include <getopt.h>
+#include <libgen.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <limits.h>
 #include <string.h>
-#include <libgen.h>
+#include <unistd.h>
 
 glsltool_options options =
 {
@@ -58,7 +58,14 @@ void handle_optional_variable(char* inputstring)
     }
     else
     {
-        options.variables = realloc(options.variables, sizeof(optional_variable) * (options.numoptional_variables + 1));
+        void* newvars = realloc(options.variables, sizeof(optional_variable) * (options.numoptional_variables + 1));
+
+        if(newvars == 0)
+        {
+            return;
+        }
+
+        options.variables = newvars;
     }
 
     options.variables[options.numoptional_variables].name = malloc(strlen(name) + 1);

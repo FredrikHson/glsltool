@@ -1,15 +1,18 @@
-#include "script.h"
-#include <math.h>
-#include "v7.h"
 #include "defines.h"
-#include "vector.h"
 #include "matrix.h"
+#include "v7.h"
+#include "vector.h"
+#include <math.h>
+
+#ifndef M_PI
+    #define M_PI 3.141592653589793238462643383279502884197169399375105820974944f
+#endif
 
 typedef struct v7 v7;
 extern v7* v7g;
 char anglemode = RADIANS;
 
-double convertangle(float inputangle)
+float convertangle(float inputangle)
 {
     if(anglemode == DEGREES)
     {
@@ -23,11 +26,11 @@ double convertangle(float inputangle)
 
 enum v7_err js_set_angle_mode(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
-        char newmode = v7_get_int(v7e, v7_arg(v7e, 0));
+        char newmode = (char)v7_get_int(v7e, v7_arg(v7e, 0));
 
         if(newmode == DEGREES || newmode == RADIANS)
         {
@@ -49,7 +52,7 @@ enum v7_err js_set_angle_mode(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_dot(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -75,7 +78,7 @@ enum v7_err js_vec3_dot(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_normalize(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -105,7 +108,7 @@ enum v7_err js_vec3_normalize(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_cross(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -140,7 +143,7 @@ enum v7_err js_vec3_cross(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_add(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -175,7 +178,7 @@ enum v7_err js_vec3_add(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_sub(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -210,7 +213,7 @@ enum v7_err js_vec3_sub(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_mul(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -287,7 +290,7 @@ mat4 v7_val_tomat4(v7* v7e, v7_val_t m)
 
 enum v7_err js_mat4_loadidentity(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 0)
     {
@@ -304,18 +307,18 @@ enum v7_err js_mat4_loadidentity(v7* v7e, v7_val_t* res)
 
 enum v7_err js_mat4_setscale(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
-        const double scale = v7_get_double(v7e, v7_arg(v7e, 0));
+        const float scale = (float)v7_get_double(v7e, v7_arg(v7e, 0));
         *res = mat4tov7_val(v7e, mat4setscale(scale, scale, scale));
     }
     else if(argc == 3)
     {
-        const double x = v7_get_double(v7e, v7_arg(v7e, 0));
-        const double y = v7_get_double(v7e, v7_arg(v7e, 1));
-        const double z = v7_get_double(v7e, v7_arg(v7e, 2));
+        const float x = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        const float y = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        const float z = (float)v7_get_double(v7e, v7_arg(v7e, 2));
         *res = mat4tov7_val(v7e, mat4setscale(x, y, z));
     }
     else
@@ -329,13 +332,13 @@ enum v7_err js_mat4_setscale(v7* v7e, v7_val_t* res)
 
 enum v7_err js_mat4_settranslation(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 3)
     {
-        const double x = v7_get_double(v7e, v7_arg(v7e, 0));
-        const double y = v7_get_double(v7e, v7_arg(v7e, 1));
-        const double z = v7_get_double(v7e, v7_arg(v7e, 2));
+        const float x = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        const float y = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        const float z = (float)v7_get_double(v7e, v7_arg(v7e, 2));
         *res = mat4tov7_val(v7e, mat4settranslation(x, y, z));
     }
     else
@@ -349,14 +352,14 @@ enum v7_err js_mat4_settranslation(v7* v7e, v7_val_t* res)
 
 enum v7_err js_mat4_setrotation(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 4)
     {
-        const double angle = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
-        const double x = v7_get_double(v7e, v7_arg(v7e, 1));
-        const double y = v7_get_double(v7e, v7_arg(v7e, 2));
-        const double z = v7_get_double(v7e, v7_arg(v7e, 3));
+        const float angle = convertangle((float)v7_get_double(v7e, v7_arg(v7e, 0)));
+        const float x = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        const float y = (float)v7_get_double(v7e, v7_arg(v7e, 2));
+        const float z = (float)v7_get_double(v7e, v7_arg(v7e, 3));
         *res = mat4tov7_val(v7e, mat4setrotr(angle, x, y, z));
     }
     else
@@ -370,14 +373,14 @@ enum v7_err js_mat4_setrotation(v7* v7e, v7_val_t* res)
 
 enum v7_err js_mat4_setperspective(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 4)
     {
-        const double fov = convertangle(v7_get_double(v7e, v7_arg(v7e, 0)));
-        const double aspect = v7_get_double(v7e, v7_arg(v7e, 1));
-        const double near = v7_get_double(v7e, v7_arg(v7e, 2));
-        const double far = v7_get_double(v7e, v7_arg(v7e, 3));
+        const float fov = convertangle((float)v7_get_double(v7e, v7_arg(v7e, 0)));
+        const float aspect = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        const float near = (float)v7_get_double(v7e, v7_arg(v7e, 2));
+        const float far = (float)v7_get_double(v7e, v7_arg(v7e, 3));
         *res = mat4tov7_val(v7e, mat4setperspective(fov, aspect, near, far));
     }
     else
@@ -391,7 +394,7 @@ enum v7_err js_mat4_setperspective(v7* v7e, v7_val_t* res)
 
 enum v7_err js_mat4_mul(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -421,7 +424,7 @@ enum v7_err js_mat4_mul(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec3_mat4_mul(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -461,7 +464,7 @@ enum v7_err js_vec3_mat4_mul(v7* v7e, v7_val_t* res)
 
 enum v7_err js_vec4_mat4_mul(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -501,9 +504,10 @@ enum v7_err js_vec4_mat4_mul(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
 enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -529,7 +533,7 @@ enum v7_err js_set_uniform_matrix(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_uniform_matrix_d(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -555,7 +559,7 @@ enum v7_err js_set_uniform_matrix_d(v7* v7e, v7_val_t* res)
 
 enum v7_err js_mat4_transpose(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -580,9 +584,10 @@ enum v7_err js_mat4_transpose(v7* v7e, v7_val_t* res)
 
     return V7_OK;
 }
+
 enum v7_err js_mat4_invert(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -610,7 +615,7 @@ enum v7_err js_mat4_invert(v7* v7e, v7_val_t* res)
 
 enum v7_err js_sin(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -628,7 +633,7 @@ enum v7_err js_sin(v7* v7e, v7_val_t* res)
 
 enum v7_err js_cos(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -646,7 +651,7 @@ enum v7_err js_cos(v7* v7e, v7_val_t* res)
 
 enum v7_err js_tan(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -664,7 +669,7 @@ enum v7_err js_tan(v7* v7e, v7_val_t* res)
 
 enum v7_err js_asin(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -682,7 +687,7 @@ enum v7_err js_asin(v7* v7e, v7_val_t* res)
 
 enum v7_err js_acos(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -700,7 +705,7 @@ enum v7_err js_acos(v7* v7e, v7_val_t* res)
 
 enum v7_err js_atan(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -718,7 +723,7 @@ enum v7_err js_atan(v7* v7e, v7_val_t* res)
 
 enum v7_err js_floor(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -736,7 +741,7 @@ enum v7_err js_floor(v7* v7e, v7_val_t* res)
 
 enum v7_err js_ceil(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -754,7 +759,7 @@ enum v7_err js_ceil(v7* v7e, v7_val_t* res)
 
 enum v7_err js_abs(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -772,7 +777,7 @@ enum v7_err js_abs(v7* v7e, v7_val_t* res)
 
 enum v7_err js_sqrt(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {

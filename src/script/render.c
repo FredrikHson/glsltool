@@ -1,8 +1,8 @@
-#include "opengl.h"
-#include "v7.h"
-#include "renderfunc.h"
 #include "debug.h"
 #include "defines.h"
+#include "opengl.h"
+#include "renderfunc.h"
+#include "v7.h"
 typedef struct v7 v7;
 extern v7* v7g;
 extern int max_jitter_samples;
@@ -16,32 +16,32 @@ enum v7_err js_clear(v7* v7e, v7_val_t* res)
     float blue  = 0;
     float alpha = 0;
     int rt = -1;
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 3)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
-        green = v7_get_double(v7e, v7_arg(v7e, 1));
-        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        green = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = (float)v7_get_double(v7e, v7_arg(v7e, 2));
     }
     else if(argc == 4)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
-        green = v7_get_double(v7e, v7_arg(v7e, 1));
-        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
-        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        green = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = (float)v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = (float)v7_get_double(v7e, v7_arg(v7e, 3));
     }
     else if(argc == 5)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
-        green = v7_get_double(v7e, v7_arg(v7e, 1));
-        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
-        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        green = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = (float)v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = (float)v7_get_double(v7e, v7_arg(v7e, 3));
         rt    = v7_get_int(v7e, v7_arg(v7e, 4));
     }
     else if(argc == 1)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
         green = red;
         blue  = red;
     }
@@ -63,32 +63,32 @@ enum v7_err js_clearcolor(v7* v7e, v7_val_t* res)
     float blue  = 0;
     float alpha = 0;
     int rt = -1;
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 3)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
-        green = v7_get_double(v7e, v7_arg(v7e, 1));
-        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        green = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = (float)v7_get_double(v7e, v7_arg(v7e, 2));
     }
     else if(argc == 4)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
-        green = v7_get_double(v7e, v7_arg(v7e, 1));
-        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
-        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        green = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = (float)v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = (float)v7_get_double(v7e, v7_arg(v7e, 3));
     }
     else if(argc == 5)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
-        green = v7_get_double(v7e, v7_arg(v7e, 1));
-        blue  = v7_get_double(v7e, v7_arg(v7e, 2));
-        alpha = v7_get_double(v7e, v7_arg(v7e, 3));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        green = (float)v7_get_double(v7e, v7_arg(v7e, 1));
+        blue  = (float)v7_get_double(v7e, v7_arg(v7e, 2));
+        alpha = (float)v7_get_double(v7e, v7_arg(v7e, 3));
         rt    = v7_get_int(v7e, v7_arg(v7e, 4));
     }
     else if(argc == 1)
     {
-        red   = v7_get_double(v7e, v7_arg(v7e, 0));
+        red   = (float)v7_get_double(v7e, v7_arg(v7e, 0));
         green = red;
         blue  = red;
     }
@@ -143,7 +143,7 @@ enum v7_err js_endPass(v7* v7e, v7_val_t* res)
 
 enum v7_err js_draw_mesh(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -167,7 +167,7 @@ enum v7_err js_draw_mesh(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_depth(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -193,7 +193,7 @@ enum v7_err js_set_depth(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_cullface(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -235,7 +235,7 @@ enum v7_err js_set_cullface(v7* v7e, v7_val_t* res)
 
 enum v7_err js_wireframe(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -261,11 +261,11 @@ enum v7_err js_wireframe(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_debug_mode(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
-        const int mode = v7_get_int(v7e, v7_arg(v7e, 0));
+        const char mode = (char)v7_get_int(v7e, v7_arg(v7e, 0));
 
         if(setDebugMode(mode))
         {
@@ -285,12 +285,12 @@ enum v7_err js_set_debug_mode(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_debug_range(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
-        debug_minvalue = v7_get_double(v7e, v7_arg(v7e, 0));
-        debug_maxvalue = v7_get_double(v7e, v7_arg(v7e, 1));
+        debug_minvalue = (float)v7_get_double(v7e, v7_arg(v7e, 0));
+        debug_maxvalue = (float)v7_get_double(v7e, v7_arg(v7e, 1));
         return V7_OK;
     }
     else
@@ -302,11 +302,11 @@ enum v7_err js_set_debug_range(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_debug_clip(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
-        debug_clip = v7_get_int(v7e, v7_arg(v7e, 0)) != 0;
+        debug_clip = (char)(v7_get_int(v7e, v7_arg(v7e, 0)) != 0);
     }
     else
     {
@@ -319,7 +319,7 @@ enum v7_err js_set_debug_clip(v7* v7e, v7_val_t* res)
 
 enum v7_err js_set_debug_step(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -337,7 +337,7 @@ enum v7_err js_set_debug_step(v7* v7e, v7_val_t* res)
 
 enum v7_err js_blend_func(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 2)
     {
@@ -356,7 +356,7 @@ enum v7_err js_blend_func(v7* v7e, v7_val_t* res)
 
 enum v7_err js_blend_func_separate(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 4)
     {
@@ -377,7 +377,7 @@ enum v7_err js_blend_func_separate(v7* v7e, v7_val_t* res)
 
 enum v7_err js_blend_equation(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -395,7 +395,7 @@ enum v7_err js_blend_equation(v7* v7e, v7_val_t* res)
 
 enum v7_err js_blend(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
@@ -421,12 +421,12 @@ enum v7_err js_blend(v7* v7e, v7_val_t* res)
 
 enum v7_err js_get_square_jitter_x(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
         int index = v7_get_int(v7e, v7_arg(v7e, 0));
-        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2]);
+        *res = v7_mk_number(v7e, jitterdata[(ptrdiff_t)((index % max_jitter_samples) * 2)]);
         return V7_OK;
     }
     else
@@ -438,12 +438,12 @@ enum v7_err js_get_square_jitter_x(v7* v7e, v7_val_t* res)
 
 enum v7_err js_get_square_jitter_y(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
         int index = v7_get_int(v7e, v7_arg(v7e, 0));
-        *res = v7_mk_number(v7e, jitterdata[(index % max_jitter_samples) * 2 + 1]);
+        *res = v7_mk_number(v7e, jitterdata[(ptrdiff_t)((index % max_jitter_samples) * 2 + 1)]);
         return V7_OK;
     }
     else
@@ -455,12 +455,12 @@ enum v7_err js_get_square_jitter_y(v7* v7e, v7_val_t* res)
 
 enum v7_err js_get_circle_jitter_x(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
         int index = v7_get_int(v7e, v7_arg(v7e, 0));
-        *res = v7_mk_number(v7e, jittercircledata[(index % max_jitter_samples) * 2]);
+        *res = v7_mk_number(v7e, jittercircledata[(ptrdiff_t)((index % max_jitter_samples) * 2)]);
         return V7_OK;
     }
     else
@@ -472,12 +472,12 @@ enum v7_err js_get_circle_jitter_x(v7* v7e, v7_val_t* res)
 
 enum v7_err js_get_circle_jitter_y(v7* v7e, v7_val_t* res)
 {
-    int argc = v7_argc(v7e);
+    unsigned long argc = v7_argc(v7e);
 
     if(argc == 1)
     {
         int index = v7_get_int(v7e, v7_arg(v7e, 0));
-        *res = v7_mk_number(v7e, jittercircledata[(index % max_jitter_samples) * 2 + 1]);
+        *res = v7_mk_number(v7e, jittercircledata[(ptrdiff_t)((index % max_jitter_samples) * 2 + 1)]);
         return V7_OK;
     }
     else

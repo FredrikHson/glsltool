@@ -1,8 +1,7 @@
 #include "opengl.h"
-#include "script.h"
+#include "options.h"
 #include "v7.h"
 #include <stdio.h>
-#include "options.h"
 #include <string.h>
 
 typedef struct v7 v7;
