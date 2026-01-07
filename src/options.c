@@ -49,8 +49,21 @@ void print_help(const struct option* opts)
 
 void handle_optional_variable(char* inputstring)
 {
+    if(inputstring == 0)
+    {
+        fprintf(stderr, "called handle_optional_variable with null\n");
+        exit(1);
+        return;
+    }
+
     char* name = strtok(inputstring, "=");
     char* value = strtok(0, "");
+
+    if(value == 0)
+    {
+        fprintf(stderr, "%s is missing its value\n", name);
+        exit(1);
+    }
 
     if(options.numoptional_variables == 0)
     {
