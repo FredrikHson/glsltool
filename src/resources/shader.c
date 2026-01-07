@@ -47,7 +47,15 @@ unsigned int loadShaderfile(const char* filename, int shadertype, unsigned int s
     }
 
     data[len] = 0;
-    fread(data, len, 1, f);
+    size_t bytesread = fread(data, len, 1, f);
+
+    if(bytesread == 0)
+    {
+        fprintf(stderr, "failed to load file %s files does probably not exist or is empty\n", filename);
+        *error = 1;
+        return 0;
+    }
+
     unsigned int out = 0;
 
     if(shaderobject == 0)
@@ -657,8 +665,8 @@ void setUniformMat4f(const char* name, const mat4* m)
     {
         (float)m->m[0], (float)m->m[1], (float)m->m[2], (float)m->m[3],
         (float)m->m[4], (float)m->m[5], (float)m->m[6], (float)m->m[7],
-        (float)m->m[8], (float)m->m[9], (float)m->m[10],(float) m->m[11],
-        (float)m->m[12],(float)m->m[13],(float)m->m[14],(float) m->m[15]
+        (float)m->m[8], (float)m->m[9], (float)m->m[10], (float) m->m[11],
+        (float)m->m[12], (float)m->m[13], (float)m->m[14], (float) m->m[15]
     };
     glUniformMatrix4fv(loc, 1, 0, mat);
 }
